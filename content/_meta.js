@@ -20,7 +20,7 @@ export default {
     type: "separator",
     title: "Platform Features"
   },
-  dataset: "Dataset",
+  "dataset-editor": "Dataset Editor",
   "prompt-studio": "Prompt Studio",
   evaluation: "Evaluation",
   observability: "Observability",
