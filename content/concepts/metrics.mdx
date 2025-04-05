@@ -1,0 +1,155 @@
+---
+title: Metrics
+---
+
+# Metrics
+
+Metrics in Confident AI are standards of measurement for evaluating the performance of your LLM application based on specific criteria. They act as the ruler by which you measure your test cases, providing quantitative insights into how well your LLM is performing.
+
+> [!TIP]
+>
+> Remember, metrics measure [test cases](/concepts/test-cases) (`LLMTestCase` or `ConversationalTestCase`), which represents interactions with your LLM application.
+
+## Powered by DeepEval
+
+All metrics in Confident AI are powered by DeepEval, an [open-source](https://github.com/confident-ai/deepeval) LLM evaluation framework. DeepEval runs 10M+ evals a week and provides the underlying implementation for 40+ metrics, ensuring consistent, reliable evaluation across your LLM applications. This integration means you benefit from:
+
+- **Continuous improvements** as DeepEval evolves
+- **Community contributions** to metric implementations
+- **Standardized evaluation** across different projects
+- **Seamless integration** between local development and Confident AI's cloud platform
+
+When you use metrics in Confident AI, you're leveraging the same robust evaluation framework that powers DeepEval's hundreds and thousands of daily active users, with the added benefits of Confident AI's cloud infrastructure for tracking, analyzing, and sharing your evaluation results.
+
+## LLM-as-Judge Approach
+
+Confident AI uses an LLM-as-judge approach for all metrics, which offers several advantages:
+
+- **Better alignment with human expectations** compared to traditional model-based approaches
+- **Comprehensive reasoning** for the scores computed
+- **Flexibility** to use any LLM for evaluation
+- **Customizable evaluation prompts** to improve accuracy and stability
+- **Reduced stochasticity and flakiness** in scores by using LLMs only for confined tasks
+
+All metrics output a score between 0-1, with a default threshold of 0.5. A metric is considered successful if the evaluation score is equal to or greater than the threshold.
+
+## Types of Metrics
+
+Confident AI offers a wide range of metrics tailored to different LLM applications and use cases.
+
+### Custom Metrics
+
+We recommend having 1-2 custom metrics in your evaluation suite and **NOT** rely 100% on generic, predefined metrics:
+
+- **G-Eval**: A general-purpose evaluation metric for LLM outputs
+- **DAG (Deep Acyclic Graph)**: A decision-tree based LLM-evaluated metric
+
+**Custom metrics are typically different based on your use case**, while system-specific metrics (like RAG or agent metrics) remain consistent across similar LLM applications. For example, two conversational agents - one for medical advice and another for legal consultation - would use the same agent metrics like tool correctness but have different `GEval` metrics tailored to their respective industry-specific success criteria.
+
+> [!NOTE]
+>
+> You can also implement custom metrics that are not LLM-as-a-judge from scratch in code.
+
+### RAG Metrics
+
+For Retrieval-Augmented Generation (RAG) systems:
+
+- **Answer Relevancy**: Measures how relevant the LLM's response is to the user's query
+- **Faithfulness**: Evaluates whether the LLM's response is supported by the retrieved context
+- **Contextual Relevancy**: Assesses how relevant the retrieved context is to the query
+- **Contextual Precision**: Measures the precision of the retrieved context
+- **Contextual Recall**: Evaluates the recall of the retrieved context
+
+### Agent Metrics
+
+For LLM agents that use tools:
+
+- **Tool Correctness**: Measures whether the agent used the correct tools for a given task
+- **Task Completion**: Evaluates whether the agent successfully completed the assigned task
+
+### Conversational Metrics
+
+For multi-turn conversational chatbots/agents:
+
+- **Conversational G-Eval**: Evaluates the overall quality of a conversation
+- **Knowledge Retention**: Measures how well the LLM retains information across conversation turns
+- **Role Adherence**: Evaluates how well the LLM adheres to its assigned role
+- **Conversation Completeness**: Measures whether the conversation addresses all aspects of the user's request
+- **Conversation Relevancy**: Evaluates how relevant each response is to the ongoing conversation
+
+These are particular useful for text-based chatbots or conversational voice agents.
+
+### Other Metrics
+
+- **Json Correctness**: Evaluates the correctness of JSON outputs
+- **RAGAS**: Implements the RAGAS framework for RAG evaluation, no different than DeepEval's RAG metrics
+- **Hallucination**: Measures the extent to which the LLM generates information not present in the context
+- **Toxicity**: Evaluates the toxicity level of LLM outputs
+- **Bias**: Measures the presence of bias in LLM outputs
+- **Summarization**: Evaluates the quality of summarization tasks
+
+## Choosing the Right Metrics
+
+Different LLM applications require different metrics for effective evaluation, and the specific combination of metrics depend on your LLM use case and application architecture. As a general rule of thumb, **DON't**:
+
+1. Use more than 5 metrics
+2. Rely purely on generic metrics (there should be one or two custom metrics like `GEval` or `DAG`)
+3. Pick metrics that don't have a clear success criteria
+
+Point 3. is especially relevant to custom metrics like `GEval`, where you're writing your own criteria instead of relying on a predefined one.
+
+### How to decide
+
+When selecting metrics, consider both your LLM's use case and system architecture. The two are often interlinked - for example, a QA system might be implemented using RAG, while a copilot might combine both agent and conversational capabilities.
+
+Another tip is, usually the generic, system specific metrics (such as answer relevancy and contextual relevancy for RAG, tool correctness for agents) are easy to define, and for the remaining 1-2 metrics that are custom will be specific and tailored to use cases.
+
+In fact, you'll find this pattern when picking metrics for different use cases in the [use cases page.](/supported-use-cases)
+
+> [!IMPORTANT]
+>
+> When selecting metrics, resist the temptation to add every metric that seems useful. Having too many metrics (>5) can dilute your evaluation focus and make results harder to interpret.
+>
+> Similarly, relying only on generic metrics without any custom ones tailored to your use case may miss important aspects of your application's performance. If you find yourself in either situation, step back and carefully reconsider your metric selection.
+
+## Metric Implementation
+
+Metrics are applied to test cases during evaluation. Each metric may require different parameters in your `LLMTestCase`. For example:
+
+- RAG metrics typically require `retrieval_context`
+- Agent metrics may need `tools_called` and `expected_tools`
+- Conversational metrics work with `ConversationalTestCase`s
+
+When running evaluations, you can use multiple metrics to get a comprehensive benchmark of your LLM application's performance:
+
+```python copy showLineNumbers
+from deepeval import evaluate
+from deepeval.metrics import AnswerRelevancyMetric, FaithfulnessMetric
+...
+
+# Run evaluation with multiple metrics
+evaluate(test_cases=[test_case], metrics=[
+    AnswerRelevancyMetric(),
+    FaithfulnessMetric()
+])
+```
+
+## Can Metrics Run On The Cloud?
+
+Yes, metrics can run on the cloud. However, we recommend starting with local evaluation first. Running metrics locally makes it easier to:
+
+- Iterate quickly on accuracy and reliability
+- Debug and fix issues
+- Fine-tune metric implementations
+- Validate metric accuracy
+
+We suggest spending at least a week perfecting your metrics locally before moving to cloud evaluation. While this may temporarily limit access for non-technical team members, it ensures more robust and reliable metrics in the long run.
+
+## Further Reading
+
+For more detailed information on specific metrics and their implementation, refer to the [deepeval documentation](https://docs.confident-ai.com/docs/metrics-introduction). More resources on LLM evaluation metrics written by Confident AI's founders:
+
+- [Everything on LLM evaluation metrics](https://www.confident-ai.com/blog/llm-evaluation-metrics-everything-you-need-for-llm-evaluation)
+- [Why LLM-as-a-judge is the best evaluation method](https://www.confident-ai.com/blog/why-llm-as-a-judge-is-the-best-llm-evaluation-method)
+- [Top LLM Chatbot Metrics](https://www.confident-ai.com/blog/llm-chatbot-evaluation-explained-top-chatbot-evaluation-metrics-and-testing-techniques)
+- [How I built deterministic LLM evaluation metrics for DeepEval](https://www.confident-ai.com/blog/how-i-built-deterministic-llm-evaluation-metrics-for-deepeval)

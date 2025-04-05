@@ -1,0 +1,173 @@
+---
+title: Supported Use Cases
+---
+
+# Tailored For All LLM Use Cases
+
+Confident AI is designed to evaluate any type of LLM application, from simple chatbots to complex agentic systems. Each use case has its own unique evaluation requirements, and we provide specialized metrics and features to help you get the most accurate assessment of your LLM's performance.
+
+## RAG QA
+
+Retrieval-Augmented Generation (RAG) systems combine document retrieval with LLM generation to provide accurate, source-based answers.
+
+### Key Evaluation Features:
+
+- **Context Relevance**: Measure how well the retrieved documents match the query
+- **Answer Faithfulness**: Verify that the generated answer is supported by the retrieved context
+- **Source Attribution**: Track which sources were used to generate each answer
+- **Hallucination Detection**: Identify when the LLM makes claims not supported by the context
+
+### Example Metrics:
+
+- Context Relevance Score
+- Answer Faithfulness Score
+- Source Coverage Ratio
+- Hallucination Rate
+
+## Chatbots
+
+Conversational AI systems that engage in multi-turn dialogues with users.
+
+### Key Evaluation Features:
+
+- **Conversation Flow**: Evaluate the natural progression of dialogue
+- **Response Appropriateness**: Measure if responses match the conversation context
+- **Persona Consistency**: Ensure the chatbot maintains its defined personality
+- **Error Recovery**: Assess how well the system handles misunderstandings
+
+### Example Metrics:
+
+- Dialogue Coherence Score
+- Response Relevance
+- Persona Adherence
+- Error Recovery Rate
+
+## Summarization
+
+Systems that condense longer texts into concise summaries.
+
+### Key Evaluation Features:
+
+- **Content Coverage**: Measure how much of the key information is preserved
+- **Factual Accuracy**: Verify that the summary doesn't introduce errors
+- **Length Control**: Ensure summaries meet length requirements
+- **Style Preservation**: Maintain the tone and style of the original
+
+### Example Metrics:
+
+- ROUGE Scores
+- BLEU Score
+- Factual Consistency
+- Length Compliance
+
+## Writing Assistant
+
+AI systems that help users with writing tasks.
+
+### Key Evaluation Features:
+
+- **Style Matching**: Evaluate how well the output matches the desired writing style
+- **Grammar & Syntax**: Check for correct language usage
+- **Tone Consistency**: Maintain appropriate tone throughout
+- **Task Completion**: Verify that the writing task is fully addressed
+
+### Example Metrics:
+
+- Style Adherence Score
+- Grammar Accuracy
+- Tone Consistency
+- Task Completion Rate
+
+## Autonomous Agents
+
+Systems that can perform complex tasks by breaking them down into steps.
+
+### Key Evaluation Features:
+
+- **Task Completion**: Measure success in achieving the goal
+- **Tool Usage**: Evaluate appropriate use of available tools
+- **Error Handling**: Assess recovery from failures
+- **Planning Effectiveness**: Measure quality of task decomposition
+
+### Example Metrics:
+
+- Task Success Rate
+- Tool Usage Efficiency
+- Error Recovery Rate
+- Planning Accuracy
+
+## Text-SQL
+
+Systems that convert natural language to SQL queries.
+
+### Key Evaluation Features:
+
+- **Query Accuracy**: Measure if the generated SQL produces expected results
+- **Schema Understanding**: Evaluate correct interpretation of database structure
+- **Error Prevention**: Check for common SQL mistakes
+- **Complex Query Handling**: Assess performance on multi-table queries
+
+### Example Metrics:
+
+- SQL Accuracy
+- Execution Success Rate
+- Schema Understanding Score
+- Complex Query Performance
+
+## Code Generation
+
+Systems that generate code from natural language descriptions.
+
+### Key Evaluation Features:
+
+- **Code Correctness**: Verify that generated code works as intended
+- **Language Compliance**: Ensure code follows language best practices
+- **Documentation Quality**: Assess code comments and documentation
+- **Edge Case Handling**: Evaluate performance on complex scenarios
+
+### Example Metrics:
+
+- Code Correctness Rate
+- Language Compliance Score
+- Documentation Coverage
+- Edge Case Success Rate
+
+## Custom Use Cases
+
+Confident AI supports custom evaluation metrics for specialized applications.
+
+### Key Features:
+
+- **Custom Metric Definition**: Create metrics specific to your use case
+- **Evaluation Pipeline Integration**: Connect with your existing workflows
+- **Flexible Scoring**: Define custom scoring rules
+- **Batch Evaluation**: Process large datasets efficiently
+
+### Implementation:
+
+1. Define your custom metrics
+2. Set up evaluation parameters
+3. Configure scoring rules
+4. Run evaluations and analyze results
+
+## Best Practices
+
+### When to Use Which Metrics
+
+- Choose metrics that align with your application's goals
+- Combine multiple metrics for a comprehensive evaluation
+- Consider both quantitative and qualitative measures
+
+### Setting Up Evaluation Workflows
+
+- Start with a baseline evaluation
+- Iterate based on results
+- Monitor performance over time
+- Adjust metrics as your application evolves
+
+### Getting Meaningful Results
+
+- Use diverse test cases
+- Include edge cases and failure scenarios
+- Maintain consistent evaluation criteria
+- Document your evaluation methodology

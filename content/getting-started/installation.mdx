@@ -1,0 +1,46 @@
+---
+title: Installation
+---
+
+import { Callout } from "nextra/components";
+
+# Install DeepEval
+
+## Setup A Python Environment (recommended)
+
+Go to the root directory of your project and create a virtual environment (if you don't already have one). In the CLI, run:
+
+```bash copy
+python3 -m venv venv
+source venv/bin/activate
+```
+
+## Run `pip install deepeval`
+
+In your newly created virtual environment, run:
+
+```
+pip install -U deepeval
+```
+
+## Login (Again) With Your API Key
+
+By now, you should have your Confident AI API key from following the [instructions on the previous page](/getting-started/create-account). You'll need to log in with that API key in DeepEval to ensure all evaluations, datasets, and prompts stay in sync with your project on Confident AI.
+
+To log in with your API key, run the following command in the CLI:
+
+```bash
+deepeval login --confident-api-key YOUR_API_KEY
+```
+
+Replace `YOUR_API_KEY` with the API key you copied from the Confident AI dashboard.
+
+> [!NOTE]
+>
+> You can also login by using the `login_with_confident_api_key` method without going through the CLI if you're in a notebook environment:
+>
+> ```python
+> deepeval.login_with_confident_api_key("YOUR_API_KEY")
+> ```
+
+Once logged in, you're ready to start using Confident AI with DeepEval for your LLM evaluations.

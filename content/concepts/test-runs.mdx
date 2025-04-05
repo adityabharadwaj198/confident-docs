@@ -1,0 +1,80 @@
+---
+title: Test Runs
+---
+
+# Test Runs
+
+A test run in Confident AI is a collection of evaluated test cases that provides insights into your LLM application's performance. Unlike datasets which contain unevaluated test cases and goldens, test runs contain the evaluation results and serve as **testing reports or benchmarks of your LLM app**.
+
+Test runs enable you to:
+
+- Track performance over time through regression testing
+- Compare different versions of prompts and models
+- Share evaluation results with team members
+- Identify areas for improvement in your LLM application
+
+It is extremely common for users to setup cron jobs or pre-deployment evaluations to create a test run each time a change is made to your LLM application.
+
+## Why Test Runs?
+
+Test runs provide several key benefits for LLM application development:
+
+- **A/B Testing**: Run experiments with different prompts and models ([hyperparameters](/concepts/hyperparameters)) to identify the best performing configurations
+- **Side-by-Side Comparison**: Compare [test cases](/concepts/test-cases) directly against previous versions for regression testing and analysis
+- **Metric Analysis**: Track and compare evaluation [metric](/concepts/metrics) scores across different test runs and model versions
+- **Performance Benchmarking**: Establish baselines and measure improvements in your LLM application over time
+
+Test runs represent a more systematic approach to LLM evaluation compared to one-off debugging through tracing. While tracing helps identify specific issues, test runs provide structured insights by relying on:
+
+- **Good test coverage**: Ensuring your [dataset](/concepts/datasets) cover a wide range of scenarios and edge cases
+- **Accurate metrics**: Using metrics that reliably measure what you want to evaluate
+- **Reproducible results**: Getting consistent scores when evaluating the same test cases multiple times
+
+This systematic approach enables benefits like performance tracking, regression testing, and team collaboration that aren't possible with ad-hoc debugging alone. Without these foundational elements working together, test runs would not provide meaningful insights into your LLM application's performance.
+
+## Test Run Implementation
+
+Test runs can be created by running evaluations either **locally** using DeepEval or **on the cloud** on Confident AI's platform. You will get full access to all features offered in Confident AI's testing suite regardless of which method you choose but we **highly recommend to start with running things locally.**
+
+### Creating test runs locally
+
+Test runs are created automatically when you run evaluations using DeepEval. The results are then synced to Confident AI for analysis and sharing:
+
+```python copy showLineNumbers
+from deepeval import evaluate
+...
+
+evaluate(test_cases=[...], metrics=[...])
+```
+
+Or, in CI/CD pipelines using DeepEval's Pytest integration:
+
+```python filename="test_llm.py" copy showLineNumbers
+pytest
+from deepeval.test_case import LLMTestCase
+from deepeval.dataset import EvaluationDataset
+from deepeval import assert_test
+
+dataset = EvaluationDataset(test_cases=[...])
+
+@pytest.mark.parametrize(
+    "test_case",
+    dataset,
+)
+def test_customer_chatbot(test_case: LLMTestCase):
+    assert_test(test_case, metrics=[...])
+```
+
+And run this file in the CLI:
+
+```bash
+deepeval test run test_llm.py
+```
+
+### Creating test runs on the cloud
+
+_to be documented_
+
+## Further Reading
+
+Read [this article](https://www.confident-ai.com/blog/llm-testing-in-2024-top-methods-and-strategies) on LLM testing best practices written by Confident AI's founders.

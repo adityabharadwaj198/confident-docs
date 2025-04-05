@@ -1,0 +1,130 @@
+---
+title: Metrics
+---
+
+# Evaluation Metrics
+
+Confident AI provides a comprehensive set of metrics for evaluating LLM applications. This page covers the available metrics and how to use them.
+
+## Overview of Metrics
+
+Confident AI offers metrics across several categories:
+
+- **Accuracy Metrics**: Measure how correct the model's outputs are
+- **Relevance Metrics**: Measure how well the outputs address the input query
+- **Consistency Metrics**: Measure how consistent the outputs are across similar inputs
+- **Safety Metrics**: Measure how well the model avoids harmful or inappropriate outputs
+- **Bias Metrics**: Measure how fair and unbiased the model's outputs are
+- **Performance Metrics**: Measure the model's performance characteristics
+
+## Accuracy Metrics
+
+### Factual Accuracy
+
+Measures how factually correct the model's outputs are.
+
+**Use case**: Evaluating outputs that should contain factual information.
+
+**How it works**: Compares the model's output against a ground truth or reference data.
+
+### Semantic Accuracy
+
+Measures how semantically accurate the model's outputs are.
+
+**Use case**: Evaluating outputs where exact matching isn't necessary, but semantic meaning is important.
+
+**How it works**: Uses embeddings to compare the semantic meaning of the model's output and the expected output.
+
+## Relevance Metrics
+
+### Query Relevance
+
+Measures how well the output addresses the input query.
+
+**Use case**: Evaluating search results, question answering, or any task where the output should directly address the input.
+
+**How it works**: Analyzes the relationship between the input query and the output.
+
+### Context Relevance
+
+Measures how well the output uses the provided context.
+
+**Use case**: Evaluating retrieval-augmented generation or any task where the model should use specific context.
+
+**How it works**: Analyzes how well the output incorporates information from the provided context.
+
+## Consistency Metrics
+
+### Output Consistency
+
+Measures how consistent the model's outputs are across similar inputs.
+
+**Use case**: Evaluating the stability and reliability of the model.
+
+**How it works**: Compares outputs for similar inputs to measure consistency.
+
+### Style Consistency
+
+Measures how consistent the style of the output is.
+
+**Use case**: Evaluating tasks where maintaining a consistent style is important.
+
+**How it works**: Analyzes stylistic elements of the output.
+
+## Safety Metrics
+
+### Harmful Content Detection
+
+Measures how well the model avoids harmful or inappropriate outputs.
+
+**Use case**: Evaluating the safety of the model.
+
+**How it works**: Checks the output against known harmful content patterns.
+
+### Bias Detection
+
+Measures how fair and unbiased the model's outputs are.
+
+**Use case**: Evaluating the fairness of the model.
+
+**How it works**: Analyzes the output for potential biases.
+
+## Performance Metrics
+
+### Latency
+
+Measures the time it takes for the model to generate an output.
+
+**Use case**: Evaluating the performance characteristics of the model.
+
+**How it works**: Measures the time between input and output.
+
+### Token Usage
+
+Measures the number of tokens used by the model.
+
+**Use case**: Evaluating the efficiency of the model.
+
+**How it works**: Counts the number of tokens in the input and output.
+
+## Using Metrics in Confident AI
+
+To use metrics in Confident AI:
+
+1. Navigate to the "Evaluations" section
+2. Click "New Evaluation"
+3. Select your dataset
+4. Choose the metrics you want to use
+5. Configure any additional settings
+6. Click "Run Evaluation"
+
+## Custom Metrics
+
+In addition to the pre-built metrics, Confident AI allows you to create custom metrics tailored to your specific needs. See the [Custom Metrics](/evaluation/custom-metrics) page for more information.
+
+## Next Steps
+
+- Understand [benchmarks](/evaluation/benchmarks)
+- Explore [custom metrics](/evaluation/custom-metrics)
+- Set up [continuous evaluation](/evaluation/continuous-evaluation)
+- Review [best practices](/evaluation/best-practices)

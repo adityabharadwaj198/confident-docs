@@ -1,0 +1,111 @@
+---
+title: Datasets
+---
+
+# Datasets
+
+A dataset in Confident AI is a collection of [test cases](/concepts/test-cases) and/or [goldens](/concepts/datasets#goldens) that you use to evaluate your LLM application. Datasets help you systematically assess your LLM's performance across a range of inputs and scenarios.
+
+A well-curated dataset should:
+
+- **Reflect real-world inputs**: Include diverse linguistic styles, varying complexity levels, edge cases, and domain-specific examples
+- **Serve specific evaluation purposes**: Each golden should align with clear objectives while allowing for meaningful, statistically reliable insights
+- **Mirror usage patterns**: Include both common and rare scenarios that represent the actual distribution of user inputs
+
+We find users that run evaluations most successfully have datasets in the range of 100-500 goldens. Without a well-curated dataset, it is not possible to run LLM evaluations.
+
+## Goldens vs Test Cases
+
+You'll notice that we mentioned goldens a few times already but haven't made the distinction on how it is different from a test case. There are two main types of entries in a dataset - goldens and test cases.
+
+### Goldens
+
+A golden is similar to a test case but is more flexible. The key differences are:
+
+- Goldens do not require an `actual_output` at initialization
+- Goldens are useful when you want to generate LLM outputs at evaluation time
+- Goldens are ideal for scenarios where you have a set of inputs but haven't run them through your LLM yet
+
+Goldens are particularly useful when:
+
+- You want to run evaluations each time you make a change to your LLM application
+- You want to compare different versions of your LLM application
+
+Another way to think about it is, goldens are test cases that aren't ready for evaluation, since the dynamic values: `actual_output`, `retrieval_context`, and `tools_called`, haven't been called yet.
+
+A `Golden` has the same data structure as an `LLMTestCase`:
+
+```python showLineNumbers copy
+from deepeval.dataset import Golden
+
+golden = Golden(
+    input="Can you write me a poem?",
+    # Notice that this is not the actual_output but the expected_output
+    expected_output="Sure! Here is a poem about..."
+)
+```
+
+### Test Cases
+
+A test case (`LLMTestCase`) represents a completed interaction with your LLM application. It contains:
+
+- `input`: The user's input to the LLM
+- `actual_output`: The LLM's response
+- Optional parameters like `expected_output`, `context`, etc.
+
+Test cases are ready for immediate evaluation since they already contain the LLM's output.
+
+## How to Curate Datasets
+
+There are several ways to build a high-quality dataset:
+
+- **Manual Creation**: Start with prompts you currently use to manually evaluate your LLM, document real user interactions, and create goldens for specific scenarios you want to ensure your LLM handles correctly
+
+- **Synthetic Generation**: Use Confident AI's tools to generate test cases from documents in your knowledge base, create goldens from prepared contexts, or generate test cases from scratch without relying on existing content
+
+- **Data Augmentation**: Modify existing test cases to create variations, use templates to generate multiple similar goldens, or combine different aspects of existing test cases to create new ones
+
+### Best Practices
+
+Here are some best practices for managing datasets effectively:
+
+- **Collaboration** between technical and non-technical domain experts
+- **Version control** and track changes for datasets
+- **Incorporate production data** into existing datasets to keep them updated real-world usage
+- **Aim for around 150 test cases** to get statistically significant evaluation results
+
+When you use Confident AI, you'll be able to manage, annotate, and centralize datasets on the cloud. Versioning is automated for each change, and domain experts can edit datasets directly through the platform. Production data is also automatically flagged for team members to incorporate into existing datasets as well.
+
+## Dataset Implementation
+
+Datasets are a list of goldens. You would pull your dataset from Confident AI like how you would pull a github repo via DeepEval, before generating dynamic values such as `actual_output` and `retrieval_context` per golden and convert them into a test case. These test cases in your dataset are then used for evaluation.
+
+```python
+from deepeval.dataset import EvaluationDataset
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import evaluate
+
+# Pull from Confident AI
+dataset = EvaluationDataset()
+dataset.pull("First dataset")
+
+# Populate test cases
+for golden in dataset.goldens:
+    test_case = LLMTestCase(
+        input=golden.input,
+        # Generate an LLM output by replacing this with
+        # the output your LLM app generated for this `golden.input`
+        actual_output="..."
+    )
+    dataset.test_cases.append(test_case)
+
+# Define metric
+metric = AnswerRelevancyMetric()
+
+# Run evaluation
+evaluate(test_cases=dataset, metrics=[metric])
+```
+
+## Further Reading
+
+For more detailed information on working with datasets in code, refer to the [deepeval documentation](https://docs.confident-ai.com/docs/evaluation-datasets).
