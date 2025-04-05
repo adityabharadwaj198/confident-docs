@@ -29,6 +29,7 @@ const config = {
   footer: {
     text: `MIT ${new Date().getFullYear()} © Confident Docs.`,
   },
+  defaultTheme: "light",
 };
 
 export default config;
