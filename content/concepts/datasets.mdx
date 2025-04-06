@@ -31,7 +31,7 @@ Goldens are particularly useful when:
 - You want to run evaluations each time you make a change to your LLM application
 - You want to compare different versions of your LLM application
 
-Another way to think about it is, goldens are test cases that aren't ready for evaluation, since the dynamic values: `actual_output`, `retrieval_context`, and `tools_called`, haven't been called yet.
+Another way to think about it is, goldens are designed for editing, and test cases that aren't ready for evaluation, since the dynamic values: `actual_output`, `retrieval_context`, and `tools_called`, haven't been called yet.
 
 A `Golden` has the same data structure as an `LLMTestCase`:
 
@@ -45,6 +45,30 @@ golden = Golden(
 )
 ```
 
+For the record, here are the default `Golden` fields:
+
+```python
+from typing import Optional, List, Dict
+
+class Golden:
+    input: str
+    actual_output: Optional[str]
+    expected_output: Optional[str]
+    retrieval_context: Optional[List[str]]
+    context: Optional[List[str]]
+    comments: Optional[str]
+    additional_metadata: Optional[Dict]
+    finalized: bool
+```
+
+#### Why shouldn't goldens contain `actual_output`?
+
+You're really looking to generate dynamic `actual_output`s and optionally the `retrieval_context` and/or `tools_called` at evaluation time based on your golden `input`, so if you find your dataset containing goldens with `actual_output`s, think twice! For the record, we highly recommend **AGAINST** pre-computed datasets.
+
+#### A note on `commetns` and `additional_metadata`
+
+The `comments` field allows adding notes and instructions about a golden, often left by domain experts, while the `additional_metadata` field stores any custom key-value pairs for any custom metadata you may have.
+
 ### Test Cases
 
 A test case (`LLMTestCase`) represents a completed interaction with your LLM application. It contains:
@@ -53,7 +77,7 @@ A test case (`LLMTestCase`) represents a completed interaction with your LLM app
 - `actual_output`: The LLM's response
 - Optional parameters like `expected_output`, `context`, etc.
 
-Test cases are ready for immediate evaluation since they already contain the LLM's output.
+Test cases are ready for immediate evaluation since they already contain the LLM's output. This also means that test cases are **NOT** meant for editing, unlike a golden.
 
 ## How to Curate Datasets
 
@@ -61,9 +85,9 @@ There are several ways to build a high-quality dataset:
 
 - **Manual Creation**: Start with prompts you currently use to manually evaluate your LLM, document real user interactions, and create goldens for specific scenarios you want to ensure your LLM handles correctly
 
-- **Synthetic Generation**: Use Confident AI's tools to generate test cases from documents in your knowledge base, create goldens from prepared contexts, or generate test cases from scratch without relying on existing content
+- **Synthetic Generation**: Use Confident AI's tools to generate goldens from documents in your knowledge base, create goldens from prepared contexts, or generate goldens from scratch without relying on existing content
 
-- **Data Augmentation**: Modify existing test cases to create variations, use templates to generate multiple similar goldens, or combine different aspects of existing test cases to create new ones
+- **Data Augmentation**: Modify existing goldens to create variations, use templates to generate multiple similar goldens, or combine different aspects of existing goldens to create new ones
 
 ### Best Practices
 
@@ -72,7 +96,7 @@ Here are some best practices for managing datasets effectively:
 - **Collaboration** between technical and non-technical domain experts
 - **Version control** and track changes for datasets
 - **Incorporate production data** into existing datasets to keep them updated real-world usage
-- **Aim for around 150 test cases** to get statistically significant evaluation results
+- **Aim for around 150 goldens** to get statistically significant evaluation results
 
 When you use Confident AI, you'll be able to manage, annotate, and centralize datasets on the cloud. Versioning is automated for each change, and domain experts can edit datasets directly through the platform. Production data is also automatically flagged for team members to incorporate into existing datasets as well.
 

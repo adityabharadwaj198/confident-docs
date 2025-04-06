@@ -1,3 +1,157 @@
 ---
 title: Using Datasets
 ---
+
+import { Callout } from "nextra/components";
+
+# Using Datasets
+
+Pulling a dataset from Confident AI to run LLM evals on is as easy as pulling a repo from GitHub.
+
+## Code Summary
+
+```python showLineNumbers copy
+from deepeval.dataset import EvaluationDataset
+from deepeval.test_case import LLMTestCase
+from deepeval import evaluate
+
+dataset = EvaluationDataset()
+# Replace with your actual dataset alias
+dataset.pull(alias="My Evals Dataset")
+
+
+# Convert goldens to test cases
+for golden in dataset.goldens:
+    test_case = LLMTestCase(
+        input=golden.input,
+        # Replace your_llm_app() with your actual LLM application function
+        actual_output=your_llm_app(golden.input)
+    )
+    dataset.test_cases.append(test_case)
+
+
+# Run an evaluation
+evaluate(test_cases=dataset.test_cases, metrics=[...])
+```
+
+## Pull a Dataset
+
+Pull your dataset from Confident AI by providing the `alias` you've defined:
+
+```python showLineNumbers copy {5}
+from deepeval.dataset import EvaluationDataset
+
+dataset = EvaluationDataset()
+# Replace with your actual alias
+dataset.pull(alias="My Evals Dataset")
+```
+
+When you `pull()` a dataset, you are pulling goldens by default, **NOT** test cases.
+
+<Callout type="warning">
+  If you're unsure what is the difference between a golden and a test case,
+  [click here.](/concepts/datasets#goldens-vs-test-cases)
+</Callout>
+
+If you have a pre-computed dataset, aka. your `actual_output`s are already populated (which is highly **NOT** recommended), you can also convert the goldens you pull to test cases automatically:
+
+```python
+...
+
+dataset.pull(alias="My Evals Dataset", auto_convert_test_cases_to_goldens=True)
+```
+
+The `auto_convert_test_cases_to_goldens` is defaulted to `False`, and the preferred way is to convert goldens to test cases **manually** before evaluation.
+
+## Convert Golden(s) to Test Case(s)
+
+To convert goldens to test cases, all you have to do is dynamically generate the `actual_output`, and optionally the `retrieval_context` (for RAG piplines) and/or `tools_called` (for agents) based on the given `input`.
+
+```python {8}
+...
+
+# Convert goldens to test cases
+for golden in dataset.goldens:
+    test_case = LLMTestCase(
+        input=golden.input,
+        # Replace your_llm_app() with your actual LLM application function
+        actual_output=your_llm_app(golden.input)
+    )
+    dataset.test_cases.append(test_case)
+
+print(dataset.test_cases)
+```
+
+If you need to get the `retrieval_context` and `tools_called` as well, `your_llm_app()` in this example should also return these parameters:
+
+```python {5}
+...
+
+for golden in dataset.goldens:
+    input = golden.input
+    actual_output, retrieval_context, tools_called = your_llm_app(input)
+
+    test_case = LLMTestCase(
+        input=input,
+        actual_output=actual_output,
+        retrieval_context=retrieval_context,
+        tools_called=tools_called
+    )
+    dataset.test_cases.append(test_case)
+
+print(dataset.test_cases)
+```
+
+Whether or not you need to supply the `retrieval_context` and/or the `tools_called` parameter when creating test cases is **entirely dependent on whether your chosen metrics requires them for evaluation**.
+
+> [!NOTE]
+>
+> If no metrics require these parameters for evaluation (which is rare in our experience), you can still include these parameters for visualization on Confident AI, but you will not run into errors even if you don't supply them for evaluation.
+
+Finally, you can use the test cases within your dataset for evaluation, which will create a test run on Confident AI:
+
+```python
+from deepeval import evaluate
+...
+
+evaluate(test_case=dataset.test_cases, metrics=[...])
+```
+
+## Avoid This Common Mistake
+
+The most common mistake is to append test cases to a random list of test cases **outside of your dataset**. Don't do this:
+
+```python showLineNumbers copy {8, 11}
+from deepeval.dataset import EvaluationDataset
+from deepeval.test_case import LLMTestCase
+from deepeval import evaluate
+
+dataset = EvaluationDataset()
+dataset.pull(...)
+
+test_cases = []
+for goldens in dataset.goldens:
+    test_cases = LLMTestCase(input=golden.input, ...)
+    test_cases.append(test_case)
+
+evaluate(test_cases=test_cases, metrics=[])
+```
+
+Instead, add it back to the test cases in your dataset:
+
+```python {5}
+...
+
+for goldens in dataset.goldens:
+    test_cases = LLMTestCase(input=golden.input, ...)
+    dataset.test_cases.append(test_case)
+```
+
+By appending test cases back to the original dataset instead of a separate list:
+
+1. The ordering of goldens is preserved, which is critical when running evaluations asynchronously
+2. You can accurately compare results between different evaluation runs
+3. Regression testing and A/B experiments work correctly since test cases maintain their relationship to the original goldens
+4. The dataset is properly synchronized with Confident AI for all evaluations
+
+In short, keeping test cases in their original dataset maintains data integrity and enables proper analysis of your evaluation results.

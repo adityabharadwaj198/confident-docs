@@ -1,8 +1,8 @@
 export default {
   "why-confident-ai": "Why Confident AI",
   "supported-use-cases": "",
-  "on-prem-hosting": "",
   "enterprise": "",
+  "on-prem-hosting": "",
   "llm-red-teaming": "",
   concepts: {
     theme: {
@@ -40,6 +40,10 @@ export default {
       "pricing": {
         title: "Pricing",
         href: "https://confident-ai.com/pricing"
+      },
+      "book-a-demo": {
+        title: "Book a Demo",
+        href: "https://confident-ai.com/book-a-demo"
       },
       "docs": {
         title: "DeepEval",

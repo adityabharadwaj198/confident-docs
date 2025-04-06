@@ -2,8 +2,107 @@
 title: Overview
 ---
 
+import { Cards, Callout } from "nextra/components";
+
 # Dataset Overview
+
+Confident AI's **Dataset Editor** allows you to create, manage, and annotate datasets for your LLM testing and evaluation needs. You can efficiently organize your **goldens** and maintain high-quality datasets for your LLM applications without relying on CSV files anymore.
+
+<Callout>
+  If you're unsure what exactly is a dataset or golden, [click
+  here.](/concepts/datasets)
+</Callout>
+
+Think of it like a Google Sheets or Notion CSV editor, but the difference is that each row is already in the structure of a `Golden`, and most importantly you can use it directly in code when evaluating with DeepEval.
 
 ## Features Summary
 
-## Complete Guide
+<Cards>
+  <Cards.Card
+    arrow
+    title="Annotate Datasets"
+    href="/dataset-editor/annotate-datasets#create-goldens"
+  />
+  <Cards.Card
+    arrow
+    title="Import from CSV"
+    href="/dataset-editor/import-datasets#import-goldens-from-csv"
+  />
+  <Cards.Card
+    arrow
+    title="Upload via DeepEval"
+    href="/dataset-editor/import-datasets#upload-goldens-via-deepeval"
+  />
+  <Cards.Card
+    arrow
+    title="Custom Columns"
+    href="/dataset-editor/annotate-datasets#adding-custom-columns"
+  />
+  <Cards.Card
+    arrow
+    title="Dataset Backups"
+    href="/dataset-editor/annotate-datasets#enable-backups--revision-history-recommended"
+  />
+  <Cards.Card
+    arrow
+    title="Analyze Test Coverage"
+    href="/dataset-editor/analyze-test-coverage"
+  />
+</Cards>
+
+## Simple Walkthrough
+
+This walkthrough will show how to use datasets on Confident AI for evaluation. Not all features will be covered, but if you follow all the steps you'll have the datasets features setup.
+
+### Create a Dataset
+
+Go to **Datasets** in your project space, and create a new dataset. Provide an alias, which is an name unique for your dataset. You must not use the same alias twice in a project space.
+
+### Create a Golden
+
+Once you've created your first dataset, click on **Create Golden** in your **Dataset Editor**. The **Golden Editor** will pop out, provide an input for your golden, as well as any other fields that you wish, and click **Save**.
+
+<Callout>
+  You can, but should not, include the `actual_output`, `retrieval_context`, and
+  `tools_called` parameter in goldens. [Click
+  here](/concepts/datasets#why-shouldnt-goldens-contain-actual_output) to learn
+  why.
+</Callout>
+
+### Pull Your Dataset For Evals
+
+Once you have your dataset, its time to pull it and prepare the test cases for evaluation:
+
+```python showLineNumbers copy {7, 14, 16}
+from deepeval.dataset import EvaluationDataset
+from deepeval.test_case import LLMTestCase
+from deepeval import evaluate
+
+dataset = EvaluationDataset()
+# Replace with your actual dataset alias
+dataset.pull(alias="My Evals Dataset")
+
+# Convert goldens to test cases
+for golden in dataset.goldens:
+    test_case = LLMTestCase(
+        input=golden.input,
+        # Replace your_llm_app() with your actual LLM application function
+        actual_output=your_llm_app(golden.input)
+    )
+    dataset.test_cases.append(test_case)
+
+# Run an evaluation
+evaluate(test_cases=dataset.test_cases, metrics=[...])
+```
+
+Here we pulled the goldens in our dataset from Confident AI by providing an alias, before converting them into test cases dynamically based on the implementation of my LLM application. For more information, [click here.](/dataset-editor/using-datasets)
+
+### Enable Backups (recommended)
+
+Lastly, you should consider enabling backups and revision history in the **Revision History** tab of your dataset page. This will enable recovery when required, and keep track of when and where your dataset was edited at.
+
+## Future Roadmap
+
+- [ ] Automated test coverage analysis
+- [ ] Generate goldens from existing ones
+- [ ] Add goldens from production traces

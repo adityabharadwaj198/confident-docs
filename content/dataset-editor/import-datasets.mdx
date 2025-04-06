@@ -1,0 +1,86 @@
+---
+title: Import Datasets
+---
+
+import { Callout } from "nextra/components";
+
+# Import Datasets
+
+There are three ways to populate your datasets with goldens **if you already have** a dataset:
+
+- [From CSV files](/dataset-editor/import-datasets#import-goldens-from-csv) in the dataset editor
+- [From DeepEval](/dataset-editor/import-datasets#upload-goldens-via-deepeval) through APIs
+- [From existing test cases](#from-an-existing-test-run) in a test run
+
+The last method means that you can create a dataset out of test runs that you have already ran. This means you can easily reuse the test set for subsequent benchmarking of your LLM application.
+
+## Video Summary
+
+<video width="100%" controls muted playsInline>
+  <source
+    src="https://confident-docs.s3.us-east-1.amazonaws.com/confident-dataset-from-test-run.mp4"
+    type="video/mp4"
+  />
+</video>
+
+## Import Golden(s) From CSV
+
+Click on the **Upload Golden** button, and you'll have the opportunity to map CSV columns to golden fields when importing.
+
+The golden fields include:
+
+- `input`: a string representing the `input` to prompt your LLM application with during evaluation.
+- [Optional]`actual_output`: a string representing the generated `actual_output` of your LLM application for the corresponding `input`.
+- [Optional]`expected_output`: a string representing the ideal output based on for the corresponding `input`.
+- [Optional]`retrieval_context` a list of strings representing the retrieved text chunks of your LLM application for the corresponding `input`. This is only for RAG pipelines.
+- [Optional]`context`: a list of strings representing the ground truth as supporting context.
+- [Optional]`comments`: a string representing whatever comments your data annotators have for this particular golden (e.g. "Watch out for this expected output! It needs more work.").
+- [Optional]`additional_metadata`: a freeform JSON which you can use to include as any additional data which you can later make use of in code during evaluation time.
+
+<Callout>
+  The full explanation of what a golden is and its fields are [available
+  here.](/concepts/datasets#goldens)
+</Callout>
+
+Once you're done with your mapping, click **Next** to review your upload details, and press **Save**. For any problems you're encountering, contact support@confident-ai.com.
+
+## Upload Golden(s) Via DeepEval
+
+You can also upload goldens to Confident AI through DeepEval.
+
+`EvaluationDataset` on Confident using `deepeval` is simply involves creating an `EvaluationDataset` with a list of `Golden`s, and pushing it to Confident AI by supplying the dataset alias.
+
+```python
+from deepeval.dataset import EvaluationDataset, Golden
+
+# Define golden
+golden = Golden(input="Input of my first golden!")
+
+# Initialize dataset
+dataset = EvaluationDataset(goldens=[golden])
+
+# Provide an alias when pushing a dataset
+dataset.push(alias="QA Dataset")
+```
+
+You can also choose to overwrite or append to an existing dataset if an existing dataset with the same alias already exist.
+
+```python
+...
+
+# Overwrite existing datasets
+dataset.push(alias="QA Dataset", overwrite=True)
+```
+
+<Callout type="info">
+  `deepeval` will prompt you in the terminal if no value for `overwrite` is
+  provided.
+</Callout>
+
+You can also **load a dataset from CSV or JSON locally** before uploading it to Confident AI through `deepeval`. For more information on `deepeval`'s `EvaluationDataset`, visit the [official DeepEval documentation.](https://docs.confident-ai.com/docs/evaluation-datasets#load-an-existing-dataset)
+
+## From Existing Test Runs
+
+Sometimes, you may already have [ran an evaluation](/getting-started/run-an-evaluation) and have existing test runs on Confident AI. This doesn't mean it is too late to create a dataset, but instead makes life easier as you can create a dataset out of an existing test run, and later reuse this dataset to standardize the benchmarking of all future iterations of your LLM application.
+
+To create a dataset from an existing test run, go to **Evaluation** > Select a test run to go to an individual **Test Run** page > **Test Cases**, and click on the **Save as new dataset** button.

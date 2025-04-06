@@ -1,0 +1,35 @@
+---
+title: Beyond the Basics
+---
+
+# This is Just the Beginning
+
+All the steps in the previous sections are probably the simplest evaluation workflow you can setup and very likely your LLM application is a lot more complicated than what we've shown.
+
+This section will go through how to get the most out of Confident AI, and offer some points and hand you off into other parts of the documentation where you might have questions for.
+
+## Important Disclaimers To Note
+
+In this quickstart, there are important things to take notice of:
+
+- You can use [any custom LLM judge](https://docs.confident-ai.com/guides/guides-using-custom-llms) as evaluation model when running evals **locally**
+- You can run evaluations using Confident AI's LLM judges when running evals **on the cloud**
+- You should include more than the `"System Prompt"` in **Prompt Studio**, doing so allows Confident AI to give you better insights
+- You should **DEFINITELY** put more time into [choosing the right metrics](/concepts/metrics#choosing-the-right-metrics) and not blindly use the `AnswerRelevancyMetric`
+- You should analyze whether your dataset has good enough [test coverage](/dataset-editor/analyzing-test-coverage)
+
+## Other Things You Should Do
+
+You should also:
+
+- [Unit-test in CI/CD](/evaluation/unit-testing-in-cicd) pipelines to run evals pre-deployment
+- [Alerting and notifications](/observability/alerts) to get notified when evaluations complete
+- [LLM Tracing](/observability/tracing) to debug nested components, like retrievers and tool calls, especially for agents
+- [Online metrics](/observability/online-metrics) to monitor real-time performance
+- [Talk to us](https://discord.gg/Up3gbNTF) to validate whether the metrics you've chosen are approrpiate for your use case
+
+## Common Questions
+
+## Need More Help?
+
+Come ask any questions by [joining our discord community of 2,000 members](https://discord.gg/Up3gbNTF), we'll be thrilled to have you.

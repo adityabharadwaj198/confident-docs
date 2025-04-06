@@ -63,4 +63,49 @@ h4, h5, h6 {
 /* Dark mode border */
 .dark .nextra-sidebar-container {
   border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Card background customization */
+.nextra-card {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.nextra-card:hover {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode card customization */
+.dark .nextra-card {
+  background-color: rgba(17, 17, 17, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .nextra-card:hover {
+  background-color: rgba(17, 17, 17, 0.9) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Card content customization */
+.nextra-card h3 {
+  color: #111;
+  margin-bottom: 0.5rem;
+}
+
+.dark .nextra-card h3 {
+  color: #fff;
+}
+
+.nextra-card p {
+  color: #666;
+  margin-bottom: 0;
+}
+
+.dark .nextra-card p {
+  color: #999;
 } 

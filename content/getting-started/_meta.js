@@ -4,5 +4,6 @@ export default {
     "create-prompts-and-datasets": '',
     "run-an-evaluation": '',
     "improve-your-llm-app": '',
-    "run-another-evaluation": ''
+    "run-another-evaluation": '',
+    "beyond-the-basics": ''
   }

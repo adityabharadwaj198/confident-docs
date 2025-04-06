@@ -15,7 +15,7 @@ const navbar = (
   <Navbar
     logo={<Logo />}
     projectLink="https://github.com/confident-ai/deepeval"
-    chatLink="https://discord.gg/confident-ai"
+    chatLink="https://discord.gg/Up3gbNTF"
   />
 )
 const footer = <Footer>MIT {new Date().getFullYear()} © Nextra.</Footer>
