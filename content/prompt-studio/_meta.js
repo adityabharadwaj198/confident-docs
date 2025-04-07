@@ -1,6 +1,7 @@
 export default {
     overview: '',
-    "version-prompts": '',
-    "using-prompts": '',
-    "testing-prompts": '',
+    "prompt-versioning": '',
+    "prompt-usage": '',
+    "prompt-testing": '',
+    "prompt-suggestions": '',
 }
