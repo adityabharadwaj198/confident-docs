@@ -41,8 +41,8 @@ Confident AI offers a wide range of metrics tailored to different LLM applicatio
 
 We recommend having 1-2 custom metrics in your evaluation suite and **NOT** rely 100% on generic, predefined metrics:
 
-- **G-Eval**: A general-purpose evaluation metric for LLM outputs
-- **DAG (Deep Acyclic Graph)**: A decision-tree based LLM-evaluated metric
+- **G-Eval**: A general-purpose evaluation metric for LLM outputs. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-llm-evals)
+- **DAG (Deep Acyclic Graph)**: A decision-tree based LLM-evaluated metric. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-dag)
 
 **Custom metrics are typically different based on your use case**, while system-specific metrics (like RAG or agent metrics) remain consistent across similar LLM applications. For example, two conversational agents - one for medical advice and another for legal consultation - would use the same agent metrics like tool correctness but have different `GEval` metrics tailored to their respective industry-specific success criteria.
 
@@ -50,53 +50,59 @@ We recommend having 1-2 custom metrics in your evaluation suite and **NOT** rely
 >
 > You can also implement custom metrics that are not LLM-as-a-judge from scratch in code.
 
-### RAG Metrics
+### Generic Metrics
+
+Generic metrics are metrics that are use case agnostic, and all that is required is pick the right ones based on your system architecture. If you're building something like agentic RAG, you can also select a combination of generic metrics in both the RAG and agentic metrics categories.
+
+#### RAG
 
 For Retrieval-Augmented Generation (RAG) systems:
 
-- **Answer Relevancy**: Measures how relevant the LLM's response is to the user's query
-- **Faithfulness**: Evaluates whether the LLM's response is supported by the retrieved context
-- **Contextual Relevancy**: Assesses how relevant the retrieved context is to the query
-- **Contextual Precision**: Measures the precision of the retrieved context
-- **Contextual Recall**: Evaluates the recall of the retrieved context
+- **Answer Relevancy**: Measures how relevant the LLM's response is to the user's query. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-answer-relevancy)
+- **Faithfulness**: Evaluates whether the LLM's response is supported by the retrieved context. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-faithfulness)
+- **Contextual Relevancy**: Assesses how relevant the retrieved context is to the query. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-contextual-relevancy)
+- **Contextual Precision**: Measures the precision of the retrieved context. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-contextual-precision)
+- **Contextual Recall**: Evaluates the recall of the retrieved context. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-contextual-recall)
 
-### Agent Metrics
+#### Agentic
 
 For LLM agents that use tools:
 
-- **Tool Correctness**: Measures whether the agent used the correct tools for a given task
-- **Task Completion**: Evaluates whether the agent successfully completed the assigned task
+- **Tool Correctness**: Measures whether the agent used the correct tools for a given task. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-tool-correctness)
+- **Task Completion**: Evaluates whether the agent successfully completed the assigned task. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-task-completion)
 
-### Conversational Metrics
+#### Conversational
 
 For multi-turn conversational chatbots/agents:
 
-- **Conversational G-Eval**: Evaluates the overall quality of a conversation
-- **Knowledge Retention**: Measures how well the LLM retains information across conversation turns
-- **Role Adherence**: Evaluates how well the LLM adheres to its assigned role
-- **Conversation Completeness**: Measures whether the conversation addresses all aspects of the user's request
-- **Conversation Relevancy**: Evaluates how relevant each response is to the ongoing conversation
+- **Conversational G-Eval**: Evaluates the overall quality of a conversation. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-conversational-geval)
+- **Knowledge Retention**: Measures how well the LLM retains information across conversation turns. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-knowledge-retention)
+- **Role Adherence**: Evaluates how well the LLM adheres to its assigned role. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-role-adherence)
+- **Conversation Completeness**: Measures whether the conversation addresses all aspects of the user's request. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-conversation-completeness)
+- **Conversation Relevancy**: Evaluates how relevant each response is to the ongoing conversation. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-conversation-relevancy)
 
 These are particular useful for text-based chatbots or conversational voice agents.
 
 ### Other Metrics
 
-- **Json Correctness**: Evaluates the correctness of JSON outputs
-- **RAGAS**: Implements the RAGAS framework for RAG evaluation, no different than DeepEval's RAG metrics
-- **Hallucination**: Measures the extent to which the LLM generates information not present in the context
-- **Toxicity**: Evaluates the toxicity level of LLM outputs
-- **Bias**: Measures the presence of bias in LLM outputs
-- **Summarization**: Evaluates the quality of summarization tasks
+- **Json Correctness**: Evaluates the correctness of JSON outputs. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-json-correctness)
+- **RAGAS**: Implements the RAGAS framework for RAG evaluation, no different than DeepEval's RAG metrics. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-ragas)
+- **Hallucination**: Measures the extent to which the LLM generates information not present in the context. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-hallucination)
+- **Toxicity**: Evaluates the toxicity level of LLM outputs. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-toxicity)
+- **Bias**: Measures the presence of bias in LLM outputs. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-bias)
+- **Summarization**: Evaluates the quality of summarization tasks. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-summarization)
 
 ## Choosing the Right Metrics
 
-Different LLM applications require different metrics for effective evaluation, and the specific combination of metrics depend on your LLM use case and application architecture. As a general rule of thumb, **DON't**:
+Different LLM applications require different metrics for effective evaluation, and the specific combination of metrics depend on your LLM use case and application architecture. As a general rule of thumb, **DON'T**:
 
 1. Use more than 5 metrics
 2. Rely purely on generic metrics (there should be one or two custom metrics like `GEval` or `DAG`)
 3. Pick metrics that don't have a clear success criteria
 
 Point 3. is especially relevant to custom metrics like `GEval`, where you're writing your own criteria instead of relying on a predefined one.
+
+[TODO: best practices for metrics with diagram]
 
 ### How to decide
 

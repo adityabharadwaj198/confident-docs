@@ -1,3 +1,277 @@
 ---
 title: Unit-Testing in CI/CD
 ---
+
+import { Callout } from "nextra/components";
+
+# Unit-Testing in CI/CD
+
+You can also unit-test your LLM application by running evals in CI/CD pipelines, and is made possible through **DeepEval's first class integration with Pytest**. This involves moving your evaluation workflow to Pytest-like test files and `YAML` files to run evaluations in CI/CD pipelines.
+
+<Callout type="info">
+  DeepEval's most popular command is `deepeval test run`, which runs LLM
+  evaluations defined in `test_` files in CI/CD pipelines.
+</Callout>
+
+## Code Summary
+
+```python filename="test_llm_app.py" showLineNumbers copy {27, 30}
+import pytest
+
+from deepeval.prompt import Prompt
+from deepeval.test_case import LLMTestCase
+from deepeval.dataset import EvaluationDataset
+from deepeval.metrics import AnswerRelevancyMetric, FaithfulnessMetric
+from deepeval import assert_test
+
+# Initialize and pull your dataset from Confident AI
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+# Use your actual prompt alias from Confident AI
+prompt = Prompt(alias="your-prompt-alias")
+prompt.pull()
+
+
+# Process each golden in your dataset
+for goldens in dataset.goldens:
+    input = golden.input
+    # Replace your_llm_app() with your actual LLM application
+    test_case = LLMTestCase(input=input, actual_output=your_llm_app(input, prompt))
+    dataset.test_cases.append(test_case)
+
+
+# Loop through test cases
+@pytest.mark.parametrize("test_case", dataset)
+def test_llm_app(test_case: LLMTestCase):
+    # Replace with your metrics
+    assert_test(test_case, [AnswerRelevancyMetric()])
+```
+
+```yaml filename="unit-testing.yml" showLineNumbers copy {27, 32, 38}
+name: LLM App Unit Testing
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Poetry
+        run: |
+          curl -SSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Dependencies
+        run: poetry install --no-root
+
+      - name: Set OpenAI API Key
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> $GITHUB_ENV
+
+      - name: Login to Confident AI
+        env:
+          CONFIDENT_API_KEY: ${{ secrets.CONFIDENT_API_KEY }}
+        run: poetry run deepeval login --confident-api-key "$CONFIDENT_API_KEY"
+
+      - name: Run DeepEval Test Run
+        run: poetry run deepeval test run test_llm_app.py
+```
+
+<Callout type="warning">
+  Setting OpenAI API key is only required if you're using OpenAI for LLM judges.
+</Callout>
+
+## Setup a Test File
+
+Your test file must start with `test_` (e.g., `test_llm_app.py`). You can run the tests using:
+
+```python filename="test_llm_app.py" showLineNumbers copy
+import pytest
+
+import deepeval
+from deepeval.prompt import Prompt
+from deepeval.test_case import LLMTestCase
+from deepeval.dataset import EvaluationDataset
+from deepeval.metrics import AnswerRelevancyMetric, FaithfulnessMetric
+from deepeval import assert_test
+
+# Initialize and pull your dataset from Confident AI
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+# Use your actual prompt alias from Confident AI
+prompt = Prompt(alias="your-prompt-alias")
+prompt.pull()
+
+
+# Process each golden in your dataset
+for goldens in dataset.goldens:
+    input = golden.input
+    # Replace your_llm_app() with your actual LLM application
+    test_case = LLMTestCase(input=input, actual_output=your_llm_app(input, prompt))
+    dataset.test_cases.append(test_case)
+
+
+# Loop through test cases
+@pytest.mark.parametrize("test_case", dataset)
+def test_llm_app(test_case: LLMTestCase):
+    # Replace with your metrics
+    assert_test(test_case, [AnswerRelevancyMetric()])
+
+# Log hyperparameters
+@deepeval.log_hyperparameters(model="gpt-4", prompt=prompt)
+def hyperparameters():
+    # Return a dict to log additional hyperparameters
+    return {"Temperature": 1, "Chunk Size": 500}
+```
+
+Which can be executed using the `deepeval test run` command (try it out before moving onto the next step):
+
+```bash
+deepeval test run test_llm_app.py -n 2
+```
+
+> [!TIP]
+>
+> The `-n` flag allows you to spin up multiple processes to run `assert_test()` on multiple test cases simultaneously, which is useful for speeding up the unit-testing proces. All the flags of `deepeval test run` can be [found here.](/evaluation/unit-testing-in-cicd#introducing-deepeval-test-run)
+
+You'll notice that `test_llm_app.py` is largely similar to how we run an evaluation with the `evaluate()` function - we first pull a prompt, before the dataset, create a list of test cases, and finally run an evaluation.
+
+` deepeval test run` also creates [testing reports](/evaluation/testing-reports) on Confident AI automatically as well, and offers the same functionalities as the `evaluate()`function. However, please never use the`evaluate()`function within a test function - always use`assert_test()` instead, as it's specifically designed for CI/CD workflows and offers features tailored for unit testing, and integrated with Pytest.
+
+### Log hyperparameters
+
+To log [hyperparameters such as models and prompts](/concepts/hyperparameters) when using `deepeval test run`, add this to your test file:
+
+```python filename="test_llm_app.py"
+...
+
+@deepeval.log_hyperparameters(model="gpt-4", prompt=prompt)
+def hyperparameters():
+    # Return a Dict to log any additional hyperparameters
+    # Return an empty Dict if there's no additional things to log
+    return {"Temperature": 1, "Chunk Size": 500}
+```
+
+This follows the same principle as described [here](/evaluation/running-llm-evals#logging-hyperparameters), where the hyperparameters dictionary is of type `Dict[str, Union[str, Prompt]]`. This allows you to log any arbitrary hyperparameter associated with your test run to pick the best configurations for your LLM application on Confident AI.
+
+## Introducing `deepeval test run`
+
+The `deepeval test run` command is DeepEval's most ran command and enables LLM evaluations to run natively in CI/CD pipelines via a first-class Pytest integration.
+
+### Parallelization
+
+Evaluate each test case in parallel by providing a number to the `-n` flag to specify how many processes to use:
+
+```bash
+deepeval test run test_example.py -n 4
+```
+
+### Identifier
+
+The `-id` flag followed by a string allows you to name test runs and better identify them on Confident AI. This is helpful if you're running automated deployment pipelines, have deployment IDs, or just want a way to identify which test run is which for comparison purposes:
+
+```bash
+deepeval test run test_example.py -id "My Latest Test Run"
+```
+
+### Cache
+
+Provide the `-c` flag (with no arguments) to read from the local `deepeval` cache instead of re-evaluating test cases on the same metrics:
+
+```bash
+deepeval test run test_example.py -c
+```
+
+This is extremely useful if you're running large amounts of test cases. For example, if you're running 1000 test cases using `deepeval test run`, but you encounter an error on the 999th test case, the cache functionality would allow you to skip all the previously evaluated 999 test cases, and just evaluate the remaining one.
+
+### Ignore Errors
+
+The `-i` flag (with no arguments) allows you to ignore errors for metrics executions during a test run. This is helpful if you're using a custom LLM and often find it generating invalid JSONs that will stop the execution of the entire test run:
+
+```bash
+deepeval test run test_example.py -i
+```
+
+You can combine different flags, such as the `-i`, `-c`, and `-n` flag to execute any uncached test cases in parallel while ignoring any errors along the way:
+
+```bash
+deepeval test run test_example.py -i -c -n 2
+```
+
+### Skip Test Cases
+
+The `-s` flag (with no arguments) allows you to skip metric executions where the test case has missing/insufficient parameters (such as `retrieval_context`) that is required for evaluation. This is helpful if you're using a metric such as the `ContextualPrecisionMetric` but don't want to apply it when the `retrieval_context` is `None`:
+
+```bash
+deepeval test run test_example.py -s
+```
+
+## Setup a `.yaml` File
+
+Create a YAML file to execute your test file in CI/CD pipelines. Here's an example:
+
+```yaml filename="unit-testing.yml" showLineNumbers copy {27, 32, 38}
+name: LLM App Unit Testing
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Poetry
+        run: |
+          curl -SSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Dependencies
+        run: poetry install --no-root
+
+      - name: Set OpenAI API Key
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> $GITHUB_ENV
+
+      - name: Login to Confident AI
+        env:
+          CONFIDENT_API_KEY: ${{ secrets.CONFIDENT_API_KEY }}
+        run: poetry run deepeval login --confident-api-key "$CONFIDENT_API_KEY"
+
+      - name: Run DeepEval Test Run
+        run: poetry run deepeval test run test_llm_app.py
+```
+
+The OpenAI API Key step is **optional** and is only required if you're running evaluations using OpenAI's models. Logging into Confident AI is esssentially otherwise you won't have access to your prompts, datasets, and create test runs on Confident AI upon evaluation completion.
+
+## Include in GitHub Workflows
+
+Last step is to automate everything:
+
+1. Create a `.github/workflows` directory in your repository if you don't already have one
+2. Place your `unit-testing.yml` YAML file in this directory
+3. Make sure to set up your Confident AI API Key as a secret in your GitHub repository
+
+Now, whenever you make a commit and push changes, GitHub Actions will automatically execute your tests based on the specified triggers

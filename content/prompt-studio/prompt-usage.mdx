@@ -69,32 +69,47 @@ And if you don't have any variables, you should still use the `interpolate()` me
 >
 > Referencing the `template` variable in a `Prompt` class is extremely bad practice and should be **avoided at all cost**. Always use the `interpolate()` method before supply prompt templates to your LLM application.
 
-## What About Prompt Messages?
+## Pull a List of Prompt Messages
 
-You pull prompt messages the same way you would pull a single prompt, the difference is it is now stored in the `templates_messages` variable instead, and you can print it out to see it for yourself:
+You pull prompt messages the same way you would pull a single prompt, the difference is it is now stored in the `message_templates` variable instead, and you can print it out to see it for yourself:
 
 ```python
-...
+from deepeval.prompt import Prompt
 
-print(prompt.templates_messages)
+prompt = Prompt(alias="your-alias-here")
+prompt.pull()
+print(prompt.message_templates)
+# [
+#   PromptMessage(role="system", content="You are a helpful assistant."),
+#   PromptMessage(role="user", content="What is the capital of France?"),
+# ]
+
+messages_to_llm = prompt.interpolate()
+print(messages_to_llm)
+# [
+#   {"role": "system", "content": "You are a helpful assistant."},
+#   {"role": "user", "content": "What is the capital of France?"}
+# ]
 ```
 
 To be clear, here is an example of how you can use it for OpenAI's APIs:
 
-```python showLineNumbers copy {14}
+```python showLineNumbers copy {8, 16}
 import openai
 from deepeval.prompt import Prompt
 
 prompt = Prompt(alias="your-alias-here")
 prompt.pull()
-prompt_messages = prompt.interpolate()
+
+# Don't forget to interpolate it
+messages_to_llm = prompt.interpolate()
 
 def your_llm_app(user_input: str):
     # Combine dynamically with user input
-    messages = prompt_messages + [{"role": "user", "content": user_input}]
+    messages = messages_to_llm + [{"role": "user", "content": user_input}]
 
     response = openai.ChatCompletion.create(
-        model="gpt-4",  # or "gpt-3.5-turbo"
+        model="gpt-4",
         messages=messages
     )
     return response.choices[0].message["content"]

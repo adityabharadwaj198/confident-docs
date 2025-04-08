@@ -1,0 +1,299 @@
+---
+title: Running LLM Evals
+---
+
+import { Callout } from "nextra/components";
+
+# Running LLM Evals
+
+Running evals using DeepEval with Confident AI generate **testing reports** that enable:
+
+- Sharing evaluation results organization-wide
+- Regression testing for performance tracking
+- A/B testing different configurations
+- Hyperparameter experimentation
+- Data-driven decision making
+
+These reports help teams continuously improve their LLM applications.
+
+## Code Summary
+
+```python showLineNumbers copy {26-28}
+from deepeval.prompt import Prompt
+from deepeval.dataset import EvaluationDataset
+from deepeval.test_case import LLMTestCase
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import evaluate
+
+# Initialize and pull your dataset from Confident AI
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+# Use your actual prompt alias from Confident AI
+prompt = Prompt(alias="your-prompt-alias")
+prompt.pull()
+
+
+# Process each golden in your dataset
+for goldens in dataset.goldens:
+    input = golden.input
+    # Replace your_llm_app() with your actual LLM application
+    test_case = LLMTestCase(input=input, actual_output=your_llm_app(input, prompt))
+    dataset.test_cases.append(test_case)
+
+
+# Run an evaluation
+evaluate(
+    test_cases=dataset.test_cases,
+    metrics=[AnswerRelevancyMetric()], # Replace with your metrics
+    hyperparameters={"System Prompt": prompt} # Associate prompt version with results
+)
+```
+
+## Run LLM Evals via DeepEval
+
+In the previous section we saw how to define metrics in `deepeval`, and running evaluations is as simple as using those metrics on test cases from your [dataset goldens.](/concepts/datasets#goldens)
+
+### Pull a prompt version
+
+Pull the prompt version you'll be using in your LLM app:
+
+```python
+from deepeval.prompt import Prompt
+
+# Replace with your actual prompt alias
+prompt = Prompt(alias="your-prompt-alias")
+prompt.pull()
+
+# Customized accordingly based on your variables
+prompt_to_llm = prompt.interpolate()
+
+print(prompt_to_llm)
+```
+
+If you're unsure what this does, read about using prompts on Confident AI [here.](/prompt-studio/prompt-usage)
+
+> [!TIP]
+>
+> As explained [here](/prompt-studio/prompt-versioning), the **Prompt Studio** on Confident AI allows you to manage and edit your prompts, which includes single-text and chat messages prompts.
+
+### Pull a dataset
+
+Once you have your prompt, it's time to pull your dataset to create some test cases for evaluation:
+
+```python
+from deepeval.dataset import EvaluationDataset
+from deepeval.test_case import LLMTestCase
+...
+
+dataset = EvaluationDataset()
+# Replace with your actual dataset alias
+dataset.pull(alias="your-dataset-alias")
+
+
+# Convert goldens to test cases
+for golden in dataset.goldens:
+    input = golde.input
+    # Replace your_llm_app() with your actual LLM app
+    test_case = LLMTestCase(input=input, actual_output=your_llm_app(golden.input))
+    dataset.test_cases.append(test_case)
+
+
+print(dataset.test_cases)
+```
+
+If you're unsure what this does, read about using datasets on Confident AI [here.](/dataset-editor/using-datasets)
+
+### Run an evaluation
+
+Now with test cases, and the metrics you're chosen and defined in the [previous section](/evaluation/metrics), you can run an evaluation. Here, the example metric we're using is the `AnswerRelevancyMetric()`:
+
+```python
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import evaluate
+...
+
+# Define your metric(s)
+metric = AnswerRelevancyMetric()
+
+evaluate(
+  test_cases=dataset.test_cases,
+  metrics=[metric], # Replace with your metrics
+  hyperparameters={"My Prompt": prompt} # Associate prompt version with results
+)
+```
+
+<Callout>Don't forget to log your hyperparameters!</Callout>
+
+**Congratulations 🎉!** Your **test run** is now available on Confident AI automatically as a [testing report](/evaluation/testing-report).
+
+By default, test runs on Confident AI are assigned randomly generated IDs, which can make it difficult to identify specific runs later. To make your test runs more easily identifiable, you can provide a descriptive name using the `identifier` parameter:
+
+```python
+...
+
+evaluate(identifier="My First Test Run", ...)
+```
+
+If you want to run **evaluations in CI/CD** instead in the form of unit-tests, [click here.](/evaluation/unit-testing-in-cicd)
+
+## Run LLM Evals on the Cloud
+
+If you're using another language other than Python (i.e. Typescript) or wish to enable non-technical team members to be able to run evals without having to touch a single line of code, you can configure Confident AI to run evaluations on the cloud instead.
+
+<Callout type="warning">
+  You should always try to get your metrics working as expected before moving
+  onto this section, since it is much harder to customize metrics on the cloud.
+</Callout>
+
+### Trigger evals via HTTPs
+
+To trigger an evaluation on the cloud via HTTPS, simply use `curl` to send test cases to Confident AI for evaluation.
+
+```curl
+curl -X POST "https://deepeval.confident-ai.com/evaluate" \
+     -H "Content-Type: application/json" \
+     -H "CONFIDENT_API_KEY: your-project-api-key-goes-here" \
+     -d '{
+           "metricCollection": "your-metric-collection-name",
+           "testCases": [
+             {
+               "input": "What is the capital of France?",
+               "actual_output": "Paris",
+               "expected_output": "Paris",
+               "context": ["Geography question"],
+               "retrieval_context": ["Country capitals"],
+               "tools_called": [],
+               "expected_tools": []
+             }
+           ]
+         }`
+```
+
+<Callout type="info">
+  Not all parameters in `"testCases"` are required. You should figure out what
+  is the set of parameters required for your metric collection by reading what's
+  required for each metric on the **Metrics** > **Glossary** page.
+</Callout>
+
+If you're using Python and for some reason and you still decide to run evaluations on Confident AI, here's how you can do it:
+
+```python showLineNumbers copy {25}
+from deepeval.prompt import Prompt
+from deepeval.dataset import EvaluationDataset
+from deepeval.test_case import LLMTestCase
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import confident_evaluate
+
+# Initialize and pull your dataset from Confident AI
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+# Use your actual prompt alias from Confident AI
+prompt = Prompt(alias="your-prompt-alias")
+prompt.pull()
+
+
+# Process each golden in your dataset
+for goldens in dataset.goldens:
+    input = golden.input
+    # Replace your_llm_app() with your actual LLM application
+    test_case = LLMTestCase(input=input, actual_output=your_llm_app(input, prompt))
+    dataset.test_cases.append(test_case)
+
+
+# Run evals on Confident AI
+confident_evaluate(metric_collection="your-collection-name", test_cases=dataset.test_cases)
+```
+
+### Trigger evals without code
+
+1. [Setup an LLM connection](/project-configurations/setup-llm-connection) endpoint
+2. Go to the **Evaluations** page
+3. Press the **Evaluate** button
+4. Select your metric collection and dataset
+5. Press **Evaluate** to run the evaluation!
+
+[TODO: video]
+
+> [!IMPORTANT]
+>
+> You should only be doing this if you have non-technical team members that wish to trigger evaluations on the platform without going through code.
+
+## Logging Hyperparameters
+
+When running evaluations, it's important to log hyperparameters to track which configurations were used for each test run. This allows you to compare different versions of prompts, models, and other settings to make data-driven decisions about your LLM application.
+
+If you're unsure what are hyperparameters or the types of hyperparameters available, [click here.](/concepts/hyperparameters)
+
+### Prompts
+
+Prompts are a **type** of hyperparameter, and in Confident AI, you can include them as hyperparameters to [test each prompt's performance](/prompt-studio/prompt-testing) when running an evaluation:
+
+```python
+from deepeval.prompt import Prompt
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import evaluate
+...
+
+# Pull your prompt version
+prompt = Prompt(alias="your-prompt-alias")
+prompt.pull()
+
+# Run an evaluation with the prompt as a hyperparameter
+evaluate(
+    test_cases=dataset.test_cases,
+    metrics=[AnswerRelevancyMetric()],
+    hyperparameters={"System Prompt": prompt}
+)
+```
+
+Since hyperparameters are stored as key-value pairs in a dictionary (`Dict[str, Prompt]`), the type of a hyperparameter is determined by its first initial value logged:
+
+1. If you first log a `Prompt` object for a hyperparameter key, that key will be treated as a prompt type hyperparameter.
+2. If you later log string values for the same key, the hyperparameter will remain a prompt type.
+3. Any new string values logged for this key will be treated as potential new prompt versions.
+
+<Callout type="warning">
+  You should **NEVER** log the interpolated version of your prompt template.
+  This will create a unique version for each variable substitution, making it
+  impossible to meaningfully compare prompt performance. Always log the `Prompt`
+  instance itself.
+</Callout>
+
+### Models
+
+You can also log model information as hyperparameters to track which model versions or configurations were used:
+
+```python
+...
+
+evaluate(
+    test_cases=dataset.test_cases,
+    metrics=[AnswerRelevancyMetric()],
+    hyperparameters={
+        "Model": "gpt-4",
+    }
+)
+```
+
+### Others
+
+You can log any other hyperparameters that has good influence over your LLM app's performance:
+
+```python
+...
+
+evaluate(
+    test_cases=dataset.test_cases,
+    metrics=[AnswerRelevancyMetric()],
+    hyperparameters={
+        "System Prompt": prompt,
+        "Model": "gpt-4",
+        "Temperature": 0.7,
+        "Max Tokens": 1000,
+    }
+)
+```
+
+All hyperparameters that you associate with test runs can be viewed on individual [testing reports](/evaluation/testing-reports) on Confident AI by clicking the **View Hyperparameters** button on a test run's **Overview** page. You can also filter for test runs that are associated with certain hyperparameters on the **Evaluations** page under your project space.

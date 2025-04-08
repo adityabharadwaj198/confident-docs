@@ -1,9 +1,9 @@
 export default {
   overview: '',
   metrics: '',
-  "running-evals": '',
+  "running-llm-evals": '',
   "unit-testing-in-cicd": '',
   "testing-reports": '',
-  "regression-and-ab-testing": '',
+  "ab-regression-testing": '',
   "insights": ''
 }

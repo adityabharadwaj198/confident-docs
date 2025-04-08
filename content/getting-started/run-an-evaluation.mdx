@@ -60,8 +60,8 @@ dataset = EvaluationDataset()
 dataset.pull(alias="My Evals Dataset")
 
 # Replace "System Prompt" with your actual prompt alias from Confident AI
-sys_prompt = Prompt(alias="System Prompt")
-sys_prompt.pull()
+prompt = Prompt(alias="System Prompt")
+prompt.pull()
 
 # Process each golden in your dataset
 for goldens in dataset.goldens:
@@ -71,7 +71,7 @@ for goldens in dataset.goldens:
     test_case = LLMTestCase(
         input=input,
         # Replace your_llm_app() with your actual LLM application function
-        actual_output=your_llm_app(input, sys_prompt)
+        actual_output=your_llm_app(input, prompt)
     )
 
     # Add the test case to your dataset for evaluation

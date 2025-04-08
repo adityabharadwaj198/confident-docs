@@ -25,10 +25,11 @@ export default {
   evaluation: "Evaluation",
   observability: "Observability",
   "human-in-the-loop": "Human-in-the-Loop",
-  "---3": {
-    type: "separator",
-    title: "Non-Functional Features"
-  },
+  "project-configurations": "Project Configurations",
+  // "---3": {
+  //   type: "separator",
+  //   title: "Non-Functional Features"
+  // },
   "navigation": {
     type: "menu",
     title: "More resources",

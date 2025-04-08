@@ -124,7 +124,7 @@ This behavior allows for flexible prompt versioning while maintaining type consi
 
 ### About the `Prompt` class
 
-The `Prompt` class stores your prompt or prompt messages in either the `template` or `template_messages` class variable upon the `pull()` method, which contains the raw, pre-interpolated template(s).
+The `Prompt` class stores your prompt or prompt messages in either the `template` or `message_templates` class variable upon the `pull()` method, which contains the raw, pre-interpolated template(s).
 
 It is the interpolated version that you **ALWAYS** want to provide to your LLM, even if there are no dynamic variables to interpolate. This is because it is always safer to create a copy out of your prompt version instead of referencing it directly in your application, which may can unexpected modifications.
 
