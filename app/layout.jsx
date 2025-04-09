@@ -10,7 +10,7 @@ export const metadata = {
   // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
 }
 
-const banner = <Banner storageKey="confident-docs-banner" color="#ffffff">If you're looking for DeepEval's documentation, click here.</Banner>
+const banner = <Banner storageKey="confident-docs-banner" color="#ffffff">Confident AI is free to try. No credit card required.</Banner>
 const navbar = (
   <Navbar
     logo={<Logo />}

@@ -94,9 +94,11 @@ These are particular useful for text-based chatbots or conversational voice agen
 
 ## Choosing the Right Metrics
 
-Different LLM applications require different metrics for effective evaluation, and the specific combination of metrics depend on your LLM use case and application architecture. As a general rule of thumb, **DON'T**:
+Different LLM applications require different metrics for effective evaluation, and the specific combination of metrics depend on your LLM use case and application architecture.
 
-1. Use more than 5 metrics
+As a general rule of thumb, **DO NOT**:
+
+1. Use more than five metrics
 2. Rely purely on generic metrics (there should be one or two custom metrics like `GEval` or `DAG`)
 3. Pick metrics that don't have a clear success criteria
 
@@ -106,11 +108,14 @@ Point 3. is especially relevant to custom metrics like `GEval`, where you're wri
 
 ### How to decide
 
-When selecting metrics, consider both your LLM's use case and system architecture. The two are often interlinked - for example, a QA system might be implemented using RAG, while a copilot might combine both agent and conversational capabilities.
+When selecting metrics, consider both your LLM's **use case** and **system architecture**. The two are often interlinked - for example, a QA system might be implemented using RAG, while a copilot might combine both agent and conversational capabilities.
 
-Another tip is, usually the generic, system specific metrics (such as answer relevancy and contextual relevancy for RAG, tool correctness for agents) are easy to define, and for the remaining 1-2 metrics that are custom will be specific and tailored to use cases.
+When selecting your **FIVE** metrics, aim for a balanced combination of:
 
-In fact, you'll find this pattern when picking metrics for different use cases in the [use cases page.](/supported-use-cases)
+1. **Two to three generic, system-specific metrics** (like answer relevancy and contextual relevancy for RAG systems, or tool correctness for agents) that evaluate core system capabilities
+2. **One to two custom, use case specific metrics** (like GEval or DAG) that focus on your specific use case requirements, independent of the underlying system architecture
+
+In fact, you'll find this pattern used when picking metrics for different use cases in the [use cases page.](/supported-use-cases)
 
 > [!IMPORTANT]
 >
