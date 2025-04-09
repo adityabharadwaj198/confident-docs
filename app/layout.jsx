@@ -41,7 +41,7 @@ export default async function RootLayout({ children }) {
         }}
       >
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Confident Docs: Documentation" />
+        <meta name="description" content="Official Confident AI Documentation" />
       </Head>
       <body>
         <Layout
