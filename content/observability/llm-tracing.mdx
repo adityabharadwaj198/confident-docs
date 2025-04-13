@@ -1,0 +1,149 @@
+---
+title: LLM Tracing
+---
+
+import { Callout } from "nextra/components";
+
+# LLM Tracing
+
+Tracing LLM workflows/systems on Confident AI allows you to pinpoint where your LLM application has errored.
+
+<Callout type="info">
+  Tracing is a concept borrowed from traditional software engineering, where
+  individual components of your LLM app (retrievers, tools, etc.) are modelled
+  as **SPANS**, while the overall call hireachy and execution flow is displayed
+  as a **TRACE**.
+
+You can think of tracing as building a graph view of your LLM app.
+
+</Callout>
+
+Confident AI tracing is designed to be non instrusive, and requires minimal if any rewrite of your LLM app. It is in the form of decorators (`with` block support incoming), and you can set input and outputs of such decorators at runtime so that you don't have to change your function signature if they don't already fit with our span schema.
+
+for example, if your decorated llm function does not return a string, that is ok because you can set the output of the llm span at runtime in the decorated function.
+
+## Code & Video Summary
+
+## Terminologies for Tracing
+
+TODO: these are the terms: tracing, spans, attributes (to each span). Different span types have different attributes. Only default span types are able to set attributes
+
+## Using the `@observe` Decorator
+
+TODO: two quick sentences on talking about what a decorator is then show how to use it, in cluding the import from deepeval.tracing
+
+## Different Types of Spans
+
+TODO: talk about there are 5 types of spans. They are designed this way to accomodate for the most common default span types you're very like to have, but also any custom spans that you wish to wrap things in. For example, if you are building agentic RAG that is cmposed of first a RAG then tool calling, you can wrap retriever + LLM span in a custom span and name it RAG pipeline, before calling a tool at the same level afterwards.
+
+### Agent span
+
+TODO: this is an agent, explain what it is, best with an example of a thinking agent, an example of usaage with a function (the function should have no implementation with a pass)
+
+TODO: talk about agents can have nested agents. This is for example useful if you have a "supervisor" agent that mediates communuication between different components
+
+TODO: talk about what varible tools and handoff agents do. Also say that it is not strictly checked and so if a user makes a mistake on typo for example it is on them
+TODO: all the attributes here are optional
+
+- [Optional] `available_tools`: a list of strings that specifies...
+- [Optional] `handoff_agents`: a list of strings that specifies...
+- [Optional] `name`: a string that specifies the name of this agent span displayed on Confident AI. Defaulted to the name of the decorated function.
+
+### Tool span
+
+TODO: this is a tool, function calling, explain what it is, an example of usaage with a function (the function should have no implementation with a pass)
+
+- [Optional] `description`: a string that represents...
+- [Optional] `name`: a string that specifies the name of this tool span displayed on Confident AI. Defaulted to the name of the decorated function.
+
+### Retriever span
+
+TODO: this is a retriver, explain what it is in RAG, the embedding and all that stuff, an example of usaage with a function (the function should have no implementation with a pass)
+
+- `embedder`: a string that represents the name of the embedding model used...
+- [Optional] `name`: a string that specifies the name of this retriever span on Confident AI. Defaulted to the name of the decorated function.
+
+### LLM span
+
+TODO: this is the llm, explain the components of it, an example of usaage with a function (the function should have no implementation with a pass)
+
+- `model`: a string that represents the name of the embedding model used...
+- [Optional] `cost_per_input_token`: a float that specifies...
+- [Optional] `cost_per_output_token`: a float that specifies...
+- [Optional] `name`: a string that specifies the name of this llm span on Confident AI. Defaulted to the name of the decorated function.
+
+If the `cost_per_input_token` is not set, setting the llm attributes for `input_token_count` will not help calculate the cost, vice versa and same for output token as well
+
+### Custom span
+
+TODO: talk about the importnace of this, scenarios where this is useful, especially to creating custom hirearchy or grouping of spans
+
+- [Optional] `name`: a string that specifies how this custom span is displayed on Confident AI. Defaulted to the name of the decorated function.
+
+## Set Runtime Attributes for Default Spans
+
+TODO: say only default spans can set attributes at runtime. Attributes are extremely important properties for default spans to determine the output at runtime where it is not possible to set at @observe initialization
+
+For example, you can set the retrieval context as the output of a retriever span, which means that for spans that have a strict input/output format you don't have to customize and rewrite your functions to fit our schema.
+
+### Agent span
+
+TODO: talk about all the attributes here are optional, if not set will just take the decorated function's input and output
+
+#### Input
+
+TODO: what it is
+
+#### Output
+
+TODO: what it is
+
+### Tool span
+
+TODO: talk about that the input of the function and the output is the default input parameters and output, but if you set it you can also override it. This is useful if your tool span is not 100% a function on its own (for any reason)
+
+TODO: all the attributes here are optional
+
+#### Input parameters
+
+#### Output
+
+### Retriever span
+
+TODO: talk about the role of this in a RAG pipeline, and how all retrievers have embedding input to be fetched from a vector store to return a list of text (Retrieval context). The embedding input and retrieval context will be set as the output of the retreiver span in the end
+
+#### Embedding Input
+
+#### Retrieval Context
+
+### LLM span
+
+#### Input
+
+#### Output
+
+#### Input token Count
+
+#### Output token count
+
+## View Traces in Observatory
+
+TODO: rewrite better, but the idea is: Go to **Observatory** under your project space. and view video summary for more detail.
+
+## Common questions
+
+### What happens if sending to Confident AI errors?
+
+TODO: write clearer title for this, but say that it will not kill your app and fail silently
+
+### What tracing integrations are available?
+
+TODO: the one on the roadmap is langchain, openai, llamaindex, litellm
+
+### Can I log prompts and different hyperparameters to spans?
+
+TODO: Yes, set to release on last week of April, 2025
+
+### Can I log custom properties to spans?
+
+TODO: Yes, set to release on first week of May, 2025

@@ -2,4 +2,61 @@
 title: Overview
 ---
 
+import { Callout, Cards } from "nextra/components";
+
 # Observability Overview
+
+Confident AI offers an **Observatory** for teams to trace and monitor LLM applications. Think Datadog for LLM apps.
+
+The observatory allows you to:
+
+- Debug LLM components in production
+- Filter and search for historical generations
+- Leave feedback
+- Run evals on it
+- Cost and latency tracking
+
+## Features Summary
+
+<Cards>
+  <Cards.Card arrow title="LLM Tracing" href="/evaluation/running-llm-evals" />
+  <Cards.Card arrow title="Online Metrics" href="/evaluation/metrics" />
+  <Cards.Card
+    arrow
+    title="Latency and Cost Tracking"
+    href="/evaluation/unit-testing-in-cicd"
+  />
+  <Cards.Card
+    arrow
+    title="Filters and Searches"
+    href="/evaluation/testing-reports"
+  />
+  <Cards.Card
+    arrow
+    title="Performance Alerting"
+    href="/evaluation/ab-regression-testing"
+  />
+</Cards>
+
+## Simple Walkthrough
+
+### Setup Tracing
+
+### Enable Online Metrics
+
+### Trace a Generation
+
+#### Logging your prompt
+
+### Track Latency & Cost
+
+### Filter for Traces
+
+## Future Roadmap
+
+- [ ] Hyperparameter logging
+- [ ] Custom properties logging
+- [ ] Latency and cost tracking display
+- [ ] Self-served alerting notification configurations
+- [ ] More integrations
+- [ ] Span level metrics defining

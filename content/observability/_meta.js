@@ -1,6 +1,6 @@
 export default {
     "overview": '',
-    tracing: '',
+    "llm-tracing": '',
     "online-metrics": '',
     "filters-and-searches": '',
     "alerting": '',

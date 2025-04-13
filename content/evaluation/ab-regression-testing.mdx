@@ -47,16 +47,27 @@ The comparison displays data from your current test run on the left side and dat
 
 The **Test Results Comparer** also offers a side-by-side test case comparer. The left hand side displays test cases from the current test run, while the right hand side displays test cases from the test run you are comparing against.
 
+The test case comparer matches test cases from both test runs using a test case
+`name`s by default.
+
 <Callout type="info">
-  The test case comparer matches test cases from both test runs using the
-  `input`s by default.
+  If you assign names to your test cases (for example, to incorporate external
+  IDs from Snowflake or other data sources), you can match test cases between
+  runs more easily. If you don't have an "ID" to assign to test cases, you can
+  either keep your test cases in order by [avoiding this common
+  mistake](/dataset-editor/using-datasets#avoid-this-common-mistake), or match
+  by **Input** instead.
 </Callout>
 
 A test case highlighted in red indicates a regression - where at least one metric that previously passed in the comparison test run (right side) is now failing in the current test run (left side).
 
-### Match by Name Instead
+### Match by Input Instead
 
-If you assign names to your test cases (for example, to incorporate external IDs from Snowflake or other data sources), you can match test cases between runs using these names instead of `input`s. Simply toggle the **Match by** option from **Input** to **Name** in the test case comparison view.
+To match by **Input** instead, toggle the "Match By" pill from **Name** to **Input**
+
+> [!IMPORTANT]
+>
+> When you have duplicate inputs or names, the filters might not work as expected. It is important that you don't duplicate inputs and names in a test run.
 
 You can also watch the [video summary](/evaluation/ab-regression-testing#video-summary) above for more details.
 

@@ -37,6 +37,15 @@ All metrics output a score between 0-1, with a default threshold of 0.5. A metri
 
 Confident AI offers a wide range of metrics tailored to different LLM applications and use cases.
 
+Metrics in Confident AI can be categorized based on whether they require reference data and where they run:
+
+- **Custom Metrics**: These are use-case specific metrics like G-Eval or DAG that you tailor to your application's success criteria.
+- **Generic Metrics**: These are system-architecture specific metrics (like RAG or agent metrics) that remain consistent across similar LLM applications.
+- **Referenceless Metrics**: These don't require annotated datasets (no `expected_output` or `expected_tools` fields) and can evaluate your LLM's performance based on input and output alone.
+- **Online Metrics**: These are specifically designed for production monitoring and observability. All online metrics are referenceless metrics.
+
+All metrics can run in development, unlike online metrics which are referenceless and more suited for production. This flexibility in development allows you to curate datasets that are both labelled (with `expected_output`s) and not labelled (only `input`s).
+
 ### Custom Metrics
 
 We recommend having 1-2 custom metrics in your evaluation suite and **NOT** rely 100% on generic, predefined metrics:
@@ -48,7 +57,7 @@ We recommend having 1-2 custom metrics in your evaluation suite and **NOT** rely
 
 > [!NOTE]
 >
-> You can also implement custom metrics that are not LLM-as-a-judge from scratch in code.
+> Referenceless metrics are primarily used in production. In development, you typically have reference data available through your datasets, making referenceless metrics less necessary. You'll learn how to use referenceless metrics in production observability in the [Observability](/observability/enable-online-metrics) section, which we call online metrics on Confident AI.
 
 ### Generic Metrics
 
@@ -92,6 +101,12 @@ These are particular useful for text-based chatbots or conversational voice agen
 - **Bias**: Measures the presence of bias in LLM outputs. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-bias)
 - **Summarization**: Evaluates the quality of summarization tasks. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-summarization)
 
+### Referenceless Metrics
+
+TODO: metrics are referencelss or reference-based. Referenceless means you don't need an annotated dataset, meaning fields on goldens like expected output and expected tools, and is only possible in development
+TODO: a callout that says referneceless metrics are only possible in development because if you have a refernece in production theres no need fo ryour LLM app
+TODO: you will learn how to exclusivelt use refernecelss metrics in production observability [here](link to observability online metrics), which we call online metrics on Confident AI
+
 ## Choosing the Right Metrics
 
 Different LLM applications require different metrics for effective evaluation, and the specific combination of metrics depend on your LLM use case and application architecture.
@@ -104,8 +119,6 @@ As a general rule of thumb, **DO NOT**:
 
 Point 3. is especially relevant to custom metrics like `GEval`, where you're writing your own criteria instead of relying on a predefined one.
 
-[TODO: best practices for metrics with diagram]
-
 ### How to decide
 
 When selecting metrics, consider both your LLM's **use case** and **system architecture**. The two are often interlinked - for example, a QA system might be implemented using RAG, while a copilot might combine both agent and conversational capabilities.
@@ -115,7 +128,21 @@ When selecting your **FIVE** metrics, aim for a balanced combination of:
 1. **Two to three generic, system-specific metrics** (like answer relevancy and contextual relevancy for RAG systems, or tool correctness for agents) that evaluate core system capabilities
 2. **One to two custom, use case specific metrics** (like GEval or DAG) that focus on your specific use case requirements, independent of the underlying system architecture
 
-In fact, you'll find this pattern used when picking metrics for different use cases in the [use cases page.](/supported-use-cases)
+In fact, you'll find this pattern used when picking metrics for different use cases in the [use cases page.](/supported-use-cases) Here's a nice flow chart for the process:
+
+```mermaid
+graph TD
+    A[Start] --> B{Choose Metrics}
+    B --> C[Generic System Metrics]
+    B --> D[Custom Use Case Metrics]
+    C --> E[Max 3 Metrics]
+    D --> F[Max 2 Metrics]
+    E --> G[Validate & Iterate]
+    F --> G
+    G --> H[Constantly reassess if still relevant for use case]
+```
+
+Whichever metric that you find is a referenceless one in your final set of metrics, you can [enable it for online evaluation](/observability/online-metrics) in production.
 
 > [!IMPORTANT]
 >
