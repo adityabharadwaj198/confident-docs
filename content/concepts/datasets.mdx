@@ -24,14 +24,15 @@ A golden is similar to a test case but is more flexible. The key differences are
 
 - Goldens do not require an `actual_output` at initialization
 - Goldens are useful when you want to generate LLM outputs at evaluation time
-- Goldens are ideal for scenarios where you have a set of inputs but haven't run them through your LLM yet
+- Goldens are ideal for scenarios where you have a **set of inputs** but haven't run them through your LLM yet
+- Goldens are best for **storing ground truth data** such as `expected_output` and `expected_tools`
 
 Goldens are particularly useful when:
 
 - You want to run evaluations each time you make a change to your LLM application
 - You want to compare different versions of your LLM application
 
-Another way to think about it is, goldens are designed for editing, and test cases that aren't ready for evaluation, since the dynamic values: `actual_output`, `retrieval_context`, and `tools_called`, haven't been called yet.
+Another way to think about it is, **goldens are designed for editing** and are basically test cases that aren't ready for evaluation, since the dynamic values: `actual_output`, `retrieval_context`, and `tools_called`, haven't been called yet.
 
 A `Golden` has the same data structure as an `LLMTestCase`:
 
@@ -65,7 +66,7 @@ class Golden:
 
 You're really looking to generate dynamic `actual_output`s and optionally the `retrieval_context` and/or `tools_called` at evaluation time based on your golden `input`, so if you find your dataset containing goldens with `actual_output`s, think twice! For the record, we highly recommend **AGAINST** pre-computed datasets.
 
-#### A note on `commetns` and `additional_metadata`
+#### A note on `comments` and `additional_metadata`
 
 The `comments` field allows adding notes and instructions about a golden, often left by domain experts, while the `additional_metadata` field stores any custom key-value pairs for any custom metadata you may have.
 
@@ -98,11 +99,11 @@ Here are some best practices for managing datasets effectively:
 - **Incorporate production data** into existing datasets to keep them updated real-world usage
 - **Aim for around 150 goldens** to get statistically significant evaluation results
 
-When you use Confident AI, you'll be able to manage, annotate, and centralize datasets on the cloud. Versioning is automated for each change, and domain experts can edit datasets directly through the platform. Production data is also automatically flagged for team members to incorporate into existing datasets as well.
+When you use Confident AI, you'll be able to [manage, annotate, and centralize datasets on the cloud](/dataset-editor/annotate-datasets). Versioning is automated for each change, and domain experts can edit datasets directly through the platform. Production data is also automatically flagged for team members to incorporate into existing datasets as well.
 
 ## Dataset Implementation
 
-Datasets are a list of goldens. You would pull your dataset from Confident AI like how you would pull a github repo via DeepEval, before generating dynamic values such as `actual_output` and `retrieval_context` per golden and convert them into a test case. These test cases in your dataset are then used for evaluation.
+Datasets are a list of goldens. You would [pull your dataset from Confident AI](/dataset-editor/using-datasets) like how you would pull a github repo via DeepEval, before generating dynamic values such as `actual_output` and `retrieval_context` per golden and convert them into a test case. These test cases in your dataset are then used for evaluation.
 
 ```python
 from deepeval.dataset import EvaluationDataset
@@ -132,4 +133,4 @@ evaluate(test_cases=dataset, metrics=[metric])
 
 ## Further Reading
 
-For more detailed information on working with datasets in code, refer to the [deepeval documentation](https://docs.confident-ai.com/docs/evaluation-datasets).
+For more detailed information on working with datasets in code, refer to [DeepEval's documentation](https://deepeval.com/docs/evaluation-datasets).

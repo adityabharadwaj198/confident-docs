@@ -1,17 +1,32 @@
 ---
-title: Supported Use Cases
+title: LLM Use Cases
 ---
 
 import { Callout } from "nextra/components";
 
-# Tailored For All LLM Use Cases
+# Supported For All Use Cases
 
 Confident AI is designed to evaluate any type of LLM application, from simple chatbots to complex agentic systems. Each use case has its own unique evaluation requirements, and we provide specialized [metrics](/concepts/metrics) and features to help you get the most accurate assessment of your LLM's performance.
 
-You'll notice a clear pattern in how different systems are evaluated:
+A use case is something like:
+
+1. [RAG QA:](#rag-qa) Systems that combine document retrieval with LLM generation to provide accurate, source-based answers.
+2. [Chatbots:](#chatbots) Conversational, multi-turn AI systems designed to engage in natural dialogues with users.
+3. [Writing Assistants:](#writing-assistants) AI tools that help users improve their writing by providing suggestions, corrections, and enhancements.
+4. [Summarization:](#summarization) Systems that condense longer documents into shorter, coherent versions while preserving key information.
+5. [Autonomous Agents:](#autonomous-agents) AI systems that can independently perform complex tasks by breaking them down into manageable steps.
+6. [Text-SQL:](#text-sql) Systems that convert natural language queries into SQL database queries.
+7. [Code Generation:](#code-generation) Systems that create executable code from natural language descriptions.
+
+A use case can be built using different systems. You'll notice a clear pattern in how different systems are evaluated:
 
 - Simpler systems (like summarization and writing assistants) focus more on use case-specific **custom** metrics that evaluate output quality
-- Complex systems (like code generation and autonomous agents) require both system metrics and **reference-based evaluation** against [golden `expected_output`s](/concepts/datasets#goldens), along with [tracing](/observability/tracing) for debugging
+- Complex systems (like code generation and autonomous agents) require both system metrics and **reference-based evaluation** against [golden `expected_output`s](/concepts/datasets#goldens), along with [tracing](/observability/llm-tracing) for debugging
+
+<Callout>
+  It is recommended that you allocate one project space per use case on
+  Confident AI
+</Callout>
 
 ## RAG QA
 
@@ -69,7 +84,7 @@ In this example, the customer query is the `input` to an `LLMTestCase` in `turn`
 
 [Click here](/evaluation/metrics) to learn how to implement and use these metrics for evaluation.
 
-## Writing Assistant
+## Writing Assistants
 
 Writing assistants are AI tools that help users improve their writing by **providing suggestions, corrections, and enhancements.** They can help with grammar, style, tone, and overall content quality while maintaining the user's voice.
 
@@ -142,7 +157,7 @@ For our travel planner example, we'll focus on system execution. Unlike simpler 
 In this example, the user's travel requirements are the `input` to a test case, while the final itinerary and bookings are the `actual_output`. [Click here](/evaluation/metrics) to learn how to implement and use these metrics for evaluation.
 
 <Callout>
-  For autonomous agents, [setting up tracing](/observability/tracing) is
+  For autonomous agents, [setting up tracing](/observability/llm-tracing) is
   **highly recommended**. Tracing allows to debug nested components in your
   agent that might not be performing as expected.
 </Callout>
@@ -164,7 +179,7 @@ For our business intelligence tool example, we'll focus on SQL generation qualit
 - **Faithfulness** (generic RAG): Whether the generated SQL is supported by the retrieved schema
 - **SQL Correctness** (custom DAG): How well the generated SQL follows syntax rules and best practices
 
-In this example, the natural language query is the `input` to a test case, while the generated SQL is the `actual_output`, and the retrieved schema information is the `retrieval_context`. [Tracing](/observability/tracing) is also extremely helpful here to visualize the retrieved tables and SQL execution times.
+In this example, the natural language query is the `input` to a test case, while the generated SQL is the `actual_output`, and the retrieved schema information is the `retrieval_context`. [Tracing](/observability/llm-tracing) is also extremely helpful here to visualize the retrieved tables and SQL execution times.
 
 <Callout type="info">
   Database tables are typically indexed by condensed summaries of their
@@ -193,7 +208,7 @@ For our frontend UI generator example, we'll focus on both system execution and 
 - **Code Correctness** (generic DAG): Whether the generated code runs without errors
 - **Code Quality** (custom G-Eval): How well the generated code compares to ideal, production-ready code
 
-In this example, the natural language requirements are the `input` to a test case, while the generated code is the `actual_output`. You'll definitely want [tracing](/observability/tracing) for this use case.
+In this example, the natural language requirements are the `input` to a test case, while the generated code is the `actual_output`. You'll definitely want [tracing](/observability/llm-tracing) for this use case.
 
 <Callout type="info">
   For code generation, it's undoubtedly complex and requires `expected_output`s

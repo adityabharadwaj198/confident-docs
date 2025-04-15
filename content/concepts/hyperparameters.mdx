@@ -2,9 +2,17 @@
 title: Hyperparameters
 ---
 
+import { Callout } from "nextra/components";
+
 # Hyperparameters
 
-Hyperparameters in Confident AI are key-value pairs of type `Dict[str, Union[str, Prompt]]` that define what parameters are use in your LLM application. For example, a key-value pair of `"model": "gpt-4o"` allows you to see that this was the model you used for generating the `actual_output`s for a particular test run.
+Hyperparameters in Confident AI are key-value pairs of type `Dict[str, Union[str, Prompt]]` that define what parameters are used in your LLM application.
+
+<Callout>
+  For example, a key-value pair of `"model": "gpt-4o"` allows you to see that
+  this was the model you used for generating the `actual_output`s for a
+  particular test run.
+</Callout>
 
 Some hyperparameters include:
 
@@ -19,6 +27,8 @@ Associating hyperparameters to test runs is crucial for:
 - Reproducing results consistently
 - Understanding which settings work best for your use case
 
+You can edit prompts, both text and a list of messages, on Confident AI's [prompt studio.](/prompt-studio/overview)
+
 ## Types of Hyperparameters
 
 Although you can have as many combinations of hyperparameters you wish for a test run, there are only two types of hyperparameters on Confident AI:
@@ -26,7 +36,7 @@ Although you can have as many combinations of hyperparameters you wish for a tes
 - Hyperparameters that are prompts
 - Hyperparameters that are **NOT** prompts
 
-When a hyperparameter is a prompt, you can leverage Confident AI's prompt studio to versioning, edit, and management them in one centralized place. This allows Confident AI to tell you which prompt version performs best for your use case.
+When a hyperparameter is a prompt, you can leverage Confident AI's prompt studio to [version, edit, and management](/prompt-studio/prompt-versioning) them in one centralized place. This allows Confident AI to tell you which prompt version performs best for your use case.
 
 When a hyperparameter is not a prompt, there won't be any versioning. For example, a model is not a prompt, and you can simply log different model names (e.g. `claude-3.5-sonnet`, `gpt-4`, `llama-2`) to compare their performance across test runs.
 
@@ -36,7 +46,25 @@ When a hyperparameter is not a prompt, there won't be any versioning. For exampl
 
 ## Prompts
 
-Prompts are text templates that guide LLM behavior by providing instructions, context, and structure for generating responses. A prompt template contains variables that are interpolated at runtime with dynamic values to create the final prompt sent to the LLM.
+### Why prompt versioning?
+
+Prompt versioning is a critical feature for optimizing your LLM applications. By running evaluations with different prompt versions, you can:
+
+1. **Quantify improvements**: Measure how each version performs against your evaluation metrics
+2. **Identify optimal versions**: Determine which prompt version produces the best results for your specific use case
+3. **Track evolution**: Document how your prompts have evolved and what changes led to improvements
+4. **Compare trade-offs**: Understand the balance between different aspects of performance (e.g., accuracy vs. conciseness)
+
+Confident AI automatically tracks which prompt version was used for each test run, allowing you to correlate prompt changes with performance metrics. This data-driven approach to prompt engineering helps you make informed decisions about which prompt version to use in production.
+
+Confident AI provides a [Prompt Studio](/prompt-studio/overview) for managing your prompt templates:
+
+- **Versioning**: Track changes to your prompts over time
+- **A/B Testing**: Compare different prompt versions to see which performs better
+- **Centralized Storage**: Keep all your prompts in one place
+- **Collaboration**: Share prompts with team members
+
+Prompts are either text **OR** a list of text templates that guide LLM behavior by providing instructions, context, and structure for generating responses. A prompt template contains variables that are interpolated at runtime with dynamic values to create the final prompt sent to the LLM.
 
 For example, a simple prompt template might look like:
 
@@ -50,9 +78,28 @@ Question: {question}
 Answer:
 ```
 
-When this template is used, the variables `{context}` and `{question}` are replaced with actual values to create the final prompt.
+<Callout type="info">
+  When this template is used, the variables `{context}` and `{question}` are
+  replaced with actual values to create the final prompt.
+</Callout>
+
+On the contrary, a list of prompt template messages looks like this:
+
+```python
+[
+   {"role": "system", "content": "You are a helpful assistant."},
+   {"role": "user", "content": "Hi my name is {{ name }}. What is the capital of France?"}
+]
+```
+
+Which you can provide to your LLM provider such as OpenAI directly.
 
 ### Prompt Versioning vs Prompts
+
+<Callout>
+  The difference is subtle, with both terms often used interchangeably, and you
+  shouldn't worry too much about this.
+</Callout>
 
 While a prompt is a text template that guides LLM behavior, prompt versioning refers to the process of tracking and managing different iterations of that prompt over time. Think of it this way:
 
@@ -73,26 +120,6 @@ You are a helpful AI assistant with expertise in technical topics. Provide conci
 ```
 
 Each version represents a distinct iteration of the same prompt, with incremental changes that aim to improve performance.
-
-### Why Prompt Versioning?
-
-Prompt versioning is a critical feature for optimizing your LLM applications. By running evaluations with different prompt versions, you can:
-
-1. **Quantify improvements**: Measure how each version performs against your evaluation metrics
-2. **Identify optimal versions**: Determine which prompt version produces the best results for your specific use case
-3. **Track evolution**: Document how your prompts have evolved and what changes led to improvements
-4. **Compare trade-offs**: Understand the balance between different aspects of performance (e.g., accuracy vs. conciseness)
-
-Confident AI automatically tracks which prompt version was used for each test run, allowing you to correlate prompt changes with performance metrics. This data-driven approach to prompt engineering helps you make informed decisions about which prompt version to use in production.
-
-### Prompt Management in Confident AI
-
-Confident AI provides a Prompt Studio for managing your prompt templates:
-
-- **Versioning**: Track changes to your prompts over time
-- **A/B Testing**: Compare different prompt versions to see which performs better
-- **Centralized Storage**: Keep all your prompts in one place
-- **Collaboration**: Share prompts with team members
 
 ## Models
 
@@ -136,4 +163,8 @@ This approach:
 - Allows you to track performance of individual components
 - Makes it easier to identify which specific component's hyperparameters need adjustment
 
-By clearly associating hyperparameters with specific components, you can more effectively optimize each part of your agentic system.
+> [!NOTE]
+>
+> These "components", can be conceptualized as **spans within a trace** of your application's execution. A trace represents the complete call hierarchy and structure of your LLM application for a single request, while spans are the individual operations (like LLM calls, retrieval steps, or tool usage) that make up that trace.
+
+[LLM tracing on Confident AI](/observability/llm-tracing) allows you to monitor performance, track hyperparameter impacts across different components, and identify optimization opportunities in complex systems.

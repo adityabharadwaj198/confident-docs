@@ -98,7 +98,7 @@ class ToolCall(BaseModel):
 
 > [!TIP]
 >
-> For more information on a `ToolCall`, more information can be found on [DeepEval's documentation.](https://docs.confident-ai.com/docs/evaluation-test-cases#tools-called)
+> For more information on a `ToolCall`, more information can be found on [DeepEval's documentation.](https://deepeval.com/docs/evaluation-test-cases#tools-called)
 
 It's important to note that the `actual_output`, `retrieval_context`, and `tools_called` are **expected to be dynamic values that changes for each LLM interaction**. You can of course pre-compute `actual_output`s for a given set of inputs, but that will defeat the purpose of running evals everytime you make an improvement to your LLM app.
 
@@ -132,4 +132,4 @@ test_case = ConversationalTestCase(
 
 ## Further Reading
 
-A more detailed breakdown of each individual test case parameter can be found on [DeepEval's documentation](https://docs.confident-ai.com/docs/evaluation-test-cases).
+A more detailed breakdown of each individual test case parameter can be found on [DeepEval's documentation](https://deepeval.com/docs/evaluation-test-cases).

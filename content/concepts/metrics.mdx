@@ -2,6 +2,8 @@
 title: Metrics
 ---
 
+import { Callout } from "nextra/components";
+
 # Metrics
 
 Metrics in Confident AI are standards of measurement for evaluating the performance of your LLM application based on specific criteria. They act as the ruler by which you measure your test cases, providing quantitative insights into how well your LLM is performing.
@@ -48,64 +50,67 @@ All metrics can run in development, unlike online metrics which are referenceles
 
 ### Custom Metrics
 
-We recommend having 1-2 custom metrics in your evaluation suite and **NOT** rely 100% on generic, predefined metrics:
+Custom metrics are **use case specific** metrics (i.e. system agnostic), and we recommend having 1-2 custom metrics in your evaluation suite and **NOT** rely 100% on generic, predefined metrics:
 
-- **G-Eval**: A general-purpose evaluation metric for LLM outputs. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-llm-evals)
-- **DAG (Deep Acyclic Graph)**: A decision-tree based LLM-evaluated metric. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-dag)
+- **G-Eval**: A general-purpose evaluation metric for LLM outputs. More on [DeepEval's docs](https://deepeval.com/docs/metrics-llm-evals)
+- **DAG (Deep Acyclic Graph)**: A decision-tree based LLM-evaluated metric. More on [DeepEval's docs](https://deepeval.com/docs/metrics-dag)
 
 **Custom metrics are typically different based on your use case**, while system-specific metrics (like RAG or agent metrics) remain consistent across similar LLM applications. For example, two conversational agents - one for medical advice and another for legal consultation - would use the same agent metrics like tool correctness but have different `GEval` metrics tailored to their respective industry-specific success criteria.
 
-> [!NOTE]
->
-> Referenceless metrics are primarily used in production. In development, you typically have reference data available through your datasets, making referenceless metrics less necessary. You'll learn how to use referenceless metrics in production observability in the [Observability](/observability/enable-online-metrics) section, which we call online metrics on Confident AI.
-
 ### Generic Metrics
 
-Generic metrics are metrics that are use case agnostic, and all that is required is pick the right ones based on your system architecture. If you're building something like agentic RAG, you can also select a combination of generic metrics in both the RAG and agentic metrics categories.
+Generic metrics are **system specific** metrics (i.e. use case agnostic), and all that is required is pick the right ones based on your system architecture. If you're building something like agentic RAG, you can also select a combination of generic metrics in both the RAG and agentic metrics categories.
 
 #### RAG
 
 For Retrieval-Augmented Generation (RAG) systems:
 
-- **Answer Relevancy**: Measures how relevant the LLM's response is to the user's query. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-answer-relevancy)
-- **Faithfulness**: Evaluates whether the LLM's response is supported by the retrieved context. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-faithfulness)
-- **Contextual Relevancy**: Assesses how relevant the retrieved context is to the query. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-contextual-relevancy)
-- **Contextual Precision**: Measures the precision of the retrieved context. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-contextual-precision)
-- **Contextual Recall**: Evaluates the recall of the retrieved context. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-contextual-recall)
+- **Answer Relevancy**: Measures how relevant the LLM's response is to the user's query. More on [DeepEval's docs](https://deepeval.com/docs/metrics-answer-relevancy)
+- **Faithfulness**: Evaluates whether the LLM's response is supported by the retrieved context. More on [DeepEval's docs](https://deepeval.com/docs/metrics-faithfulness)
+- **Contextual Relevancy**: Assesses how relevant the retrieved context is to the query. More on [DeepEval's docs](https://deepeval.com/docs/metrics-contextual-relevancy)
+- **Contextual Precision**: Measures the precision of the retrieved context. More on [DeepEval's docs](https://deepeval.com/docs/metrics-contextual-precision)
+- **Contextual Recall**: Evaluates the recall of the retrieved context. More on [DeepEval's docs](https://deepeval.com/docs/metrics-contextual-recall)
 
 #### Agentic
 
 For LLM agents that use tools:
 
-- **Tool Correctness**: Measures whether the agent used the correct tools for a given task. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-tool-correctness)
-- **Task Completion**: Evaluates whether the agent successfully completed the assigned task. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-task-completion)
+- **Tool Correctness**: Measures whether the agent used the correct tools for a given task. More on [DeepEval's docs](https://deepeval.com/docs/metrics-tool-correctness)
+- **Task Completion**: Evaluates whether the agent successfully completed the assigned task. More on [DeepEval's docs](https://deepeval.com/docs/metrics-task-completion)
 
 #### Conversational
 
 For multi-turn conversational chatbots/agents:
 
-- **Conversational G-Eval**: Evaluates the overall quality of a conversation. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-conversational-geval)
-- **Knowledge Retention**: Measures how well the LLM retains information across conversation turns. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-knowledge-retention)
-- **Role Adherence**: Evaluates how well the LLM adheres to its assigned role. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-role-adherence)
-- **Conversation Completeness**: Measures whether the conversation addresses all aspects of the user's request. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-conversation-completeness)
-- **Conversation Relevancy**: Evaluates how relevant each response is to the ongoing conversation. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-conversation-relevancy)
+- **Conversational G-Eval**: Evaluates the overall quality of a conversation. More on [DeepEval's docs](https://deepeval.com/docs/metrics-conversational-geval)
+- **Knowledge Retention**: Measures how well the LLM retains information across conversation turns. More on [DeepEval's docs](https://deepeval.com/docs/metrics-knowledge-retention)
+- **Role Adherence**: Evaluates how well the LLM adheres to its assigned role. More on [DeepEval's docs](https://deepeval.com/docs/metrics-role-adherence)
+- **Conversation Completeness**: Measures whether the conversation addresses all aspects of the user's request. More on [DeepEval's docs](https://deepeval.com/docs/metrics-conversation-completeness)
+- **Conversation Relevancy**: Evaluates how relevant each response is to the ongoing conversation. More on [DeepEval's docs](https://deepeval.com/docs/metrics-conversation-relevancy)
 
 These are particular useful for text-based chatbots or conversational voice agents.
 
 ### Other Metrics
 
-- **Json Correctness**: Evaluates the correctness of JSON outputs. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-json-correctness)
-- **RAGAS**: Implements the RAGAS framework for RAG evaluation, no different than DeepEval's RAG metrics. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-ragas)
-- **Hallucination**: Measures the extent to which the LLM generates information not present in the context. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-hallucination)
-- **Toxicity**: Evaluates the toxicity level of LLM outputs. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-toxicity)
-- **Bias**: Measures the presence of bias in LLM outputs. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-bias)
-- **Summarization**: Evaluates the quality of summarization tasks. More on [DeepEval's docs](https://docs.confident-ai.com/docs/metrics-summarization)
+- **Json Correctness**: Evaluates the correctness of JSON outputs. More on [DeepEval's docs](https://deepeval.com/docs/metrics-json-correctness)
+- **RAGAS**: Implements the RAGAS framework for RAG evaluation, no different than DeepEval's RAG metrics. More on [DeepEval's docs](https://deepeval.com/docs/metrics-ragas)
+- **Hallucination**: Measures the extent to which the LLM generates information not present in the context. More on [DeepEval's docs](https://deepeval.com/docs/metrics-hallucination)
+- **Toxicity**: Evaluates the toxicity level of LLM outputs. More on [DeepEval's docs](https://deepeval.com/docs/metrics-toxicity)
+- **Bias**: Measures the presence of bias in LLM outputs. More on [DeepEval's docs](https://deepeval.com/docs/metrics-bias)
+- **Summarization**: Evaluates the quality of summarization tasks. More on [DeepEval's docs](https://deepeval.com/docs/metrics-summarization)
 
 ### Referenceless Metrics
 
-TODO: metrics are referencelss or reference-based. Referenceless means you don't need an annotated dataset, meaning fields on goldens like expected output and expected tools, and is only possible in development
-TODO: a callout that says referneceless metrics are only possible in development because if you have a refernece in production theres no need fo ryour LLM app
-TODO: you will learn how to exclusivelt use refernecelss metrics in production observability [here](link to observability online metrics), which we call online metrics on Confident AI
+Metrics in Confident AI can be either reference-based or referenceless:
+
+- **Reference-based metrics** require annotated datasets with fields like `expected_output` and `expected_tools` to evaluate your LLM's performance against ground truth data.
+- **Referenceless metrics** evaluate your LLM's performance based solely on the input and output, without requiring any reference data.
+
+> [!NOTE]
+>
+> While referenceless metrics can be used in development, they are particularly valuable in production environments where you typically don't have reference data available. In development, you usually have access to annotated datasets, making reference-based metrics more common.
+
+You'll learn how to use referenceless metrics exclusively in production in [this section](/observability/online-metrics), where we refer to them as online metrics on Confident AI.
 
 ## Choosing the Right Metrics
 
@@ -128,7 +133,7 @@ When selecting your **FIVE** metrics, aim for a balanced combination of:
 1. **Two to three generic, system-specific metrics** (like answer relevancy and contextual relevancy for RAG systems, or tool correctness for agents) that evaluate core system capabilities
 2. **One to two custom, use case specific metrics** (like GEval or DAG) that focus on your specific use case requirements, independent of the underlying system architecture
 
-In fact, you'll find this pattern used when picking metrics for different use cases in the [use cases page.](/supported-use-cases) Here's a nice flow chart for the process:
+In fact, you'll find this pattern used when picking metrics for different use cases in the [use cases page.](/llm-use-cases) Here's a nice flow chart for the process:
 
 ```mermaid
 graph TD
@@ -152,6 +157,11 @@ Whichever metric that you find is a referenceless one in your final set of metri
 
 ## Metric Implementation
 
+<Callout>
+  A more comprehensive walkthrough can be found in the [evaluation metrics
+  section.](/evaluation/metrics)
+</Callout>
+
 Metrics are applied to test cases during evaluation. Each metric may require different parameters in your `LLMTestCase`. For example:
 
 - RAG metrics typically require `retrieval_context`
@@ -172,20 +182,20 @@ evaluate(test_cases=[test_case], metrics=[
 ])
 ```
 
-## Can Metrics Run On The Cloud?
+## Can I Metrics Run On The Cloud?
 
-Yes, metrics can run on the cloud. However, we recommend starting with local evaluation first. Running metrics locally makes it easier to:
+Yes, [metrics can be ran on the cloud](/evaluation/metrics#metrics-on-the-cloud). However, we recommend starting with local evaluation first. Running metrics locally makes it easier to:
 
 - Iterate quickly on accuracy and reliability
 - Debug and fix issues
 - Fine-tune metric implementations
 - Validate metric accuracy
 
-We suggest spending at least a week perfecting your metrics locally before moving to cloud evaluation. While this may temporarily limit access for non-technical team members, it ensures more robust and reliable metrics in the long run.
+We suggest spending **at least a week** to perfect your metrics locally before moving to cloud evaluation. While this may temporarily limit access for non-technical team members, it ensures more robust and reliable metrics in the long run.
 
 ## Further Reading
 
-For more detailed information on specific metrics and their implementation, refer to the [deepeval documentation](https://docs.confident-ai.com/docs/metrics-introduction). More resources on LLM evaluation metrics written by Confident AI's founders:
+For more detailed information on specific metrics and their implementation, refer to [DeepEval's documentation](https://deepeval.com/docs/metrics-introduction). More resources on LLM evaluation metrics written by Confident AI's founders:
 
 - [Everything on LLM evaluation metrics](https://www.confident-ai.com/blog/llm-evaluation-metrics-everything-you-need-for-llm-evaluation)
 - [Why LLM-as-a-judge is the best evaluation method](https://www.confident-ai.com/blog/why-llm-as-a-judge-is-the-best-llm-evaluation-method)

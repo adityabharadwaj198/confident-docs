@@ -6,7 +6,7 @@ import { Callout } from "nextra/components";
 
 # Iterate On Your LLM Application
 
-There are many ways you can improve your LLM application, and for the sake of simplicity the most straightforward of all is to modify the `"System Prompt"` you've already created on Confident AI.
+**There are many ways you can improve your LLM application**, but for the sake of simplicity the most straightforward of all is to modify the existing `"System Prompt"` you've already created on Confident AI.
 
 <Callout type="warning">
   Even if all your test cases has passed in the [previous
@@ -14,13 +14,13 @@ There are many ways you can improve your LLM application, and for the sake of si
   this page.
 </Callout>
 
-## Creating a New Version
+## Creating a New Prompt Version
 
 On Confident AI, you **CANNOT** edit prompt versions that have already been used in evaluations. This ensures data integrity by maintaining the exact prompt version associated with each evaluation result. Instead of editing an existing version, you'll need to create a new version of your prompt template to make changes.
 
-Go to your `"System Prompt"` in **Prompt Studio**, and click **Create New Version**. Paste in the template of your new version, and click **Save**.
+Go to your `"System Prompt"` in **Prompt Studio**, and click **Create new version**. Paste in the template of your new version, and click **Save**.
 
-[video goes here]
+[TODO: video here, same as prompt versioning video]
 
 > [!IMPORTANT]
 >
@@ -52,6 +52,8 @@ By defauly, the `pull()` method will pull the latest version of your prompt. If 
 
 prompt.pull(version="00.00.01")
 ```
+
+For more information on pulling prompts, [click here.](/prompt-studio/prompt-usage)
 
 ## What's Next?
 

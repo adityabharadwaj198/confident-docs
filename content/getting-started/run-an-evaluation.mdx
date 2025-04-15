@@ -10,7 +10,7 @@ Now that you've created your prompt and dataset, let's run your first evaluation
 
 ## Configure Your Evaluation Model
 
-To run [LLM-as-a-judge metrics](/concepts/metrics) with DeepEval, you'll need to set up an evaluation model. The simplest option is to use OpenAI's models as your LLM judge:
+To run [LLM-as-a-judge metrics](/concepts/metrics#llm-as-judge-approach) with DeepEval, you'll need to set up an evaluation model. The simplest option is to use OpenAI's models as your LLM judge:
 
 ```bash
 export OPENAI_API_KEY=<your-openai-api-key>
@@ -26,7 +26,7 @@ Please **do not include** quotation marks when setting your `OPENAI_API_KEY` if 
 
 > [!IMPORTANT]
 >
-> While OpenAI models are the simplest option, you can also use [other model providers](https://docs.confident-ai.com/integrations/model-azure-openai), [custom models](https://docs.confident-ai.com/guides/guides-using-custom-llms), or run evaluations directly on Confident AI. These advanced options are covered later in the documentation.
+> While OpenAI models are the simplest option, you can also use [other model providers](https://deepeval.com/integrations/models/azure-openai), [custom models](https://deepeval.com/guides/guides-using-custom-llms), or run evaluations directly on Confident AI. These advanced options are covered later in the documentation.
 
 ## Pull Your Prompt and Dataset
 
@@ -100,7 +100,9 @@ evaluate(
 )
 ```
 
-Congratulations! Your test run should now be available on Confident AI ✅. Click around the testing report on Confident AI, and take tyour time to get familarized with it.
+Congratulations! Your test run should now be available on Confident AI as a [testing report](/evaluation/testing-reports) ✅. Click around the testing report on Confident AI, and take tyour time to get familarized with it.
+
+[TODO: video here, same as testing report video]
 
 <Callout type="warning">
   In this example we're using the `AnswerRelevancyMetric` simply for

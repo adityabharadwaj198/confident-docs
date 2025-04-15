@@ -3,6 +3,7 @@ title: Import Datasets
 ---
 
 import { Callout } from "nextra/components";
+import VideoDisplayer from "../../components/VideoDisplayer";
 
 # Import Datasets
 
@@ -16,12 +17,11 @@ The last method means that you can create a dataset out of test runs that you ha
 
 ## Video Summary
 
-<video width="100%" controls muted playsInline>
-  <source
-    src="https://confident-docs.s3.us-east-1.amazonaws.com/confident-dataset-from-test-run.mp4"
-    type="video/mp4"
-  />
-</video>
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/confident-dataset-from-test-run.mp4"
+  width="100%"
+  title="Creating a Dataset from Test Runs"
+/>
 
 ## Import Golden(s) From CSV
 
@@ -77,7 +77,7 @@ dataset.push(alias="QA Dataset", overwrite=True)
   provided.
 </Callout>
 
-You can also **load a dataset from CSV or JSON locally** before uploading it to Confident AI through `deepeval`. For more information on `deepeval`'s `EvaluationDataset`, visit the [official DeepEval documentation.](https://docs.confident-ai.com/docs/evaluation-datasets#load-an-existing-dataset)
+You can also **load a dataset from CSV or JSON locally** before uploading it to Confident AI through `deepeval`. For more information on `deepeval`'s `EvaluationDataset`, visit the [official DeepEval documentation.](https://deepeval.com/docs/evaluation-datasets#load-an-existing-dataset)
 
 ## From Existing Test Runs
 

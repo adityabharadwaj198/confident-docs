@@ -1,6 +1,6 @@
 export default {
   "why-confident-ai": "Why Confident AI",
-  "supported-use-cases": "",
+  "llm-use-cases": "",
   "enterprise": "",
   "on-prem-hosting": "",
   "llm-red-teaming": "",

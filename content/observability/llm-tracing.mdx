@@ -6,7 +6,7 @@ import { Callout } from "nextra/components";
 
 # LLM Tracing
 
-Tracing LLM workflows/systems on Confident AI allows you to pinpoint where your LLM application has errored.
+Tracing LLM workflows/systems on Confident AI allows you to pinpoint component level performances within your LLM app.
 
 <Callout type="info">
   Tracing is a concept borrowed from traditional software engineering, where
@@ -18,132 +18,408 @@ You can think of tracing as building a graph view of your LLM app.
 
 </Callout>
 
-Confident AI tracing is designed to be non instrusive, and requires minimal if any rewrite of your LLM app. It is in the form of decorators (`with` block support incoming), and you can set input and outputs of such decorators at runtime so that you don't have to change your function signature if they don't already fit with our span schema.
+Confident AI tracing is designed to be completely non-intrusive to your application. It:
 
-for example, if your decorated llm function does not return a string, that is ok because you can set the output of the llm span at runtime in the decorated function.
+- Requires no rewrite of your existing code - just add the `@observe` decorator
+- Runs asynchronously in the background with zero impact on latency
+- Fails silently if there are any issues, ensuring your app keeps running
+- Works with any function signature - you can set input/output at runtime
+- Allows you to [run online metrics](/observability/online-metrics) for spans and traces in production.
+
+For instance, even if your LLM function returns a complex object instead of a string, you can still use it with tracing. Just set the output attribute at runtime using `update_current_span_attributes()` - no need to modify your function's return type.
 
 ## Code & Video Summary
 
+Consider this LLM app/agentic workflow:
+
+```mermaid
+graph TD
+    A[Research Agent] --> B[RAG Pipeline]
+    A --> C[Web Search Tool]
+    B --> D[Retriever]
+    B --> E[LLM]
+    A --> E
+```
+
+```python showLineNumbers copy {11, 18, 36, 46, 58}
+from typing import List
+from deepeval.tracing import (
+    observe,
+    update_current_span_attributes,
+    RetrieverAttributes,
+    LlmAttributes,
+)
+
+
+# Tool
+@observe(type="tool")
+def web_search(query: str) -> str:
+    # <--Include implementation to search web here-->
+    return "Latest search results for: " + query
+
+
+# Retriever
+@observe(type="retriever", embedder="text-embedding-ada-002")
+def retrieve_documents(query: str) -> List[str]:
+    # <--Include implementation to fetch from vector database here-->
+    fetched_documents = [
+        "Document 1: This is relevant information about the query.",
+        "Document 2: More relevant information here.",
+        "Document 3: Additional context that might be useful.",
+    ]
+
+    update_current_span_attributes(
+        RetrieverAttributes(
+            embeddingText=query, retrieval_context=fetched_documents
+        )
+    )
+    return fetched_documents
+
+
+# LLM
+@observe(type="llm", model="gpt-4")
+def generate_response(input: str) -> str:
+    # <--Include format prompts and call your LLM provider here-->
+    output = "Generated response based on the prompt: " + input
+
+    update_current_span_attributes(LlmAttributes(input=input, output=output))
+    return output
+
+
+# Custom span wrapping the RAG pipeline
+@observe(type="custom", name="RAG Pipeline")
+def rag_pipeline(query: str) -> str:
+    # Retrieve
+    docs = retrieve_documents(query)
+    context = "\n".join(docs)
+
+    # Generate
+    response = generate_response(f"Context: {context}\nQuery: {query}")
+    return response
+
+
+# Agent that does RAG + tool calling
+@observe(type="agent", available_tools=["web_search"])
+def research_agent(query: str) -> str:
+    # Call RAG pipeline
+    initial_response = rag_pipeline(query)
+
+    # Use web search tool on the results
+    search_results = web_search(initial_response)
+
+    # Generate final response incorporating both RAG and search results
+    final_response = generate_response(
+        f"Initial response: {initial_response}\n"
+        f"Additional search results: {search_results}\n"
+        f"Query: {query}"
+    )
+    return final_response
+
+
+# Calling the agent will create traces on Confident AI
+research_agent("What is the weather like in San Francisco?")
+```
+
 ## Terminologies for Tracing
 
-TODO: these are the terms: tracing, spans, attributes (to each span). Different span types have different attributes. Only default span types are able to set attributes
+Tracing in Confident AI consists of several key concepts:
+
+- **Tracing**: The overall process of tracking and visualizing the execution flow of your LLM application
+- **Spans**: Individual units of work within your application (e.g., LLM calls, tool executions, retrievals)
+- **Attributes**: Properties that can be attached to spans to provide additional context and metadata
+- **Default Span Types**: Pre-defined span types (Agent, Tool, Retriever, LLM) that come with specific attributes
+- **Custom Spans**: User-defined spans for grouping or categorizing other spans
 
 ## Using the `@observe` Decorator
 
-TODO: two quick sentences on talking about what a decorator is then show how to use it, in cluding the import from deepeval.tracing
+The `@observe` decorator is the primary way to instrument your LLM application for tracing. It's a simple Python decorator that can be imported from `deepeval.tracing`.
+
+<Callout type="warning">
+  Each decorated function **CREATES A SPAN**, and **MANY SPANS MAKE UP A
+  TRACE**.
+</Callout>
+
+Here's how to use it:
+
+```python
+from deepeval.tracing import observe
+
+@observe(type="llm", model="gpt-4")
+def my_llm_function(prompt: str) -> str:
+    # Your LLM logic here
+    pass
+```
 
 ## Different Types of Spans
 
-TODO: talk about there are 5 types of spans. They are designed this way to accomodate for the most common default span types you're very like to have, but also any custom spans that you wish to wrap things in. For example, if you are building agentic RAG that is cmposed of first a RAG then tool calling, you can wrap retriever + LLM span in a custom span and name it RAG pipeline, before calling a tool at the same level afterwards.
-
-### Agent span
-
-TODO: this is an agent, explain what it is, best with an example of a thinking agent, an example of usaage with a function (the function should have no implementation with a pass)
-
-TODO: talk about agents can have nested agents. This is for example useful if you have a "supervisor" agent that mediates communuication between different components
-
-TODO: talk about what varible tools and handoff agents do. Also say that it is not strictly checked and so if a user makes a mistake on typo for example it is on them
-TODO: all the attributes here are optional
-
-- [Optional] `available_tools`: a list of strings that specifies...
-- [Optional] `handoff_agents`: a list of strings that specifies...
-- [Optional] `name`: a string that specifies the name of this agent span displayed on Confident AI. Defaulted to the name of the decorated function.
-
-### Tool span
-
-TODO: this is a tool, function calling, explain what it is, an example of usaage with a function (the function should have no implementation with a pass)
-
-- [Optional] `description`: a string that represents...
-- [Optional] `name`: a string that specifies the name of this tool span displayed on Confident AI. Defaulted to the name of the decorated function.
-
-### Retriever span
-
-TODO: this is a retriver, explain what it is in RAG, the embedding and all that stuff, an example of usaage with a function (the function should have no implementation with a pass)
-
-- `embedder`: a string that represents the name of the embedding model used...
-- [Optional] `name`: a string that specifies the name of this retriever span on Confident AI. Defaulted to the name of the decorated function.
+Confident AI provides five types of spans to accommodate various components of your LLM application. These spans are designed to cover the most common use cases while allowing for customization when needed. For example, in an agentic RAG system, you might wrap a retriever and LLM span in a custom span named "RAG Pipeline" before executing tool calls.
 
 ### LLM span
 
-TODO: this is the llm, explain the components of it, an example of usaage with a function (the function should have no implementation with a pass)
+An LLM span represents a call to a language model. It tracks the input, output, and token usage of the model.
 
-- `model`: a string that represents the name of the embedding model used...
-- [Optional] `cost_per_input_token`: a float that specifies...
-- [Optional] `cost_per_output_token`: a float that specifies...
-- [Optional] `name`: a string that specifies the name of this llm span on Confident AI. Defaulted to the name of the decorated function.
+```python showLineNumbers copy
+from deepeval.tracing import observe
 
-If the `cost_per_input_token` is not set, setting the llm attributes for `input_token_count` will not help calculate the cost, vice versa and same for output token as well
+@observe(type="llm", model="gpt-4")
+def generate_response(prompt: str) -> str:
+    pass
+```
+
+There are **TWO** mandatory and **FOUR** optional parameters when decorating a function of the LLM span type:
+
+- `type`: The type of span. Must be `"llm"` for LLM spans.
+- `model`: A string representing the name of the LLM used.
+- [Optional] `cost_per_input_token`: A float specifying the cost per input token. Defaulted to None.
+- [Optional] `cost_per_output_token`: A float specifying the cost per output token. Defaulted to None.
+- [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/observability/online-metrics)
+
+<Callout type="info">
+  If `cost_per_input_token` is not set, setting the LLM attributes for
+  `input_token_count` will not help calculate the cost. The same applies to
+  output tokens.
+</Callout>
+
+### Retriever span
+
+A Retriever span represents a component that fetches relevant information from a vector store or knowledge base. It's a crucial part of RAG (Retrieval-Augmented Generation) pipelines, handling the embedding and retrieval process.
+
+```python showLineNumbers copy
+from deepeval.tracing import observe
+
+@observe(type="retriever", embedder="text-embedding-ada-002")
+def retrieve_documents(query: str) -> List[str]:
+    pass
+```
+
+There are **TWO** mandatory and **TWO** optional parameters when decorating a function of the retriever span type:
+
+- `type`: The type of span. Must be `"retriever"` for retriever spans.
+- `embedder`: A string representing the name of the embedding model used.
+- [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/observability/online-metrics)
+
+### Tool span
+
+A Tool span represents a function that an agent can call to perform a specific task. It's commonly used for function calling in LLM applications.
+
+```python showLineNumbers copy
+from deepeval.tracing import observe
+
+@observe(type="tool")
+def web_search(query: str) -> str:
+    pass
+```
+
+There are **ONE** mandatory and **THREE** optional parameters when decorating a function of the tool span type:
+
+- `type`: The type of span. Must be `"tool"` for tool spans.
+- [Optional] `description`: A string that describes what the tool does. Defaulted to an empty string.
+- [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/observability/online-metrics)
+
+### Agent span
+
+An Agent span represents an autonomous entity that can make decisions and interact with other components. It's particularly useful for implementing thinking agents or multi-agent systems.
+
+```python showLineNumbers copy
+from deepeval.tracing import observe
+
+@observe(
+    type="agent",
+    available_tools=["search", "calculator"],
+    handoff_agents=["research_agent", "math_agent"],
+)
+def supervisor_agent(query: str) -> str:
+    pass
+```
+
+There are **ONE** mandatory and **FOUR** optional parameters when decorating a function of the agent span type:
+
+- `type`: The type of span. Must be `"agent"` for agent spans.
+- [Optional] `available_tools`: A list of strings specifying the tools this agent can use. Defaulted to an empty list.
+- [Optional] `handoff_agents`: A list of strings specifying other agents this agent can delegate to. Defaulted to an empty list.
+- [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/observability/online-metrics)
+
+Agents can be nested within other agents, which is useful for implementing hierarchical agent architectures. For instance, a "supervisor" agent might coordinate communication between specialized agents.
 
 ### Custom span
 
-TODO: talk about the importnace of this, scenarios where this is useful, especially to creating custom hirearchy or grouping of spans
+Custom spans are essential for creating hierarchical structures or grouping related spans together. They provide flexibility in organizing your tracing data.
 
-- [Optional] `name`: a string that specifies how this custom span is displayed on Confident AI. Defaulted to the name of the decorated function.
+```python
+@observe(
+    type="custom",
+    name="RAG Pipeline"
+)
+def rag_pipeline(query: str) -> str:
+    pass
+```
+
+There is **ONE** mandatory and **TWO** optional parameters when decorating a function of the Custom span type:
+
+- `type`: The type of span. Anything other than `"llm"`, `"retriever"`, `"tool"`, and `"agent"` is a custom span type.
+- [Optional] `name`: A string specifying how this custom span is displayed on Confident AI. Defaulted to the name of the decorated function.
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/observability/online-metrics)
 
 ## Set Runtime Attributes for Default Spans
 
-TODO: say only default spans can set attributes at runtime. Attributes are extremely important properties for default spans to determine the output at runtime where it is not possible to set at @observe initialization
+Attributes can only be set at runtime for default spans. To set runtime attributes, use the `update_current_span_attributes()` function. This function updates the attributes for the **CURRENT** span - which is the nearest `@observe` decorator level we are currently tracing. For example, if you have nested spans like:
 
-For example, you can set the retrieval context as the output of a retriever span, which means that for spans that have a strict input/output format you don't have to customize and rewrite your functions to fit our schema.
+```python showLineNumbers {8}
+from deepeval.tracing import observe, update_current_span_attributes
 
-### Agent span
+@observe(type="custom", name="outer")
+def outer_function():
+    @observe(type="llm", name="inner")
+    def inner_function():
+        # Here, update_current_span_attributes() will update the LLM span
+        update_current_span_attributes(...)
+```
 
-TODO: talk about all the attributes here are optional, if not set will just take the decorated function's input and output
+The current span is determined using Python's context variables, which automatically track the active span based on the execution context. This means you don't need to manually pass span references around - the system knows which span you're currently executing within.
 
-#### Input
+<Callout>
+  A useful thing about setting runtime attributes is it eliminates the need to
+  rewrite your current codebase for the `@observe` decorator. For example, you
+  can [set the
+  `retrieval_context`](/observability/llm-tracing#retriever-attributes) as the
+  output of a retriever span, allowing you to maintain your existing function
+  signatures without modification.
+</Callout>
 
-TODO: what it is
+### LLM Attributes
 
-#### Output
+LLM attributes track the `input`, `output`, and token usage of language model calls. You **MUST** set the attributes for an LLM span.
 
-TODO: what it is
+```python showLineNumbers copy
+from deepeval.tracing import update_current_span_attributes, LlmAttributes
 
-### Tool span
+@observe(type="llm", model="gpt-4")
+def generate_response(prompt: str) -> str:
+    output = "Generated response"
+    update_current_span_attributes(
+        LlmAttributes(input=prompt, output=output)
+    )
+    return output
+```
 
-TODO: talk about that the input of the function and the output is the default input parameters and output, but if you set it you can also override it. This is useful if your tool span is not 100% a function on its own (for any reason)
+There are **TWO** mandatory and **TWO** optional parameters for `LLMAttributes`:
 
-TODO: all the attributes here are optional
+- `input`: The prompt or text of type `str` sent to the language model.
+- `output`: The response generated of type `str` by the language model.
+- [Optional] `input_token_count`: The number of tokens of type `int` in the input.
+- [Optional] `output_token_count`: The number of tokens of type `int` in the generated response.
 
-#### Input parameters
+<Callout type="info">
+  If `cost_per_input_token` is not set in the `@observe` decorator, setting the
+  LLM attributes for `input_token_count` will not help calculate the cost. The
+  same applies to output tokens.
+</Callout>
 
-#### Output
+### Retriever Attributes
 
-### Retriever span
+Retriever attributes track the `embedding_input` and `retrieved_context` in RAG pipelines. You **MUST** set the attributes for a retriever span.
 
-TODO: talk about the role of this in a RAG pipeline, and how all retrievers have embedding input to be fetched from a vector store to return a list of text (Retrieval context). The embedding input and retrieval context will be set as the output of the retreiver span in the end
+```python showLineNumbers copy
+from deepeval.tracing import update_current_span_attributes, RetrieverAttributes
 
-#### Embedding Input
+@observe(type="retriever", embedder="text-embedding-ada-002")
+def retrieve_documents(query: str) -> List[str]:
+    fetched_documents = ["doc1", "doc2"]
+    update_current_span_attributes(
+        RetrieverAttributes(embeddingText=query, retrieval_context=fetched_documents)
+    )
+    return fetched_documents
+```
 
-#### Retrieval Context
+There are **TWO** mandatory parameters for `RetrieverAttributes`:
 
-### LLM span
+- `embeddingText`: The text of type `str` that needs to be embedded for vector search.
+- `retrieval_context`: The list of type `str` that represents the relevant documents or text chunks retrieved from your vector store.
 
-#### Input
+### Tool Attributes
 
-#### Output
+Tool attributes track the input parameters and output of tool executions.
 
-#### Input token Count
+```python showLineNumbers copy
+from deepeval.tracing import update_current_span_attributes, ToolAttributes
 
-#### Output token count
+@observe(type="tool")
+def web_search(query: str) -> str:
+    result = "Search results"
+    update_current_span_attributes(
+        ToolAttributes(input_parameters={"query": query}, output=result)
+    )
+    return result
+```
+
+There are **TWO** optional parameters for `ToolAttributes`:
+
+- [Optional] `input_parameters`: The parameters passed to the tool function of type `Dict`. Defaulted to the function `kwargs`.
+- [Optional] `output`: The result returned by the tool function of type `Any`. Defaulted to the function output.
+
+> [!TIP]
+>
+> If `update_current_span_attributes` is not called for a tool span, `deepeval` will automatically take the input and outputs of the function as the `input_parameters` and `output`.
+
+### Agent Attributes
+
+Agent attributes track the input and output of agent decisions and actions.
+
+```python showLineNumbers copy
+from deepeval.tracing import update_current_span_attributes, AgentAttributes
+
+@observe(type="agent", available_tools=["web_search"])
+def research_agent(query: str) -> str:
+    response = "Agent response"
+    update_current_span_attributes(
+        AgentAttributes(input=query, output=response)
+    )
+    return response
+```
+
+There are **TWO** optional parameters for Agent attributes:
+
+- `input`: The input to the agent of type `Any`, typically the initial query or task description. Defaulted to the function `kwargs`.
+- `output`: The agent's response or output of type `Any`, including any actions taken or results produced. Defaulted to the function output.
+
+<Callout type="info">
+  Similar to the tool span, an agent span will take the `@observe` decorated
+  functions's input and output as the `input` and `output` of its attributes.
+</Callout>
 
 ## View Traces in Observatory
 
-TODO: rewrite better, but the idea is: Go to **Observatory** under your project space. and view video summary for more detail.
+To view your traces, navigate to the **Observatory** page under your project space in Confident AI. Here you'll find detailed visualizations of your LLM application's execution flow, including span hierarchies, timing information, and error tracking. You can also open up your trace in full-screen for better visuals.
+
+For a more detailed walkthrough, please refer to the [video summary above.](/observability/llm-tracing#code--video-summary)
 
 ## Common questions
 
 ### What happens if sending to Confident AI errors?
 
-TODO: write clearer title for this, but say that it will not kill your app and fail silently
+If there's an error while sending trace data to Confident AI, your application will continue to run normally. The tracing system is designed to fail silently, ensuring that any issues with tracing don't impact your production application.
 
 ### What tracing integrations are available?
 
-TODO: the one on the roadmap is langchain, openai, llamaindex, litellm
+We currently support and are actively developing integrations with:
+
+- LangChain
+- OpenAI
+- LlamaIndex
+- LiteLLM
 
 ### Can I log prompts and different hyperparameters to spans?
 
-TODO: Yes, set to release on last week of April, 2025
+Yes, this feature is scheduled for release in the last week of April 2025. You'll be able to attach prompts, model parameters, and other hyperparameters to your spans for better debugging and optimization.
 
 ### Can I log custom properties to spans?
 
-TODO: Yes, set to release on first week of May, 2025
+Yes, this feature is scheduled for release in the first week of May 2025. You'll be able to add any custom properties to your spans to track additional metadata specific to your use case.
+
+### Can I run online metrics on traces/spans?
+
+Yes, you can learn how in the [next section.](/observability/online-metrics)

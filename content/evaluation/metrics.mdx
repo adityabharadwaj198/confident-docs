@@ -57,7 +57,7 @@ These are the metrics agnostic to use cases but specific to different LLM system
   guide](/concepts/metrics#choosing-the-right-metrics).
 </Callout>
 
-These metrics are available both [via DeepEval](/evaluation/metrics#run-metrics-via-deepeval) and [on the cloud.](/evaluation/metrics#run-metrics-on-the-cloud)
+These metrics are available both [via DeepEval](/evaluation/metrics#metrics-via-deepeval) and [on the cloud.](/evaluation/metrics#run-metrics-on-the-cloud)
 
 ### Custom metrics
 
@@ -77,17 +77,17 @@ Custom metrics are valuable because they:
 - Can be tailored to your specific use case requirements
 - Provide consistent evaluation across different implementations of the same functionality
 
-All three custom metrics are available [via DeepEval](/evaluation/metrics#run-metrics-via-deepeval), only `GEval` is available and [on the cloud.](/evaluation/metrics#run-metrics-on-the-cloud)
+All three custom metrics are available [via DeepEval](/evaluation/metrics#metrics-via-deepeval), only `GEval` is available and [on the cloud.](/evaluation/metrics#run-metrics-on-the-cloud)
 
 > [!TIP]
 >
-> The [supported use cases page](/concepts/supported-use-cases) is a great resource to see how each custom metric can be used for specific use cases.
+> The [supported LLM use cases page](/concepts/llm-use-cases) is a great resource to see how each custom metric can be used for specific use cases.
 
 ### Other metrics
 
 Other metrics include ones like bias, toxicity, summarization (although this is better handled by `GEval` and `DAGMetric`), and you can read [more about the list here.](/concepts/metrics#other-metrics)
 
-These metrics are mostly only available [via DeepEval](/evaluation/metrics#run-metrics-via-deepeval).
+These metrics are mostly only available [via DeepEval](/evaluation/metrics#metrics-via-deepeval).
 
 ## Threshold, Include Reason, and Strict Mode
 
@@ -148,15 +148,15 @@ faithfulness = FaithfulnessMetric(model="o1")
 
 You can also use other model providers that `deepeval` has integrations with, such as:
 
-- [Ollama](https://docs.confident-ai.com/integrations/model-ollama)
-- [Azure OpenAI](https://docs.confident-ai.com/integrations/model-azure-openai)
-- [Anthropic](https://docs.confident-ai.com/integrations/model-anthropic)
-- [Gemini](https://docs.confident-ai.com/integrations/model-gemini)
-- [Vertex AI](https://docs.confident-ai.com/integrations/model-vertex-ai)
-- [vLLM](https://docs.confident-ai.com/integrations/model-vllm)
-- [LMStudio](https://docs.confident-ai.com/integrations/model-lmstudio)
+- [Ollama](https://deepeval.com/integrations/models/ollama)
+- [Azure OpenAI](https://deepeval.com/integrations/models/azure-openai)
+- [Anthropic](https://deepeval.com/integrations/models/anthropic)
+- [Gemini](https://deepeval.com/integrations/models/gemini)
+- [Vertex AI](https://deepeval.com/integrations/models/vertex-ai)
+- [vLLM](https://deepeval.com/integrations/models/vllm)
+- [LMStudio](https://deepeval.com/integrations/models/lmstudio)
 
-Lastly, you can wrap your own LLM API in `deepeval`'s `DeepEvalBaseLLM` class to use **ANY** model of your choice. [Click here](https://docs.confident-ai.com/guides/guides-using-custom-llms) to learn how.
+Lastly, you can wrap your own LLM API in `deepeval`'s `DeepEvalBaseLLM` class to use **ANY** model of your choice. [Click here](https://deepeval.com/guides/guides-using-custom-llms) to learn how.
 
 ### Example Implementation
 
@@ -164,14 +164,13 @@ We'll be showing 3 quick examples of how the same answer relevancy metric can be
 
 <Callout type="warning">
   Each metric are unique in their own way, and you should **DEFINITELY** go to
-  [DeepEval's
-  documentation](https://docs.confident-ai.com/docs/metrics-introduction) to
+  [DeepEval's documentation](https://deepeval.com/docs/metrics-introduction) to
   learn how to use each of them.
 </Callout>
 
 #### Default
 
-The default [`AnswerRelevancyMetric`](https://docs.confident-ai.com/docs/metrics-answer-relevancy) is simple and requires no additional configuration:
+The default [`AnswerRelevancyMetric`](https://deepeval.com/docs/metrics-answer-relevancy) is simple and requires no additional configuration:
 
 ```python showLineNumbers
 from deepeval.metrics import AnswerRelevancyMetric()
@@ -181,7 +180,7 @@ metric = AnswerRelevancyMetric()
 
 #### G-Eval
 
-A [`GEval`](https://docs.confident-ai.com/docs/metrics-llm-evals) implementation of the same answer relevancy metric, with more tailor criteria that specifies that the `actual_output` has to be shorter than 3 sentences:
+A [`GEval`](https://deepeval.com/docs/metrics-llm-evals) implementation of the same answer relevancy metric, with more tailor criteria that specifies that the `actual_output` has to be shorter than 3 sentences:
 
 ```python showLineNumbers {6-7}
 from deepeval.test_case import LLMTestCaseParams
@@ -199,7 +198,7 @@ What you'll find however, is `GEval` is better for subjective custom criteria, s
 
 #### DAG
 
-A [`DAGMetric`](https://docs.confident-ai.com/docs/metrics-dag) implementation is perfect for combining objective and subjective criteria. It is an LLM powered decision tree that can combine other metrics such as `AnswerRelevancyMetric` or `GEval`:
+A [`DAGMetric`](https://deepeval.com/docs/metrics-dag) implementation is perfect for combining objective and subjective criteria. It is an LLM powered decision tree that can combine other metrics such as `AnswerRelevancyMetric` or `GEval`:
 
 ```python showLineNumbers {11, 18, 22, 27}
 from deepeval.test_case import LLMTestCaseParams
@@ -267,7 +266,7 @@ When you add a metric to a collection, the threshold, reasoning, and strictness 
 
 ## Big Disclaimer
 
-For detailed information about metric calculations and required test case parameters for each, please refer to the official [DeepEval documentation](https://docs.confident-ai.com/docs/metrics-introduction). The metrics documentation on Confident AI focuses on helping you choose and use the right metrics for your use case, not the specific implementation.
+For detailed information about metric calculations and required test case parameters for each, please refer to the official [DeepEval documentation](https://deepeval.com/docs/metrics-introduction). The metrics documentation on Confident AI focuses on helping you choose and use the right metrics for your use case, not the specific implementation.
 
 Each metric in DeepEval has comprehensive documentation that covers:
 
@@ -275,4 +274,4 @@ Each metric in DeepEval has comprehensive documentation that covers:
 - Implementation details and examples
 - Calculation methodology
 
-For instance, the `AnswerRelevancyMetric` [documentation page](https://docs.confident-ai.com/docs/metrics-answer-relevancy) provides a complete technical reference for that specific metric.
+For instance, the `AnswerRelevancyMetric` [documentation page](https://deepeval.com/docs/metrics-answer-relevancy) provides a complete technical reference for that specific metric.

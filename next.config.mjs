@@ -19,5 +19,7 @@ export default withNextra({
       '@': path.resolve(__dirname),
     }
     return config
-  }
+  },
+  // Enable CSS modules
+  cssModules: true
 })

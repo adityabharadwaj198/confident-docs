@@ -2,9 +2,11 @@
 title: Test Runs
 ---
 
+import { Callout } from "nextra/components";
+
 # Test Runs
 
-A test run in Confident AI is a collection of evaluated test cases that provides insights into your LLM application's performance. Unlike datasets which contain unevaluated test cases and goldens, test runs contain the evaluation results and serve as **testing reports or benchmarks of your LLM app**.
+A test run in Confident AI is a collection of evaluated test cases that provides insights into your LLM application's performance. Unlike [datasets](/concepts/datasets) which contain unevaluated test cases and goldens, test runs contain the evaluation results and serve as [testing reports](/evaluation/testing-reports) or **benchmarks of your LLM app**.
 
 Test runs enable you to:
 
@@ -13,7 +15,7 @@ Test runs enable you to:
 - Share evaluation results with team members
 - Identify areas for improvement in your LLM application
 
-It is extremely common for users to setup cron jobs or pre-deployment evaluations to create a test run each time a change is made to your LLM application.
+It is extremely common for users to setup cron jobs or pre-deployment [unit-testing evaluations in CI/CD](/evaluation/unit-testing-in-cicd) to create a test run each time a change is made to your LLM application.
 
 ## Why Test Runs?
 
@@ -33,6 +35,11 @@ Test runs represent a more systematic approach to LLM evaluation compared to one
 This systematic approach enables benefits like performance tracking, regression testing, and team collaboration that aren't possible with ad-hoc debugging alone. Without these foundational elements working together, test runs would not provide meaningful insights into your LLM application's performance.
 
 ## Test Run Implementation
+
+<Callout>
+  A more comprehensive walkthrough can be found in the [running LLM evals
+  section.](/evaluation/running-llm-evals)
+</Callout>
 
 Test runs can be created by running evaluations either **locally** using DeepEval or **on the cloud** on Confident AI's platform. You will get full access to all features offered in Confident AI's testing suite regardless of which method you choose but we **highly recommend to start with running things locally.**
 
@@ -73,7 +80,7 @@ deepeval test run test_llm.py
 
 ### Creating test runs on the cloud
 
-_to be documented_
+You can also create test runs on the cloud by running evaluations directly on Confident AI, either using API requests or in a click of a button directly on the platform. [Click here](/evaluation/running-llm-evals#run-llm-evals-on-the-cloud) to learn how.
 
 ## Further Reading
 

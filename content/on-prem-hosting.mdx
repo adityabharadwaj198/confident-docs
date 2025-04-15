@@ -2,9 +2,13 @@
 title: On-Prem Hosting
 ---
 
+import { Callout } from "nextra/components";
+
 # Self-Host Confident AI
 
 Confident AI can be self-hosted in your organization's infrastructure through a containerized deployment. This deployment model ensures that **no data ever leaves your data center**, providing enhanced security and compliance for organizations with strict data governance requirements.
+
+Our self-hosted solution includes enterprise **Single Sign-On (SSO)** for secure and seamless authentication.
 
 ## Deployment Process
 
@@ -52,13 +56,18 @@ Before deploying Confident AI, ensure your infrastructure meets the following re
 
 ### Identity Provider (IDP)
 
-- **SAML 2.0** or **OAuth 2.0** compatible identity provider
+- **SAML 2.0** or **OAuth 2.0** compatible identity provider for **Single Sign-On (SSO) integration**
 - Supported providers include:
   - Azure AD
   - Okta
   - OneLogin
   - Ping Identity
   - Custom SAML/OAuth implementations
+
+<Callout type="info">
+  Custom authentication methods are also available on-demand. You should reach
+  out to support@confident-ai.com for any additional questions.
+</Callout>
 
 ### Infrastructure
 

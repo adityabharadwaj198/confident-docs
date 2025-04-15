@@ -9,13 +9,23 @@ import { Callout } from "nextra/components";
 
 Confident AI is built around the perfect LLM evaluation workflow. LLM evaluation is the product of great metrics and datasets, and a systematic approach to testing and iteration.
 
-[insert diagram here]
+```mermaid
+flowchart TD
+    A[Choose Your Metrics] --> B[Curate Dataset]
+    B --> C[Edit Prompt]
+    C --> D[Run an Evaluation]
+    D --> E[Iterate on your LLM App]
+    E --> D
+    E -- "✔️ Meets Quality Standards" --> F[Deployment]
+    F --> G[Monitor in Production]
+    G -- "Identify Performance Issues" --> B
+```
 
-This guide walks you through both basic and advanced evaluation workflows to help you build more reliable and effective LLM systems.
-
-> [!TIP]
+> [!IMPORTANT]
 >
-> By following a structured evaluation process, you can continuously improve your LLM applications, identify performance bottlenecks, and ensure your models meet the quality standards required for production deployment.
+> This guide walks you through both basic and advanced evaluation workflows to help you build more reliable and effective LLM systems, and is a meant to be a high level overview only.
+
+By following a structured evaluation process, you can continuously improve your LLM applications, identify performance bottlenecks, and ensure your models meet the quality standards required for production deployment.
 
 ## Basic Setup
 
@@ -29,9 +39,15 @@ These are the list of tasks that you must get right in order to start using Conf
 <Steps>
 ### Choose Your Metrics
 
-Select 2-5 [metrics](/concepts/metrics) to evaluate your LLM application. We recommend 1-2 **custom metrics** that are use case specific, while 2-3 **default metrics** specific to the architecture of your LLM app (e.g. RAG, agents, agentic RAG, conversational chatbots, etc.)
+Select **TWO to FIVE** metrics to evaluate your LLM application. We recommend 1-2 **custom metrics** that are use case specific, while 2-3 **default metrics** specific to the architecture of your LLM app (e.g. RAG, agents, agentic RAG, conversational chatbots, etc.)
 
-You can use the metrics you have chosen through DeepEval either locally or on the cloud.
+You can read up on the best practices for metrics selection and the rationale behind it [here.](/concepts/metrics#choosing-the-right-metrics) The metrics you have chosen can be used locally either through DeepEval or on the cloud.
+
+### Prepare Your Prompt
+
+Write or paste in your first prompt on Confident AI's [prompt studio](/prompt-studio/overview). This will allow you to use it for evaluation as well as test it for your use case.
+
+Both text and messages prompts are supported.
 
 ### Prepare Your Dataset
 
@@ -45,31 +61,51 @@ If you already have a dataset, you can import it as CSV by uploading it on Confi
 - Synthetize goldens either yourself using DeepEval or ask us to help you do it
 - Start with a small number (~5-10) goldens and start from there
 
+<Callout type="warning">
+  We will show you how to [curate datasets on Confident
+  AI](/dataset-editor/annotate-datasets) in later sections.
+</Callout>
+
 ### Run an Evaluation
 
-Using the `input`s of the goldens in your prepared dataset, prompt your LLM application. Once your LLM application has generated all the necessary values for test cases, run an evaluation:
+Using the `input`s of the goldens in your prepared dataset, prompt, and your LLM application, generate all the necessary values for test cases, before running an evaluation:
 
 ```python showLineNumbers copy
 from deepeval.dataset import EvaluationDataset
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval.prompt import Prompt
 from deepeval import evaluate
 
+
+# Pull dataset
 dataset = EvaluationDataset()
 dataset.pull(alias="First dataset")
 
+
+# Pull prompt
+prompt = Prompt(alias="System Prompt")
+prompt.pull()
+
+
 # Populate test cases
 for golden in dataset.goldens:
+    prompt_to_llm = prompt.interpolate(golden.input)
     test_case = LLMTestCase(
         input=golden.input,
-        # Generate an LLM output by replacing this with
-        # the output your LLM app generated for this `golden.input`
-        actual_output="..."
+        actual_output=your_llm_app(prompt_to_llm) # Replace with your app
     )
     dataset.test_cases.append(test_case)
 
-evaluate(test_cases=dataset.test_cases, metrics=[...])
+
+# Define metrics
+metric = AnswerRelevancyMetric()
+
+
+# Run evaluation
+evaluate(test_cases=dataset.test_cases, metrics=[metric])
 ```
 
-This creates a [test run](/concepts/test-run) on Confident AI, which you can use to run A|B experiments, share testing reports of, regression test performance, and so much more.
+This creates a [test run](/concepts/test-runs) on Confident AI, which you can use to run A|B experiments, share testing reports of, regression test performance, and so much more.
 
 ### Repeat After Each Iteration
 
@@ -119,7 +155,7 @@ This manual review helps you understand where your metrics are failing to align 
 
 ### Implement Tracing
 
-Tracing is primarily valuable for agentic workflows, where it enables component-level evaluation of complex systems. By implementing tracing, you can:
+LLM tracing is primarily valuable for agentic workflows, where it enables component-level evaluation of complex systems. By implementing [tracing on Confident AI](/observability/llm-tracing), you can:
 
 - **Track tool usage**: Monitor which tools your agent selects and how effectively they're used
 - **Evaluate multiple retrieval components**: Assess the performance of different retrieval strategies, embedding models, and reranking approaches to identify the most effective combination
@@ -137,7 +173,7 @@ For effective tracing, implement structured logging in your agent's code that ca
 
 ### Customize Accordingly Based on Use Case
 
-Different [LLM use cases](/supported-use-cases) need different evaluation approaches. As your product evolves, test coverage and metrics may become less effective over time due to shifting use cases and features. Regularly reassess to ensure your evaluation strategy stays aligned with your application's current needs.
+Different [LLM use cases](/llm-use-cases) need different evaluation approaches. As your product evolves, test coverage and metrics may become less effective over time due to shifting use cases and features. Regularly reassess to ensure your evaluation strategy stays aligned with your application's current needs.
 
 </Steps>
 

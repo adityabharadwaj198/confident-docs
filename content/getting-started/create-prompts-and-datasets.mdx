@@ -6,9 +6,9 @@ import { Callout } from "nextra/components";
 
 # Setup Prompts and Datasets
 
-Creating a [prompt](/concepts/hyperparameters#prompts) and [dataset](/concepts/datasets) is extremely important to running evaluations on Confident AI. This is because by editing prompts on Confident AI we'll be able to tell you which version performs best, while annotating datasets on Confident AI allows you to use them for evaluation much more effectively.
+Creating a prompt and dataset is extremely important to running evaluations on Confident AI. This is because by editing prompts on Confident AI we'll be able to tell you which version performs best, while annotating datasets on Confident AI allows you to use them for evaluation much more effectively.
 
-<Callout>
+<Callout type="warning">
   If in doubt, read the concepts explanation on what a
   [prompt](/concepts/hyperparameters#prompts) and [dataset](/concepts/datasets)
   is.
@@ -21,6 +21,10 @@ This page will walk you through how to quickly create one of each before moving 
 ### Create a Prompt
 
 Navigate to your project, and go to the **Prompt Studio** tab on the left navigation drawer. Click on **Create a Prompt**, and provide your prompt with an alias. For example, the alias of your first prompt can be something like `"System Prompt"`, which is where you'll be storing your system prompt, instead of using something like CSV files or GitHub `.txt` files.
+
+<Callout>
+  Full walkthrough on prompt studio [available here.](/prompt-studio/overview)
+</Callout>
 
 ### Create a Prompt Version
 
@@ -52,6 +56,8 @@ When your prompt needs to include dynamic content, you can use variables by wrap
   Exactly one space between the braces and the variable name
 </Callout>
 
+You can also create **a list of prompt messages**, or which is a list of prompts with the `"role"` and `"content"` field present. If you decide to create a prompt message instead, you can supply it directly to your LLM provider once pulled from Confident AI (more info on this later). More on prompt messages can be [found here.](/prompt-studio/prompt-versioning#create-a-prompt-message-list)
+
 Let's create a dataset next.
 
 ## Datasets
@@ -59,6 +65,10 @@ Let's create a dataset next.
 ### Create a Dataset
 
 Navigate to your project, and go to the **Datasets** tab on the left navigation drawer. Click on **Create a dataset**, and provide your dataset with an alias. For example, the alias of your first dataset can be something like `"My Evals Dataset"`, which is where you'll be storing the dataset you'll be using for evaluation.
+
+> [!TIP]
+>
+> The entirety of the datasets feature are [available here.](/dataset-editor/overview)
 
 ### Create or Upload Golden(s)
 
