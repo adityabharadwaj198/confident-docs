@@ -70,7 +70,7 @@ def retrieve_documents(query: str) -> List[str]:
 
     update_current_span_attributes(
         RetrieverAttributes(
-            embeddingText=query, retrieval_context=fetched_documents
+            embedding_input=query, retrieval_context=fetched_documents
         )
     )
     return fetched_documents
@@ -330,14 +330,14 @@ from deepeval.tracing import update_current_span_attributes, RetrieverAttributes
 def retrieve_documents(query: str) -> List[str]:
     fetched_documents = ["doc1", "doc2"]
     update_current_span_attributes(
-        RetrieverAttributes(embeddingText=query, retrieval_context=fetched_documents)
+        RetrieverAttributes(embedding_input=query, retrieval_context=fetched_documents)
     )
     return fetched_documents
 ```
 
 There are **TWO** mandatory parameters for `RetrieverAttributes`:
 
-- `embeddingText`: The text of type `str` that needs to be embedded for vector search.
+- `embedding_input`: The text of type `str` that needs to be embedded for vector search.
 - `retrieval_context`: The list of type `str` that represents the relevant documents or text chunks retrieved from your vector store.
 
 ### Tool Attributes

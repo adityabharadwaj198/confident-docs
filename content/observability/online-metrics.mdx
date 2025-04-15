@@ -51,7 +51,7 @@ def retrieve_documents(query: str) -> List[str]:
 
     update_current_span_attributes(
         RetrieverAttributes(
-            embeddingText=query, retrieval_context=fetched_documents
+            embedding_input=query, retrieval_context=fetched_documents
         )
     )
     return fetched_documents
