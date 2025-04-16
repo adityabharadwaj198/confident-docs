@@ -1,3 +1,5 @@
+@import '@/app/styles/colors.scss';
+
 .customFooter {
   display: flex;
   flex-direction: column;
@@ -72,7 +74,7 @@
 }
 
 .madeWithLove {
-  font-size: 0.75rem;
+  font-size: 13px;
   color: var(--nextra-secondary-text-color);
   margin-bottom: 1rem;
 }
@@ -87,8 +89,6 @@
 .legalLinks {
   display: flex;
   gap: 1rem;
-  margin-top: 0.5rem;
-
 }
 
 .legalLink {
@@ -103,5 +103,18 @@
   }
 }
 
-// Dark mode adjustments can be handled with CSS variables or
-// className conditionals in the component based on theme 
+.complianceBadges {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.complianceBadge {
+  object-fit: contain;
+  border-radius: 4px;
+  width: 110px;
+  background-color: $violet-950;
+  border-radius: 50%;
+  box-shadow: 0 0 10px 0 $violet-500;
+}
+
