@@ -54,22 +54,22 @@ const CustomFooter = () => {
             <h3 className={styles.columnTitle}>Resources</h3>
             <ul className={styles.linksList}>
               <li className={styles.linkItem}>
-                <a href="https://confident-ai.com/blog" target="_blank" rel="noopener noreferrer" className={styles.link}>
+                <a href="https://www.confident-ai.com/blog/llm-evaluation-metrics-everything-you-need-for-llm-evaluation" target="_blank" rel="noopener noreferrer" className={styles.link}>
                   LLM Evaluation Metrics
                 </a>
               </li>
               <li className={styles.linkItem}>
-                <a href="https://trydeepteam.com" target="_blank" rel="noopener noreferrer" className={styles.link}>
+                <a href="https://www.confident-ai.com/blog/why-llm-as-a-judge-is-the-best-llm-evaluation-method" target="_blank" rel="noopener noreferrer" className={styles.link}>
                   LLM as a Judge
                 </a>
               </li>
               <li className={styles.linkItem}>
-                <a href="https://confident-ai.com/pricing" target="_blank" rel="noopener noreferrer" className={styles.link}>
-                  LLM Chatbot Evaluation
+                <a href="https://www.confident-ai.com/blog/llm-testing-in-2024-top-methods-and-strategies" target="_blank" rel="noopener noreferrer" className={styles.link}>
+                  Top LLM Testing Techniques in 2025
                 </a>
               </li>
               <li className={styles.linkItem}>
-                <a href="https://confident-ai.com/blog" target="_blank" rel="noopener noreferrer" className={styles.link}>
+                <a href="https://www.confident-ai.com/blog/llm-agent-evaluation-complete-guide" target="_blank" rel="noopener noreferrer" className={styles.link}>
                   LLM Agent Evaluation
                 </a>
               </li>
