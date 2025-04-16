@@ -6,7 +6,7 @@ import { Callout } from "nextra/components";
 
 # Metrics
 
-Confident AI provides a comprehensive set of metrics for evaluating LLM applications. This page covers the available metrics and how to use them.
+Confident AI provides a comprehensive set of metrics with **over 20+ metrics powered by DeepEval** for evaluating LLM applications. This page covers the available metrics and how to use them.
 
 ## Code & Video Summary
 
@@ -25,7 +25,11 @@ custom_metric = GEval(
 
 To define metrics on the cloud:
 
-[video here]
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/evaluation:metric-collections.mp4"
+  width="100%"
+  title="Creating metric collections on Confident AI"
+/>
 
 ## Quick Recap of Metrics
 
@@ -57,7 +61,7 @@ These are the metrics agnostic to use cases but specific to different LLM system
   guide](/concepts/metrics#choosing-the-right-metrics).
 </Callout>
 
-These metrics are available both [via DeepEval](/evaluation/metrics#metrics-via-deepeval) and [on the cloud.](/evaluation/metrics#run-metrics-on-the-cloud)
+These metrics are available both [via DeepEval](/llm-evaluation/metrics#metrics-via-deepeval) and [on the cloud.](/llm-evaluation/metrics#run-metrics-on-the-cloud)
 
 ### Custom metrics
 
@@ -77,7 +81,7 @@ Custom metrics are valuable because they:
 - Can be tailored to your specific use case requirements
 - Provide consistent evaluation across different implementations of the same functionality
 
-All three custom metrics are available [via DeepEval](/evaluation/metrics#metrics-via-deepeval), only `GEval` is available and [on the cloud.](/evaluation/metrics#run-metrics-on-the-cloud)
+All three custom metrics are available [via DeepEval](/llm-evaluation/metrics#metrics-via-deepeval), only `GEval` is available and [on the cloud.](/llm-evaluation/metrics#run-metrics-on-the-cloud)
 
 > [!TIP]
 >
@@ -87,7 +91,7 @@ All three custom metrics are available [via DeepEval](/evaluation/metrics#metric
 
 Other metrics include ones like bias, toxicity, summarization (although this is better handled by `GEval` and `DAGMetric`), and you can read [more about the list here.](/concepts/metrics#other-metrics)
 
-These metrics are mostly only available [via DeepEval](/evaluation/metrics#metrics-via-deepeval).
+These metrics are mostly only available [via DeepEval](/llm-evaluation/metrics#metrics-via-deepeval).
 
 ## Threshold, Include Reason, and Strict Mode
 
@@ -249,8 +253,8 @@ That being said, if you are using another programming language such as Typescrip
 
 There are two ways to run evals with metrics on the cloud:
 
-1. [Through an HTTPS `POST` request](/evaluation/running-evals#run-llm-evals-on-the-cloud) that sends over a list of test cases with the generated outputs from your LLM app, or
-2. [On the platform directly](/evaluation/running-evals#trigger-evals-without-code), which will be triggered through the click of a button without the need of code
+1. [Through an HTTPS `POST` request](/llm-evaluation/running-evals#run-llm-evals-on-the-cloud) that sends over a list of test cases with the generated outputs from your LLM app, or
+2. [On the platform directly](/llm-evaluation/running-evals#trigger-evals-without-code), which will be triggered through the click of a button without the need of code
 
 Ultimately, regardless of your chosen approach, you must first define a collection of metrics to specify which metrics to run on Confident AI.
 

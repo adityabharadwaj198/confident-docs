@@ -10,7 +10,11 @@ Prompt versioning refers to the process of curating and developing differnt prom
 
 ## Video Summary
 
-[TODO]
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/prompt-studio:prompt-versioning.mp4"
+  width="100%"
+  title="How to create and version a prompt"
+/>
 
 ## Two Types of Prompts
 
@@ -19,7 +23,7 @@ There are two types of prompts you can create:
 - **[(Single) Prompt](/prompt-studio/prompt-versioning#create-a-prompt)**: Use this when you need a straightforward, one-off prompt for simple completions.
 - **[Prompt Message List](/prompt-studio/prompt-versioning#create-a-prompt-message-list)**: Use this when you need to define multiple messages with specific roles (system, user, assistant) in a conversation. This format is ideal for few-shot prompting, where you can start with a system message that sets the context, followed by several example pairs of user questions and assistant responses, and end with your actual user message. This structured approach helps guide the LLM to provide more accurate and consistent responses.
 
-[image of two types of prompts]
+[TODO: image of two types of prompts]
 
 <Callout type="info">
   If you ever see a prompt being mentioned without any mention of "message" or
@@ -74,8 +78,8 @@ This is exactly the same as creating a prompt in the [previous step](/prompt-stu
 
 A prompt version for a prompt message list, is a **list of prompt messages**, not individual prompts. Each prompt message has:
 
-- A role - either "system", "user", or "assistant"
-- A prompt template - same as a single prompt version
+- `"role"` - either "system", "user", or "assistant"
+- `"content"` - same as a single prompt version
 
 When you create a new version, you're creating a list of prompts. To add a new message, click on the **New Message** button at the end of the list, and edit your prompt message accordingly. When you're done, click **Save**.
 

@@ -12,7 +12,11 @@ import { Callout } from "nextra/components";
 
 ## Video Summary
 
-[TODO: video]
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/evaluation:ab-regression-testing.mp4"
+  width="100%"
+  title="How to regression test your LLM app"
+/>
 
 ## Select a Previous Test Run
 
@@ -69,7 +73,7 @@ To match by **Input** instead, toggle the "Match By" pill from **Name** to **Inp
 >
 > When you have duplicate inputs or names, the filters might not work as expected. It is important that you don't duplicate inputs and names in a test run.
 
-You can also watch the [video summary](/evaluation/ab-regression-testing#video-summary) above for more details.
+You can also watch the [video summary](/llm-evaluation/ab-regression-testing#video-summary) above for more details.
 
 ### Filter for Regressions
 
@@ -80,7 +84,7 @@ When dealing with a large number of test cases, you can easily identify regressi
 3. Choose **has changed from** in the dropdown
 4. Set the change from **Passed** to **Failed**
 
-This will show you all test cases where performance degraded (labelled in red) between runs. Watch the [video summary](/evaluation/ab-regression-testing#video-summary) above for more details.
+This will show you all test cases where performance degraded (labelled in red) between runs. Watch the [video summary](/llm-evaluation/ab-regression-testing#video-summary) above for more details.
 
 ### Filter for Metric scores
 
@@ -91,4 +95,4 @@ You can also filter test cases based on changes in their metric scores. For exam
 3. Choose **has decreased by more than** in the dropdown
 4. Set the change to 0.3
 
-Watch the [video summary](/evaluation/ab-regression-testing#video-summary) above for more details.
+Watch the [video summary](/llm-evaluation/ab-regression-testing#video-summary) above for more details.

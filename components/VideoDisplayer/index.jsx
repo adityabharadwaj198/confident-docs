@@ -35,14 +35,11 @@ const VideoDisplayer = ({ src, type = 'video/mp4', title = "How to use Confident
   });
   const [isFullscreen, setIsFullscreen] = useState(false);
   
-
   useEffect(() => {
     // Generate random view count between 1.5k and 15k
     const randomViews = Math.floor(Math.random() * (15000 - 1500) + 1500);
-    
     // Random upload date (1-30 days ago)
     const daysAgo = Math.floor(Math.random() * 30) + 1;
-    
     // Random like count (60-80% of views)
     const likePercentage = Math.random() * 0.2 + 0.6; // Between 60-80%
     const likeCount = Math.floor(randomViews * likePercentage);
@@ -53,8 +50,6 @@ const VideoDisplayer = ({ src, type = 'video/mp4', title = "How to use Confident
       likes: likeCount > 1000 ? `${(likeCount / 1000).toFixed(1)}K` : likeCount
     });
   }, []); 
-  
-
   
   // Use Intersection Observer to detect when video is visible
   useEffect(() => {
@@ -132,6 +127,35 @@ const VideoDisplayer = ({ src, type = 'video/mp4', title = "How to use Confident
     };
   }, [showVideo, videoRef.current]);
   
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Only handle spacebar press when the video is displayed
+      if (e.code === 'Space' && showVideo && videoRef.current) {
+        e.preventDefault(); // Prevent page scrolling
+        
+        const video = videoRef.current;
+        if (!video) return;
+        
+        if (video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
+        
+        // Trigger flash animation
+        setShowFlash(true);
+        setTimeout(() => setShowFlash(false), 500); // Hide after 500ms
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showVideo]); 
+
   const handlePlayPause = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -169,9 +193,7 @@ const VideoDisplayer = ({ src, type = 'video/mp4', title = "How to use Confident
   };
   
   const handleFullscreen = (e) => {
-    // Stop the click from bubbling up to the video element
     e.stopPropagation();
-    
     if (!wrapperRef.current) return;
     
     if (wrapperRef.current.requestFullscreen) {

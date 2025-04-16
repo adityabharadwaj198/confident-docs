@@ -6,7 +6,15 @@ import { Callout } from "nextra/components";
 
 # Prompt Usage
 
-You can pull a prompt version from Confident AI like how you would pull a dataset. You should pull prompts once and save it in memory instead of pulling it everytime.
+You can pull a prompt version from Confident AI like how you would pull a dataset. You should pull prompts once and save it in memory instead of pulling it everytime you need to use it.
+
+```mermaid
+graph TD
+    A[Edit Prompt] --> B[Version Prompt]
+    B --> C[Pull Prompt from Confident AI]
+    C --> D[Interpolate Variables]
+    D --> E[Use in LLM Application]
+```
 
 ## Code Summary
 
@@ -27,7 +35,7 @@ output = your_llm_app(prompt_to_llm)
 
 ## Pull a Prompt Version
 
-Pull your prompt version from Confident AI by providing the `alias` you’ve defined:
+Pull your prompt version from Confident AI by providing the `alias` you've defined:
 
 ```python
 from deepeval.prompt import Prompt

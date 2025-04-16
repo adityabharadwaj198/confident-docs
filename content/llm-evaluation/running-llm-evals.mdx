@@ -106,7 +106,7 @@ If you're unsure what this does, read about using datasets on Confident AI [here
 
 ### Run an evaluation
 
-Now with test cases, and the metrics you're chosen and defined in the [previous section](/evaluation/metrics), you can run an evaluation. Here, the example metric we're using is the `AnswerRelevancyMetric()`:
+Now with test cases, and the metrics you're chosen and defined in the [previous section](/llm-evaluation/metrics), you can run an evaluation. Here, the example metric we're using is the `AnswerRelevancyMetric()`:
 
 ```python
 from deepeval.metrics import AnswerRelevancyMetric
@@ -125,7 +125,7 @@ evaluate(
 
 <Callout>Don't forget to log your hyperparameters!</Callout>
 
-**Congratulations 🎉!** Your **test run** is now available on Confident AI automatically as a [testing report](/evaluation/testing-report).
+**Congratulations 🎉!** Your **test run** is now available on Confident AI automatically as a [testing report](/llm-evaluation/testing-report).
 
 By default, test runs on Confident AI are assigned randomly generated IDs, which can make it difficult to identify specific runs later. To make your test runs more easily identifiable, you can provide a descriptive name using the `identifier` parameter:
 
@@ -135,7 +135,7 @@ By default, test runs on Confident AI are assigned randomly generated IDs, which
 evaluate(identifier="My First Test Run", ...)
 ```
 
-If you want to run **evaluations in CI/CD** instead in the form of unit-tests, [click here.](/evaluation/unit-testing-in-cicd)
+If you want to run **evaluations in CI/CD** instead in the form of unit-tests, [click here.](/llm-evaluation/unit-testing-in-cicd)
 
 ## Run LLM Evals on the Cloud
 
@@ -213,8 +213,6 @@ confident_evaluate(metric_collection="your-collection-name", test_cases=dataset.
 3. Press the **Evaluate** button
 4. Select your metric collection and dataset
 5. Press **Evaluate** to run the evaluation!
-
-[TODO: video]
 
 > [!IMPORTANT]
 >
@@ -296,4 +294,4 @@ evaluate(
 )
 ```
 
-All hyperparameters that you associate with test runs can be viewed on individual [testing reports](/evaluation/testing-reports) on Confident AI by clicking the **View Hyperparameters** button on a test run's **Overview** page. You can also filter for test runs that are associated with certain hyperparameters on the **Evaluations** page under your project space.
+All hyperparameters that you associate with test runs can be viewed on individual [testing reports](/llm-evaluation/testing-reports) on Confident AI by clicking the **View Hyperparameters** button on a test run's **Overview** page. You can also filter for test runs that are associated with certain hyperparameters on the **Evaluations** page under your project space.

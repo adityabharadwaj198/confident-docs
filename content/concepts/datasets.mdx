@@ -80,6 +80,31 @@ A test case (`LLMTestCase`) represents a completed interaction with your LLM app
 
 Test cases are ready for immediate evaluation since they already contain the LLM's output. This also means that test cases are **NOT** meant for editing, unlike a golden.
 
+## Convert Goldens to Test Cases at Evaluation Time
+
+At evaluation time, you will [pull your dataset from Confident AI](/dataset-editor/using-datasets), generate any required test case parameters such as the `actual_output`, before running evaluations on the set of newly created test cases. Here's what it looks like:
+
+```mermaid
+flowchart TB
+    A([Dataset with Goldens<br>in Confident AI]) -.->|Pull from Confident AI| B([Local Dataset<br>with Goldens])
+
+    subgraph loop [For Each Golden]
+      direction TB
+      D[Golden] ==> E[/Generate actual_output using your LLM app/]
+      E ==> F[(New Test Case)]
+    end
+
+    B ==> loop
+    loop ==> G{{Complete Dataset<br>with Test Cases}}
+    G ==>|Run Evaluation| H>Evaluation Results]
+
+    %% Simple styling with just shapes
+    linkStyle default stroke:#333,stroke-width:1.5px;
+    linkStyle 0 stroke:#333,stroke-width:1.5px,stroke-dasharray: 5 5;
+
+    style loop fill:transparent,stroke:#999,stroke-width:1px,stroke-dasharray: 5 5
+```
+
 ## How to Curate Datasets
 
 There are several ways to build a high-quality dataset:

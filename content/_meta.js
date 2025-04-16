@@ -1,7 +1,7 @@
 export default {
   "why-confident-ai": "Why Confident AI",
   "llm-use-cases": "",
-  "enterprise": "",
+  "data-handling": "",
   "on-prem-hosting": "",
   "llm-red-teaming": "",
   concepts: {
@@ -22,8 +22,8 @@ export default {
   },
   "dataset-editor": "Dataset Editor",
   "prompt-studio": "Prompt Studio",
-  evaluation: "Evaluation",
-  observability: "Observability",
+  "llm-evaluation": "LLM Evaluation",
+  "llm-observability": "LLM Observability",
   "human-in-the-loop": "Human-in-the-Loop",
   "project-configurations": "Project Configurations",
   // "---3": {

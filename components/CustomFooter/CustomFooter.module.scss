@@ -1,0 +1,107 @@
+.customFooter {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.footerRow {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.footerColumn {
+  margin-bottom: 1.5rem;
+  
+  @media (min-width: 768px) {
+    flex: 1;
+    margin-bottom: 0;
+  }
+}
+
+.companyInfo {
+  @media (min-width: 768px) {
+    flex: 2; // Give more space to company info column
+  }
+}
+
+.columnTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--nextra-primary-hue);
+}
+
+.linksList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.linkItem {
+  margin-bottom: 0.5rem;
+}
+
+.link {
+  font-size: 0.875rem;
+  color: var(--nextra-primary-hue-dark);
+  transition: color 0.2s;
+  
+  &:hover {
+    color: var(--nextra-primary-hue);
+    text-decoration: underline;
+  }
+}
+
+.logo {
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 0.5rem;
+}
+
+.copyright {
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  margin-bottom: 0.25rem;
+}
+
+.madeWithLove {
+  font-size: 0.75rem;
+  color: var(--nextra-secondary-text-color);
+  margin-bottom: 1rem;
+}
+
+.statusBadge {
+  margin: 0.75rem 0;
+  border: none;
+  background-color: transparent;
+  border-radius: 5px;
+}
+
+.legalLinks {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+
+}
+
+.legalLink {
+  font-size: 0.75rem;
+  color: var(--nextra-secondary-text-color);
+  text-decoration: none;
+  transition: color 0.2s;
+  
+  &:hover {
+    color: var(--nextra-primary-hue);
+    text-decoration: underline;
+  }
+}
+
+// Dark mode adjustments can be handled with CSS variables or
+// className conditionals in the component based on theme 

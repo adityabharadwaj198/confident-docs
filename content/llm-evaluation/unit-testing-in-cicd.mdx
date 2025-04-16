@@ -145,11 +145,11 @@ deepeval test run test_llm_app.py -n 2
 
 > [!TIP]
 >
-> The `-n` flag allows you to spin up multiple processes to run `assert_test()` on multiple test cases simultaneously, which is useful for speeding up the unit-testing proces. All the flags of `deepeval test run` can be [found here.](/evaluation/unit-testing-in-cicd#introducing-deepeval-test-run)
+> The `-n` flag allows you to spin up multiple processes to run `assert_test()` on multiple test cases simultaneously, which is useful for speeding up the unit-testing proces. All the flags of `deepeval test run` can be [found here.](/llm-evaluation/unit-testing-in-cicd#introducing-deepeval-test-run)
 
 You'll notice that `test_llm_app.py` is largely similar to how we run an evaluation with the `evaluate()` function - we first pull a prompt, before the dataset, create a list of test cases, and finally run an evaluation.
 
-` deepeval test run` also creates [testing reports](/evaluation/testing-reports) on Confident AI automatically as well, and offers the same functionalities as the `evaluate()`function. However, please never use the`evaluate()`function within a test function - always use`assert_test()` instead, as it's specifically designed for CI/CD workflows and offers features tailored for unit testing, and integrated with Pytest.
+` deepeval test run` also creates [testing reports](/llm-evaluation/testing-reports) on Confident AI automatically as well, and offers the same functionalities as the `evaluate()`function. However, please never use the`evaluate()`function within a test function - always use`assert_test()` instead, as it's specifically designed for CI/CD workflows and offers features tailored for unit testing, and integrated with Pytest.
 
 ### Log hyperparameters
 
@@ -165,7 +165,7 @@ def hyperparameters():
     return {"Temperature": 1, "Chunk Size": 500}
 ```
 
-This follows the same principle as described [here](/evaluation/running-llm-evals#logging-hyperparameters), where the hyperparameters dictionary is of type `Dict[str, Union[str, Prompt]]`. This allows you to log any arbitrary hyperparameter associated with your test run to pick the best configurations for your LLM application on Confident AI.
+This follows the same principle as described [here](/llm-evaluation/running-llm-evals#logging-hyperparameters), where the hyperparameters dictionary is of type `Dict[str, Union[str, Prompt]]`. This allows you to log any arbitrary hyperparameter associated with your test run to pick the best configurations for your LLM application on Confident AI.
 
 ## Introducing `deepeval test run`
 

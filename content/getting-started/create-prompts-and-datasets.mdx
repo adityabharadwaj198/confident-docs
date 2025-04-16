@@ -18,13 +18,19 @@ This page will walk you through how to quickly create one of each before moving 
 
 ## Prompts
 
-### Create a Prompt
-
-Navigate to your project, and go to the **Prompt Studio** tab on the left navigation drawer. Click on **Create a Prompt**, and provide your prompt with an alias. For example, the alias of your first prompt can be something like `"System Prompt"`, which is where you'll be storing your system prompt, instead of using something like CSV files or GitHub `.txt` files.
-
 <Callout>
   Full walkthrough on prompt studio [available here.](/prompt-studio/overview)
 </Callout>
+
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/prompt-studio:prompt-versioning.mp4"
+  width="100%"
+  title="How to create and version a prompt"
+/>
+
+### Create a Prompt
+
+Navigate to your project, and go to the **Prompt Studio** tab on the left navigation drawer. Click on **Create a Prompt**, and provide your prompt with an alias. For example, the alias of your first prompt can be something like `"System Prompt"`, which is where you'll be storing your system prompt, instead of using something like CSV files or GitHub `.txt` files.
 
 ### Create a Prompt Version
 
@@ -62,13 +68,20 @@ Let's create a dataset next.
 
 ## Datasets
 
+<Callout type="info">
+  Full walkthrough on the datasets feature are [available
+  here.](/dataset-editor/overview)
+</Callout>
+
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/dataset-editor:dataset-annotation.mp4"
+  width="100%"
+  title="How to create and annotate a dataset"
+/>
+
 ### Create a Dataset
 
 Navigate to your project, and go to the **Datasets** tab on the left navigation drawer. Click on **Create a dataset**, and provide your dataset with an alias. For example, the alias of your first dataset can be something like `"My Evals Dataset"`, which is where you'll be storing the dataset you'll be using for evaluation.
-
-> [!TIP]
->
-> The entirety of the datasets feature are [available here.](/dataset-editor/overview)
 
 ### Create or Upload Golden(s)
 
@@ -79,7 +92,7 @@ Once you've created a dataset, you'll be directed to the **Dataset Editor** page
 
 If you fall into category 2 where you don't already have a dataset, simply creating a golden very quickly with the input text you usually test your LLM application with is the best approach to get LLM evaluation setup.
 
-<Callout type="info">
+<Callout>
   You can always add more goldens later on, but that can be done at a later time
   once you've gone through this quickstart guide.
 </Callout>

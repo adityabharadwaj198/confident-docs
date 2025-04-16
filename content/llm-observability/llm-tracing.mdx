@@ -24,7 +24,7 @@ Confident AI tracing is designed to be completely non-intrusive to your applicat
 - Runs asynchronously in the background with zero impact on latency
 - Fails silently if there are any issues, ensuring your app keeps running
 - Works with any function signature - you can set input/output at runtime
-- Allows you to [run online metrics](/observability/online-metrics) for spans and traces in production.
+- Allows you to [run online metrics](/llm-observability/online-metrics) for spans and traces in production.
 
 For instance, even if your LLM function returns a complex object instead of a string, you can still use it with tracing. Just set the output attribute at runtime using `update_current_span_attributes()` - no need to modify your function's return type.
 
@@ -120,6 +120,12 @@ def research_agent(query: str) -> str:
 research_agent("What is the weather like in San Francisco?")
 ```
 
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/observability:llm-tracing.mp4"
+  width="100%"
+  title="LLM Tracing for an Agentic RAG App"
+/>
+
 ## Terminologies for Tracing
 
 Tracing in Confident AI consists of several key concepts:
@@ -173,7 +179,7 @@ There are **TWO** mandatory and **FOUR** optional parameters when decorating a f
 - [Optional] `cost_per_input_token`: A float specifying the cost per input token. Defaulted to None.
 - [Optional] `cost_per_output_token`: A float specifying the cost per output token. Defaulted to None.
 - [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
-- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/observability/online-metrics)
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
 <Callout type="info">
   If `cost_per_input_token` is not set, setting the LLM attributes for
@@ -198,7 +204,7 @@ There are **TWO** mandatory and **TWO** optional parameters when decorating a fu
 - `type`: The type of span. Must be `"retriever"` for retriever spans.
 - `embedder`: A string representing the name of the embedding model used.
 - [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
-- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/observability/online-metrics)
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
 ### Tool span
 
@@ -217,7 +223,7 @@ There are **ONE** mandatory and **THREE** optional parameters when decorating a 
 - `type`: The type of span. Must be `"tool"` for tool spans.
 - [Optional] `description`: A string that describes what the tool does. Defaulted to an empty string.
 - [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
-- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/observability/online-metrics)
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
 ### Agent span
 
@@ -241,7 +247,7 @@ There are **ONE** mandatory and **FOUR** optional parameters when decorating a f
 - [Optional] `available_tools`: A list of strings specifying the tools this agent can use. Defaulted to an empty list.
 - [Optional] `handoff_agents`: A list of strings specifying other agents this agent can delegate to. Defaulted to an empty list.
 - [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
-- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/observability/online-metrics)
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
 Agents can be nested within other agents, which is useful for implementing hierarchical agent architectures. For instance, a "supervisor" agent might coordinate communication between specialized agents.
 
@@ -262,7 +268,7 @@ There is **ONE** mandatory and **TWO** optional parameters when decorating a fun
 
 - `type`: The type of span. Anything other than `"llm"`, `"retriever"`, `"tool"`, and `"agent"` is a custom span type.
 - [Optional] `name`: A string specifying how this custom span is displayed on Confident AI. Defaulted to the name of the decorated function.
-- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/observability/online-metrics)
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
 ## Set Runtime Attributes for Default Spans
 
@@ -285,9 +291,9 @@ The current span is determined using Python's context variables, which automatic
   A useful thing about setting runtime attributes is it eliminates the need to
   rewrite your current codebase for the `@observe` decorator. For example, you
   can [set the
-  `retrieval_context`](/observability/llm-tracing#retriever-attributes) as the
-  output of a retriever span, allowing you to maintain your existing function
-  signatures without modification.
+  `retrieval_context`](/llm-observability/llm-tracing#retriever-attributes) as
+  the output of a retriever span, allowing you to maintain your existing
+  function signatures without modification.
 </Callout>
 
 ### LLM Attributes
@@ -395,7 +401,7 @@ There are **TWO** optional parameters for Agent attributes:
 
 To view your traces, navigate to the **Observatory** page under your project space in Confident AI. Here you'll find detailed visualizations of your LLM application's execution flow, including span hierarchies, timing information, and error tracking. You can also open up your trace in full-screen for better visuals.
 
-For a more detailed walkthrough, please refer to the [video summary above.](/observability/llm-tracing#code--video-summary)
+For a more detailed walkthrough, please refer to the [video summary above.](/llm-observability/llm-tracing#code--video-summary)
 
 ## Common questions
 
@@ -422,4 +428,4 @@ Yes, this feature is scheduled for release in the first week of May 2025. You'll
 
 ### Can I run online metrics on traces/spans?
 
-Yes, you can learn how in the [next section.](/observability/online-metrics)
+Yes, you can learn how in the [next section.](/llm-observability/online-metrics)

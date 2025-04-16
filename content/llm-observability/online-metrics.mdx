@@ -10,7 +10,7 @@ You can define online metrics on a span level by providing the names of the metr
 
 ## Code & Video Summary
 
-Consider this exact same LLM app/agentic workflow from the [previous section](/observability/llm-tracing):
+Consider this exact same LLM app/agentic workflow from the [previous section](/llm-observability/llm-tracing):
 
 ```mermaid
 graph TD
@@ -111,7 +111,11 @@ def research_agent(query: str) -> str:
 research_agent("What is the weather like in San Francisco?")
 ```
 
-[TODO: video here]
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/observability:online-metrics.mp4"
+  width="100%"
+  title="How to Enable Online Metrics for Tracing"
+/>
 
 ## Recap on Referenceless Metrics
 
@@ -128,7 +132,7 @@ In the following sections, you'll learn how to enable and configure these refere
 
 ## Enable Metric Collection for Monitoring
 
-To enable referenceless metrics to run in production, you will need to [create a metric collection](/evaluation/metrics#metrics-on-the-cloud), and press the **Enable for Monitoring** button for that metric collection.
+To enable referenceless metrics to run in production, you will need to [create a metric collection](/llm-evaluation/metrics#metrics-on-the-cloud), and press the **Enable for Monitoring** button for that metric collection.
 
 This will make every **referenceless** metric, including custom metrics, you've enabled inside the metric collection runnable upon receiving the trace you've logged. For non-referenceless metrics, Confident AI will simply ignore them.
 
@@ -211,10 +215,18 @@ Therefore, it is the `inner_function()` that will have the online metrics evalua
 
 <Callout>
   You'll notice this is extremely similar to the
-  [`update_current_span_attributes()`](/observability/llm-tracing#set-runtime-attributes-for-default-spans)
+  [`update_current_span_attributes()`](/llm-observability/llm-tracing#set-runtime-attributes-for-default-spans)
   function for setting span specific attributes, with the difference being the
   `update_current_span_test_case_parameters()` function can be called in custom
   spans as well.
 </Callout>
 
 ## View Metrics in Observatory
+
+This was actually already shown in the [previous section's video summary](/llm-observability/llm-tracing#code--video-summary), but here it is again:
+
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/observability:llm-tracing.mp4"
+  width="100%"
+  title="Online metrics for an Agentic RAG App"
+/>

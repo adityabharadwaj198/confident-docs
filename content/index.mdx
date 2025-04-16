@@ -23,7 +23,7 @@ There are a dozen more features which will be shown in depth later in this docum
 
 When you choose Confident AI, you can rest assured that:
 
-1. The platform supports all LLM use cases, no matter how complicated they are, or your evaluation needs.
+1. The platform [supports all LLM use cases](/llm-use-cases), no matter how complicated they are, or your evaluation needs.
 2. Our expertise in building DeepEval can help you simplify the process of evaluation to get the most out of your eval results.
 
 Even if you're not using Confident AI, you can [join our discord community](https://discord.com/invite/a3K9c8GRGt) to talk LLM evaluation anytime.
@@ -31,8 +31,12 @@ Even if you're not using Confident AI, you can [join our discord community](http
 ## Features Overview
 
 <Cards>
-  <Cards.Card arrow title="Evaluation" href="/evaluation/overview" />
-  <Cards.Card arrow title="Observability" href="/observability/overview" />
+  <Cards.Card arrow title="LLM Evaluation" href="/llm-evaluation/overview" />
+  <Cards.Card
+    arrow
+    title="LLM Observability"
+    href="/llm-observability/overview"
+  />
   <Cards.Card arrow title="Prompt Studio" href="/prompt-studio/overview" />
   <Cards.Card arrow title="Dataset Editor" href="/dataset-editor/overview" />
   <Cards.Card
@@ -45,15 +49,34 @@ Even if you're not using Confident AI, you can [join our discord community](http
 
 ## How to Navigate the Docs
 
-This documentation is designed to teach you how to use Confident AI to evaluate your LLM apps with as little fluff as possible.
+This documentation is designed to teach you how to use Confident AI to evaluate your LLM apps with as little fluff as possible. The:
 
-If you're looking for running LLM evaluations with just our open-source **DeepEval** LLM evaluation framework, [click here](https://deepeval.com) for DeepEval's documentation instead.
+- **Concepts** [section](/concepts/test-cases) covers essential terminology for understanding LLM evaluation - recommended starting point for beginners
+- **Quickstart** section provides the fundamentals needed to begin using the platform effectively
+- **Data Handling** [page](/data-handling) explains data organization, privacy controls, and residency options
+- **Platform Features** section details the complete suite of Confident AI capabilities:
+  - [LLM Evaluations](/llm-evaluation/overview)
+  - [LLM Observability](/llm-observability/overview)
+  - [Dataset Management](/dataset-editor/overview)
+  - [Prompt Engineering](/prompt-studio/overview)
+  - [Human-in-the-Loop](/human-in-the-loop/overview)
+
+<Callout>
+  Each individual platform feature page includes either a code and/or video
+  summary that you can follow along.
+</Callout>
+
+There will be numerous places throughout this documentation where we will reference DeepEval's documentation, especially for running evaluations and customizing metrics. This is **not a mistake**, and everything you see on DeepEval's documentation can be applied directly to Confident AI.
+
+For those interested in using only our open-source **DeepEval** LLM evaluation framework without Confident AI, please visit [DeepEval's documentation](https://deepeval.com).
 
 ## FAQs
 
 ### How is this different from DeepEval?
 
 While DeepEval computes the metric results required for data-driven LLM app development, it does not provide the insights required for iteration.
+
+[Click here](/why-confident-ai#deepeval-vs-confident-ai) for a more comprehensive comparison.
 
 ### What LLM use cases are supported?
 
@@ -65,7 +88,7 @@ Confident AI has tailored metrics and platform capabilities for different types 
 
 ### What about complex agentic systems?
 
-Complex agentic systems are definitely supported on Confident AI through LLM tracing. One thing to note though is that it is extremely important to decide carefully on what to (not) evaluate in a complex LLM agentic workflow, since trying to evaluate everything means you're actually evaluating nothing.
+Complex agentic systems are definitely supported on Confident AI through [LLM tracing.](/llm-observability/llm-tracing) One thing to note though is that it is extremely important to decide carefully on what to (not) evaluate in a complex LLM agentic workflow, since trying to evaluate everything means you're actually evaluating nothing.
 
 The first step to evaluating agentic use cases is to setup tracing before deciding on which and where LLM evaluation metrics should be used. You can also join our discord community or contact support@confident-ai.com to share what you're building and get recommendations on how to best run evals if in doubt.
 

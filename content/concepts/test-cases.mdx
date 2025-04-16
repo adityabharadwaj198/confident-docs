@@ -65,7 +65,15 @@ evaluate(test_cases=[test_case], metrics=[metric])
 
 ### `LLMTestCase`
 
-An `LLMTestCase` is used to evaluate a single interaction with an LLM application. It requires at minimum:
+An `LLMTestCase` is used to evaluate a single interaction with an LLM application.
+
+<ImageDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/concepts:llm-test-case.svg"
+  alt="LLM Test Case Architecture"
+  title="LLM Test Case Architecture"
+/>
+
+It requires at minimum:
 
 - `input` (`str`): The input to the LLM app
 - `actual_output` (`str`): The LLM app's output based on the input
@@ -104,7 +112,15 @@ It's important to note that the `actual_output`, `retrieval_context`, and `tools
 
 ### `ConversationalTestCase`
 
-A `ConversationalTestCase` represents a multi-turn conversation with an LLM. It requires:
+A `ConversationalTestCase` represents a multi-turn conversation with an LLM.
+
+<ImageDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/concepts:conversational-test-case.svg"
+  alt="Conversational Test Case Architecture"
+  title="Conversational Test Case Architecture"
+/>
+
+It requires:
 
 - `turns` (`list[LLMTestCase]`): A list of `LLMTestCase`s representing each interaction in the conversation
 

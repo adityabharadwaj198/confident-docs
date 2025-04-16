@@ -27,53 +27,81 @@ There are million places you can keeping your prompts - on GitHub, CSV files, in
 <Cards>
   <Cards.Card
     arrow
-    title="Edit Prompts"
-    href="/dataset-editor/analyze-test-coverage"
-  />
-  <Cards.Card
-    arrow
     title="Prompt Versioning"
-    href="/dataset-editor/annotate-datasets#create-goldens"
+    href="/prompt-studio/prompt-versioning"
   />
   <Cards.Card
     arrow
     title="Prompt Messages"
-    href="/dataset-editor/import-datasets#import-goldens-from-csv"
+    href="/prompt-studio/prompt-versioning#create-a-prompt-message-list"
   />
+  <Cards.Card arrow title="Using Prompts" href="/prompt-studio/prompt-usage" />
   <Cards.Card
     arrow
-    title="Using Prompts"
-    href="/dataset-editor/import-datasets#upload-goldens-via-deepeval"
-  />
-  <Cards.Card
-    arrow
-    title="Prompt Evaluation"
-    href="/dataset-editor/annotate-datasets#adding-custom-columns"
+    title="Prompt Testing"
+    href="/prompt-studio/prompt-testing"
   />
   <Cards.Card
     arrow
     title="Prompt Suggestions"
-    href="/dataset-editor/annotate-datasets#enable-backups--revision-history-recommended"
+    href="/prompt-studio/prompt-suggestions"
   />
 </Cards>
 
 ## Simple Walkthrough
 
+This walkthrough will show how to use the **Prompt Studio** on Confident AI for prompt management and testing. Not all features will be covered, but if you follow all the steps you’ll have the prompt features setup.
+
 ### Create Prompt
+
+Go to **Prompt Studio** in your project space, and create a new prompt. Provide an alias, which is an name unique for your prompt. You must not use the same alias twice in a project space.
 
 ### Create a Prompt Version
 
-### Pulling a Prompt Version
+Once you’ve created your first prompt, click on **Create new version**. The **Prompt Editor** will pop up, write or paste in your prompt text, as well as any other `{{ variables }}` that you wish, and click **Save**.
 
-### Evaluating a Prompt Version
+<Callout>
+  You can also create a list of prompt messages by clicking on the **Prompt
+  Messages** tab.
+</Callout>
 
-### Create Another Version
+### Pull and Evaluate a Prompt Version
 
-### Evaluate the Latest Version
+Once you have your prompt version, pull it to use it in your LLM app:
+
+```python showLineNumbers copy {10-11, 15, 26}
+from deepeval.dataset import EvaluationDataset
+from deepeval.prompt import Prompt
+from deepeval.test_case import LLMTestCase
+from deepeval import evaluate
+
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+# Pull prompt version
+prompt = Prompt("your-prompt-alias")
+prompt.pull()
+
+for golden in dataset.goldens:
+    # Replace with your own variables
+    prompt_to_llm = prompt.interpolate(input=golden.input)
+    test_case = LLMTestCase(
+        input=golden.input,
+        actual_output=your_llm_app(prompt_to_llm) # Replace your_llm_app()
+    )
+    dataset.test_cases.append(test_case)
+
+# Run an evaluation
+evaluate(
+  test_cases=dataset.test_cases,
+  metrics=[...],
+  hyperparameters={"My Prompt": prompt}
+)
+```
 
 ## Future Roadmap
 
+- [x] Prompt messages
+- [x] Prompt roles
+- [ ] Create new versions more easily previous versions
 - [ ] Prompt suggestions
-- [ ] Prompt messages
-- [ ] Prompt roles
-- [ ] More easily create prompt from previous prompts

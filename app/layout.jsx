@@ -4,6 +4,7 @@ import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 import '@/app/styles/globals.css'
 import Logo from '@/components/Logo'
+import CustomFooter from '@/components/CustomFooter/CustomFooter'
  
 export const metadata = {
   // Define your metadata here
@@ -18,7 +19,7 @@ const navbar = (
     chatLink="https://discord.gg/Up3gbNTF"
   />
 )
-const footer = <Footer>MIT {new Date().getFullYear()} © Nextra.</Footer>
+const footer = <CustomFooter />
  
 export default async function RootLayout({ children }) {
   return (

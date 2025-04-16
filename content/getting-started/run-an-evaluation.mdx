@@ -6,7 +6,19 @@ import { Callout } from "nextra/components";
 
 # Run Your First LLM Eval
 
-Now that you've created your prompt and dataset, let's run your first evaluation and create a [test run](/concepts/test-runs).
+Now that you've created your prompt and dataset, let's run your first evaluation and create a [test run](/concepts/test-runs). By the end of this section, you'll have working code that executes this LLM evaluation workflow:
+
+```mermaid
+flowchart LR
+    A[Confident AI] --> B[Dataset] & C[Prompt]
+    B & C --> D[Loop]
+    subgraph D[Process Each Golden]
+      direction TB
+      E[Combine Inputs]-->F[LLM Output]-->G[Test Case]
+    end
+    D --> H[Evaluate]
+    H --> I[Results]
+```
 
 ## Configure Your Evaluation Model
 
@@ -26,7 +38,7 @@ Please **do not include** quotation marks when setting your `OPENAI_API_KEY` if 
 
 > [!IMPORTANT]
 >
-> While OpenAI models are the simplest option, you can also use [other model providers](https://deepeval.com/integrations/models/azure-openai), [custom models](https://deepeval.com/guides/guides-using-custom-llms), or run evaluations directly on Confident AI. These advanced options are covered later in the documentation.
+> While OpenAI models are the simplest option, you can also use [other model providers](https://deepeval.com/integrations/models/azure-openai), [custom models](https://deepeval.com/guides/guides-using-custom-llms), or run evaluations [directly on Confident AI](/llm-evaluation/running-llm-evals#run-llm-evals-on-the-cloud). These advanced options are covered later in the documentation.
 
 ## Pull Your Prompt and Dataset
 
@@ -45,7 +57,7 @@ The evaluation process works as follows:
 2. For each golden:
    - Combines the `input` with your prompt template
    - Generates an `actual_output`, and any other test case parameters such as `retrieval_context` using your LLM application
-3. Creates a collection of test cases ready for evaluation
+3. Creates a collection of test cases **in your dataset** ready for evaluation
 
 Here's the example code:
 
@@ -100,9 +112,13 @@ evaluate(
 )
 ```
 
-Congratulations! Your test run should now be available on Confident AI as a [testing report](/evaluation/testing-reports) ✅. Click around the testing report on Confident AI, and take tyour time to get familarized with it.
+Congratulations 🎉! Your test run should now be available on Confident AI as a [testing report](/llm-evaluation/testing-reports) ✅. Click around the testing report on Confident AI, and take tyour time to get familarized with it.
 
-[TODO: video here, same as testing report video]
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/evaluation:testing-reports.mp4"
+  width="100%"
+  title="FIRST LOOK: Testing Reports on Confident AI"
+/>
 
 <Callout type="warning">
   In this example we're using the `AnswerRelevancyMetric` simply for
