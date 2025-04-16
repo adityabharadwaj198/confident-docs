@@ -1,9 +1,10 @@
 import React from 'react';
 import Image from 'next/image';
+import styles from './Logo.module.scss';
 
 const Logo = ({ width = 180, height = 150 }) => {
   return (
-    <div className="logo-container" style={{ display: 'flex', alignItems: 'center' }}>
+    <div className={styles.logoContainer}>
       <Image 
         src="/icons/light-confident-logo.svg" 
         alt="Confident Docs Logo" 
@@ -11,15 +12,8 @@ const Logo = ({ width = 180, height = 150 }) => {
         height={height}
         priority
       />
-      <span style={{ 
-        fontSize: '0.8rem', 
-        marginTop: '8px',
-        marginLeft: '14px', 
-        color: 'var(--tw-prose-body)', 
-        opacity: 0.7,
-        fontWeight: 300
-      }}>
-        the llm evaluation platform<span className="cursor-blink">_</span>
+      <span className={styles.tagline}>
+        the llm evaluation platform<span className={styles.cursorBlink}>_</span>
       </span>
     </div>
   );

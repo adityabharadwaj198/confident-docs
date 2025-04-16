@@ -30,6 +30,7 @@ const config = {
     </>
   ),
   defaultTheme: "light",
+  disableSystemTheme: true,
 };
 
 export default config;

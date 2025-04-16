@@ -10,11 +10,14 @@ const CustomFooter = () => {
         <div className={styles.footerRow}>
           <div className={`${styles.footerColumn} ${styles.companyInfo}`}>
             <img className={styles.logo} src="/icons/confident-docs-logo.svg" alt="Confident AI Logo" />
-            <div className={styles.copyright}>
-              Copyright © {new Date().getFullYear()} Confident AI, Inc.
+            <div className={styles.companyName}>
+              Confident AI, the DeepEval Platform
             </div>
             <div className={styles.madeWithLove}>
               Made with ❤️ and confidence
+            </div>
+            <div className={styles.copyright}>
+              Copyright © {new Date().getFullYear()} Confident AI, Inc. All rights reserved.
             </div>
             <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
               <iframe 
