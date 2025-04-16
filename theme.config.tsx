@@ -29,7 +29,9 @@ const config = {
       <link rel="apple-touch-icon" href="/favicon.ico" />
     </>
   ),
-  defaultTheme: "light",
+  nextThemes: {
+    defaultTheme: "light",
+  },
   disableSystemTheme: true,
 };
 
