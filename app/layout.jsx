@@ -46,6 +46,10 @@ export default async function RootLayout({ children }) {
       </Head>
       <body suppressHydrationWarning>
         <Layout
+          darkMode={false}
+          nextThemes={{
+            defaultTheme: "light",
+          }}
           banner={banner}
           navbar={navbar}
           pageMap={await getPageMap()}
