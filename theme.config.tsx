@@ -27,6 +27,11 @@ const config = {
         href="/icons/light-confident-logo.svg"
       />
       <link rel="apple-touch-icon" href="/favicon.ico" />
+      <script
+        defer
+        data-domain="confident-ai.com"
+        src="https://plausible.io/js/script.js"
+      ></script>
     </>
   ),
 };
