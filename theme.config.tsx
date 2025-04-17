@@ -11,6 +11,8 @@ const config = {
   useNextSeoProps() {
     return {
       titleTemplate: "%s – Confident AI Docs",
+      defaultTitle: "Confident AI Docs",
+      description: "The Official Documentation for Confident AI",
     };
   },
   head: () => (
