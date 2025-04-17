@@ -9,7 +9,7 @@ import CustomFooter from '@/components/CustomFooter/CustomFooter'
 export const metadata = {
   title: {
     default: 'Confident AI Docs',
-    template: '%s - Confident AI Docs'
+    template: '%s | Confident AI - The DeepEval Platform'
   },
   description: 'The Official Documentation for Confident AI'
 }
