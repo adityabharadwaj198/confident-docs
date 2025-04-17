@@ -383,7 +383,7 @@ There is **ONE** mandatory and **TWO** optional parameters when configuring a cu
 Attributes can be set at runtime by using the `updateCurrentSpanAttributes()` function. This updates the attributes for the **CURRENT** span in the execution context.
 
 ```tsx showLineNumbers
-import { updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+import { ObserveLLM, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
 
 const generateCompletion = ObserveLLM({
   model: "gpt-4",
@@ -410,13 +410,12 @@ JavaScript's async context automatically tracks the current span, so you don't n
 LLM attributes track the input, output, and token usage of language model calls:
 
 ```tsx showLineNumbers
-import { updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+import { ObserveLLM, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
 
 const generateCompletion = ObserveLLM({
   model: "gpt-4",
   fn: async (prompt: string) => {
     ...
-    const response = "The capital of France is Paris.";
 
     updateCurrentSpanAttributes({
       input: prompt,
@@ -448,14 +447,12 @@ There are **TWO** mandatory and **TWO** optional parameters for `LlmAttributes`:
 Retriever attributes track the query and retrieved context from vector stores or other retrieval systems:
 
 ```tsx showLineNumbers
-import { updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+import { ObserveRetriever, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
 
 const fetchDocuments = ObserveRetriever({
   name: "pinecone",
   fn: async (query: string) => {
     ...
-    const documents = ["Document about Paris", "Document about France"];
-
     updateCurrentSpanAttributes({
       embeddingInput: query,
       retrievalContext: documents,
@@ -476,14 +473,12 @@ There are **TWO** mandatory parameters for `RetrieverAttributes`:
 Tool attributes track the input parameters and output of tool executions:
 
 ```tsx showLineNumbers
-import { updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+import { ObserveTool, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
 
 const getWeather = ObserveTool({
   name: "weather-api",
   fn: async (location: string) => {
     ...
-    const weather = "Sunny, 75°F";
-
     updateCurrentSpanAttributes({
       inputParameters: location,
       output: weather,
@@ -504,18 +499,15 @@ There are **TWO** optional parameters for `ToolAttributes`:
 Agent attributes track the thought process and actions of an agent:
 
 ```tsx showLineNumbers
-import { updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+import { ObserveAgent, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
 
 const researchTask = ObserveAgent({
   name: "travel-agent",
   fn: async (request: string) => {
     ...
-    const thought = "I need to check the weather before recommending activities.";
-    const plan = "1. Check weather\n2. Suggest indoor/outdoor activities";
-
     updateCurrentSpanAttributes({
-      thought: thought,
-      plan: plan,
+      input: request,
+      output: finalResponse,
     });
 
     return finalResponse;
