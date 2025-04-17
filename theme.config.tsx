@@ -8,13 +8,6 @@ const config = {
   },
   docsRepositoryBase:
     "https://github.com/confident-ai/confident-docs/tree/main",
-  useNextSeoProps() {
-    return {
-      titleTemplate: "%s – Confident AI Docs",
-      defaultTitle: "Confident AI Docs",
-      description: "The Official Documentation for Confident AI",
-    };
-  },
   head: () => (
     <>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />

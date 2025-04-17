@@ -7,8 +7,11 @@ import Logo from '@/components/Logo/Logo'
 import CustomFooter from '@/components/CustomFooter/CustomFooter'
  
 export const metadata = {
-  // Define your metadata here
-  // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+  title: {
+    default: 'Confident AI Docs',
+    template: '%s - Confident AI Docs'
+  },
+  description: 'The Official Documentation for Confident AI'
 }
 
 const banner = <Banner storageKey="confident-docs-banner">Confident AI is free to try. No credit card required.</Banner>

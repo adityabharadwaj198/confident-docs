@@ -10,6 +10,8 @@ const withNextra = nextra({
   staticImage: true
 })
 
+// For Nextra 4.x, theme configuration is handled separately
+
 // You can include other Next.js configuration options here, in addition to Nextra settings:
 export default withNextra({
   reactStrictMode: true,
