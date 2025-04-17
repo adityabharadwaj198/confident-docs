@@ -6,25 +6,34 @@ import { Callout } from "nextra/components";
 
 # LLM Tracing (JS/TS)
 
-Confident AI provides tracing capabilities for JavaScript and TypeScript applications using wrapper functions instead of decorators.
+With LLM tracing, Confident AI allows you to visualize and analyze component‑level performance throughout your LLM application's workflows. In addition to [Python decorators](/llm-observability/llm-tracing), Confident AI also supports JavaScript/TypeScript wrapper functions to easily capture traces in JS/TS-native applications.
 
 <Callout type="info">
-  The core concepts of tracing are the same as in the Python SDK: spans, traces,
-  attributes, etc. This page focuses on the JS/TS specific implementation. If
-  you're new to tracing in Confident AI, please refer to the [Python tracing
-  documentation](/llm-observability/llm-tracing) first.
+  Tracing originates from traditional software telemetry practices, where individual
+  components of your LLM application (retrievers, tools, etc.) are represented
+  as **SPANS**, while the complete execution flow and call hierarchy is
+  visualized as a **TRACE**. You can think of tracing as building a graph view of your LLM app.
+
 </Callout>
 
-## Setup and Initialization
+Confident AI's tracing implementation for JS/TS is designed to be non-intrusive and effective, with:
 
-Before using the tracing functionality in your TypeScript/JavaScript application, follow these steps:
+- Zero code restructuring - wrap your existing functions with provided wrappers
+- Background execution - no performance impact on your application
+- Silent failure handling - your application continues running without interruption
+- Compatibility with any function signature - runtime attribute updates let you customize what's captured
+- Support for [online metrics](/llm-observability/online-metrics) - evaluate spans and traces in production
+
+## Installation
+
+Before using the tracing functionality in your TypeScript/JavaScript application, follow these steps to install and initialize the DeepEval JS/TS SDK:
 
 ### 1. Install the package
 
 ```bash
-npm install @confident-ai/tracing
+npm install deepeval-ts
 # or
-yarn add @confident-ai/tracing
+yarn add deepeval-ts
 ```
 
 ### 2. Set environment variables
@@ -38,7 +47,7 @@ CONFIDENT_API_KEY=your-api-key
 
 > **Note:** The SDK automatically detects and uses these environment variables without requiring explicit initialization code.
 
-## Usage Example
+## Code & Video Summary
 
 Here's a concise example of tracing in a TypeScript application (same architecture as the Python example):
 
@@ -53,18 +62,18 @@ graph TD
 
 ```tsx showLineNumbers copy {13, 22, 42, 58, 74}
 import {
-  wrapTool,
-  wrapRetriever,
-  wrapLLM,
-  wrapCustom,
-  wrapAgent,
+  observeTool,
+  observeRetriever,
+  observeLLM,
+  observeCustom,
+  observeAgent,
   updateCurrentSpanAttributes,
   RetrieverAttributes,
   LlmAttributes,
-} from "@confident-ai/tracing";
+} from "deepeval-ts/tracing";
 
 // Tool
-const webSearch = wrapTool(
+const webSearch = observeTool(
   async (query: string): Promise<string> => {
     // <--Include implementation to search web here-->
     return "Latest search results for: " + query;
@@ -73,7 +82,7 @@ const webSearch = wrapTool(
 );
 
 // Retriever
-const retrieveDocuments = wrapRetriever(
+const retrieveDocuments = observeRetriever(
   async (query: string): Promise<string[]> => {
     // <--Include implementation to fetch from vector database here-->
     const fetchedDocuments = [
@@ -93,7 +102,7 @@ const retrieveDocuments = wrapRetriever(
 );
 
 // LLM
-const generateResponse = wrapLLM(
+const generateResponse = observeLLM(
   async (input: string): Promise<string> => {
     // <--Include format prompts and call your LLM provider here-->
     const output = "Generated response based on the prompt: " + input;
@@ -109,7 +118,7 @@ const generateResponse = wrapLLM(
 );
 
 // Custom span wrapping the RAG pipeline
-const ragPipeline = wrapCustom(
+const ragPipeline = observeCustom(
   async (query: string): Promise<string> => {
     // Retrieve
     const docs = await retrieveDocuments(query);
@@ -125,7 +134,7 @@ const ragPipeline = wrapCustom(
 );
 
 // Agent that does RAG + tool calling
-const researchAgent = wrapAgent(
+const researchAgent = observeAgent(
   async (query: string): Promise<string> => {
     // Call RAG pipeline
     const initialResponse = await ragPipeline(query);
@@ -148,42 +157,72 @@ const researchAgent = wrapAgent(
 researchAgent("What is the weather like in San Francisco?");
 ```
 
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/observability:llm-tracing.mp4"
+  width="100%"
+  title="LLM Tracing for an Agentic RAG App"
+/>
+
 ## Key Differences from Python SDK
 
 ### Wrapper Functions vs Decorators
 
-Instead of using `@observe` decorators as in Python, the JS/TS SDK provides wrapper functions. Here's a mapping between the Python decorators and their TypeScript/JavaScript wrapper equivalents. In the section below, we'll see how to use these wrappers in practice.
+Instead of Python’s `@observe` decorators, the JS/TS SDK uses wrapper functions. Below is a mapping of each Python decorator to its JavaScript/TypeScript wrapper equivalent. In the sections below, we'll see how to use these wrappers in practice.
 
 | Python Decorator             | TypeScript/JavaScript Wrapper |
 | ---------------------------- | ----------------------------- |
-| `@observe(type="llm")`       | `wrapLLM()`                   |
-| `@observe(type="retriever")` | `wrapRetriever()`             |
-| `@observe(type="tool")`      | `wrapTool()`                  |
-| `@observe(type="agent")`     | `wrapAgent()`                 |
-| `@observe(type="custom")`    | `wrapCustom()`                |
+| `@observe(type="llm")`       | `observeLLM()`                |
+| `@observe(type="retriever")` | `observeRetriever()`          |
+| `@observe(type="tool")`      | `observeTool()`               |
+| `@observe(type="agent")`     | `observeAgent()`              |
+| `@observe(type="custom")`    | `observeCustom()`             |
 
-## Different Types of Spans
+## Terminologies for Tracing
 
-Confident AI provides five types of spans to accommodate various components of your LLM application. In the JavaScript/TypeScript SDK, all wrapper functions follow the same pattern:
+Tracing in Confident AI consists of several key concepts:
+
+- **Tracing**: The overall process of tracking and visualizing the execution flow of your LLM application
+- **Spans**: Individual units of work within your application (e.g., LLM calls, tool executions, retrievals)
+- **Attributes**: Properties that can be attached to spans to provide additional context and metadata
+- **Default Span Types**: Pre-defined span types (Agent, Tool, Retriever, LLM) that come with specific attributes
+- **Custom Spans**: User-defined spans for grouping or categorizing other spans
+
+## Using the `observeXXX` Wrappers
+
+The `observeXXX` wrappers are the primary way to instrument your LLM application for tracing. They are a set of wrapper functions that provide domain-specific tracing for different types of spans.
+
+<Callout type="warning">
+  Each `observeXXX` wrapper **CREATES A SPAN**, and **MANY SPANS MAKE UP A
+  TRACE**.
+</Callout>
+
+Here's how to use it. We'll use `observeLLM` as an example:
 
 ```tsx
-const tracedFunction = wrapXXX(
+import { observeLLM } from "deepeval-ts/tracing";
+
+const tracedFunction = observeLLM(
   originalFunction, // Your function to be traced
   {
-    // Configuration object with parameters
-    // Configuration parameters specific to the span type
+    model: "gpt-4", // Configuration parameters specific to the span type
   }
 );
 ```
 
 Unlike Python decorators which are placed above function definitions, JavaScript/TypeScript wrapper functions take your original function as the first argument, followed by a configuration object containing the span parameters.
 
+## Different Types of Spans
+
+Confident AI offers five span types to instrument different parts of your LLM application. These built‑in spans cover common workflows yet remain fully customizable. For example, in an agentic RAG setup, you can nest retriever and LLM spans inside a custom “RAG Pipeline” span before invoking tool calls.
+
 ### LLM Span
 
 An LLM span represents a call to a language model. It tracks the input, output, and token usage of the model.
 
 ```tsx
-const generateResponse = wrapLLM(
+import { observeLLM } from "deepeval-ts/tracing";
+
+const generateResponse = observeLLM(
   async (prompt: string): Promise<string> => {
     // Your LLM logic here
     return "LLM response";
@@ -192,20 +231,23 @@ const generateResponse = wrapLLM(
 );
 ```
 
-**Configuration Parameters:**
+There are **TWO** mandatory and **FOUR** optional parameters when configuring an LLM span:
 
-- `model` (required): A string representing the name of the LLM used
-- `costPerInputToken` (optional): A number specifying the cost per input token
-- `costPerOutputToken` (optional): A number specifying the cost per output token
-- `name` (optional): A string specifying the display name
-- `metrics` (optional): An array of strings specifying online metrics to run
+- `model`: A string representing the name of the LLM used.
+- `type`: This is handled automatically by the wrapper function and set to `"llm"`.
+- [Optional] `costPerInputToken`: A number specifying the cost per input token. Defaults to undefined.
+- [Optional] `costPerOutputToken`: A number specifying the cost per output token. Defaults to undefined.
+- [Optional] `name`: A string specifying the display name on Confident AI. Defaults to the name of the wrapped function.
+- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
 ### Retriever Span
 
 A Retriever span represents a component that fetches information from a vector store or knowledge base.
 
 ```tsx
-const retrieveDocuments = wrapRetriever(
+import { observeRetriever } from "deepeval-ts/tracing";
+
+const retrieveDocuments = observeRetriever(
   async (query: string): Promise<string[]> => {
     // Your retrieval logic here
     return ["document1", "document2"];
@@ -214,41 +256,47 @@ const retrieveDocuments = wrapRetriever(
 );
 ```
 
-**Configuration Parameters:**
+There is **ONE** mandatory and **THREE** optional parameters when configuring a retriever span:
 
-- `embedder` (required): A string representing the name of the embedding model used
-- `name` (optional): A string specifying the display name
-- `metrics` (optional): An array of strings specifying online metrics to run
+- `embedder`: A string representing the name of the embedding model used.
+- `type`: This is handled automatically by the wrapper function and set to `"retriever"`.
+- [Optional] `name`: A string specifying the display name on Confident AI. Defaults to the name of the wrapped function.
+- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
 ### Tool Span
 
 A Tool span represents a function that an agent can call to perform specific tasks.
 
 ```tsx
-const webSearch = wrapTool(
+import { observeTool } from "deepeval-ts/tracing";
+
+const webSearch = observeTool(
   async (query: string): Promise<string> => {
     // Your tool implementation
     return "Search results";
   },
   {
     name: "web_search",
-    description: "Searches the web for information",
+    description: "Search the web for information",
   }
 );
 ```
 
-**Configuration Parameters:**
+There is **ONE** mandatory and **THREE** optional parameters when configuring a tool span:
 
-- `name` (required): A string specifying the name of the tool
-- `description` (optional): A string that describes what the tool does
-- `metrics` (optional): An array of strings specifying online metrics to run
+- `name`: A string specifying the name of the tool.
+- `type`: This is handled automatically by the wrapper function and set to `"tool"`.
+- [Optional] `description`: A string that describes what the tool does.
+- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
 ### Agent Span
 
 An Agent span represents an autonomous entity that can make decisions and interact with other components.
 
 ```tsx
-const researchAgent = wrapAgent(
+import { observeAgent } from "deepeval-ts/tracing";
+
+const researchAgent = observeAgent(
   async (query: string): Promise<string> => {
     // Your agent implementation
     return "Agent response";
@@ -260,19 +308,24 @@ const researchAgent = wrapAgent(
 );
 ```
 
-**Configuration Parameters:**
+There is **ONE** mandatory and **FOUR** optional parameters when configuring an agent span:
 
-- `name` (required): A string specifying the display name of the agent
-- `availableTools` (optional): An array of strings representing available tools
-- `agentHandoffs` (optional): An array of strings representing other agents this agent can delegate to
-- `metrics` (optional): An array of strings specifying online metrics to run
+- `name`: A string specifying the display name on Confident AI. Defaults to the name of the wrapped function.
+- `type`: This is handled automatically by the wrapper function and set to `"agent"`.
+- [Optional] `availableTools`: An array of strings representing available tools.
+- [Optional] `agentHandoffs`: An array of strings representing other agents this agent can delegate to.
+- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
+
+Agents can be nested within other agents, which is useful for implementing hierarchical agent architectures. For instance, a "supervisor" agent might coordinate communication between specialized agents.
 
 ### Custom Span
 
 Custom spans are essential for creating hierarchical structures or grouping related spans together.
 
 ```tsx
-const customProcess = wrapCustom(
+import { observeCustom } from "deepeval-ts/tracing";
+
+const customProcess = observeCustom(
   async (input: string): Promise<string> => {
     // Your custom implementation
     return "Result";
@@ -284,17 +337,19 @@ const customProcess = wrapCustom(
 );
 ```
 
-**Configuration Parameters:**
+There is **ONE** mandatory and **TWO** optional parameters when configuring a custom span:
 
-- `type` (required): The type of span, usually "custom" but can be any string
-- `name` (required): A string specifying the display name
-- `metrics` (optional): An array of strings specifying online metrics to run
+- `type`: The type of span. Must be set to `"custom"` for custom spans.
+- [Optional] `name`: A string specifying how this custom span is displayed on Confident AI. Defaults to the name of the wrapped function.
+- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
 ## Set Runtime Attributes for Default Spans
 
 Attributes can be set at runtime by using the `updateCurrentSpanAttributes()` function. This updates the attributes for the **CURRENT** span in the execution context.
 
 ```tsx
+import { updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+
 // Python equivalent: update_current_span_attributes(LlmAttributes(input=prompt, output=response))
 updateCurrentSpanAttributes({
   input: prompt,
@@ -304,11 +359,21 @@ updateCurrentSpanAttributes({
 
 The current span is determined using JavaScript's async context, which automatically tracks the active span. This means you don't need to manually pass span references around - the system knows which span is currently executing.
 
+<Callout>
+  Runtime attributes help you integrate tracing with minimal code changes. For
+  example, if your retriever function returns complex objects instead of just
+  strings, you can keep your original return type and separately set the
+  `retrievalContext` attribute for tracing purposes using
+  `updateCurrentSpanAttributes()`.
+</Callout>
+
 ### LLM Attributes
 
 LLM attributes track the input, output, and token usage of language model calls:
 
 ```tsx
+import { updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+
 updateCurrentSpanAttributes({
   input: "What is the capital of France?",
   output: "The capital of France is Paris.",
@@ -319,10 +384,10 @@ updateCurrentSpanAttributes({
 
 There are **TWO** mandatory and **TWO** optional parameters for LLM attributes:
 
-- `input`: The prompt or text (string) sent to the language model.
-- `output`: The response generated (string) by the language model.
-- [Optional] `inputTokenCount`: The number of tokens (number) in the input.
-- [Optional] `outputTokenCount`: The number of tokens (number) in the generated response.
+- `input`: The prompt or text string sent to the language model.
+- `output`: The response generated string by the language model.
+- [Optional] `inputTokenCount`: The number of tokens in the input.
+- [Optional] `outputTokenCount`: The number of tokens in the generated response.
 
 <Callout type="info">
   If `costPerInputToken` is not set in the wrapper configuration, setting the
@@ -335,26 +400,26 @@ There are **TWO** mandatory and **TWO** optional parameters for LLM attributes:
 Retriever attributes track the query, retrieved documents, and related metadata:
 
 ```tsx
+import { updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+
 updateCurrentSpanAttributes({
   embeddingInput: "Query to embed",
   retrievalContext: ["Document 1", "Document 2"],
-  topK: 2,
-  chunkSize: 1024,
 });
 ```
 
 There are **TWO** mandatory and **TWO** optional parameters for Retriever attributes:
 
-- `embeddingInput`: The text (string) that needs to be embedded for vector search.
+- `embeddingInput`: The text string that needs to be embedded for vector search.
 - `retrievalContext`: An array of strings representing the relevant documents or text chunks retrieved from your vector store.
-- [Optional] `topK`: The number of top results (number) returned by the retriever.
-- [Optional] `chunkSize`: The size of chunks (number) used for retrieval.
 
 ### Tool Attributes
 
 Tool attributes track the input parameters and output of tool executions:
 
 ```tsx
+import { updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+
 updateCurrentSpanAttributes({
   inputParameters: { query: "Search query" },
   output: "Search results",
@@ -364,19 +429,21 @@ updateCurrentSpanAttributes({
 There are **TWO** optional parameters for Tool attributes:
 
 - [Optional] `inputParameters`: An object containing the parameters passed to the tool function.
-- [Optional] `output`: The result (any type) returned by the tool function.
+- [Optional] `output`: The result of any type returned by the tool function.
 
-<Callout type="info">
-  If `updateCurrentSpanAttributes` is not called for a tool span, the system
-  will automatically take the input and outputs of the function as the
-  `inputParameters` and `output`.
-</Callout>
+> [!TIP]
+>
+> If `updateCurrentSpanAttributes` is not called for a tool span, the system
+> will automatically take the input and outputs of the function as the
+> `inputParameters` and `output`.
 
 ### Agent Attributes
 
 Agent attributes track the input and output of agent executions:
 
 ```tsx
+import { updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+
 updateCurrentSpanAttributes({
   input: "User query",
   output: "Agent response",
@@ -385,8 +452,8 @@ updateCurrentSpanAttributes({
 
 There are **TWO** optional parameters for Agent attributes:
 
-- [Optional] `input`: The input to the agent (any type), typically the initial query or task description.
-- [Optional] `output`: The agent's response or output (any type), including any actions taken or results produced.
+- `input`: The input to the agent, typically the initial query or task description.
+- `output`: The agent's response or output, including any actions taken or results produced.
 
 <Callout type="info">
   Similar to the tool span, an agent span will take the wrapped function's input
