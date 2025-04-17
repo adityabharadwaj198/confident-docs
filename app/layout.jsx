@@ -47,7 +47,7 @@ export default async function RootLayout({ children }) {
           src="https://plausible.io/js/script.js"
         ></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Official Confident AI Documentation" />
+        <meta name="description" content="The Official Confident AI Documentation" />
       </Head>
       <body suppressHydrationWarning>
         <Layout
