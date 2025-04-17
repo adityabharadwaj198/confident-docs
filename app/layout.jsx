@@ -46,6 +46,7 @@ export default async function RootLayout({ children }) {
           data-domain="confident-ai.com"
           src="https://plausible.io/js/script.js"
         ></script>
+        <title>Confident AI Docs | The DeepEval Platform</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content="The Official Confident AI Documentation" />
       </Head>

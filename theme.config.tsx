@@ -13,16 +13,13 @@ const config = {
       titleTemplate: "%s – Confident AI Documentation",
     };
   },
-  head: ({ title, meta }) => (
+  head: (
     <>
-      <title>
-        {title ? `${title} | Confident AI Docs` : "Confident AI Docs"}
-      </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta
         name="description"
-        content={meta?.description || "The Official DeepEval Platform Docs"}
+        content="The Official Documentation for Confident AI "
       />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="icon" href="/favicon.ico" sizes="any" />
       <link
         rel="icon"
