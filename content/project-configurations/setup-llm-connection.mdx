@@ -8,7 +8,7 @@ import { Callout } from "nextra/components";
 
 You can also setup an LLM endpoint that accepts a `POST` request over HTTPS to enable users to run evaluations directly on the platform without having to code, and start an evaluation through a click of a button instead.
 
-At a high level, you would have to provide Confident AI with the mappings to test case parameters such as the actual_output, retrieval_context, etc., and at evaluation time Confident AI will use the dataset and metrics settings you've specified for your experiment to unit test your LLM application.
+At a high level, you would have to provide Confident AI with the mappings to test case parameters such as the `actual_output`, `retrieval_context`, etc., and at evaluation time Confident AI will use the dataset and metrics settings you've specified for your experiment to unit test your LLM application.
 
 ## Video Summary
 
@@ -23,7 +23,7 @@ At a high level, you would have to provide Confident AI with the mappings to tes
 In order for Confident AI to reach your LLM application, you'll need to expose your LLM in a RESTFUL API endpoint that is accessible over the internet. These are the hard rules you MUST follow when setting up your endpoint:
 
 1. Accepts a `POST` request over HTTPS.
-2. Returns a JSON response and MUST contain the actual_output value somewhere in the returned Json object. Whether or not to supply a retrieval_context or tools_called value in your returned Json is optional, and this depends on whether the metrics you have enabled for your experiment requires these parameters.
+2. Returns a JSON response and MUST contain the actual_output value somewhere in the returned Json object. Whether or not to supply a `retrieval_context` or `tools_called` value in your returned Json is optional, and this depends on whether the metrics you have enabled for your experiment requires these parameters.
 
 > [!WARNING]
 >

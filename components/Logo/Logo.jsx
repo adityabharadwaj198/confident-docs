@@ -13,7 +13,7 @@ const Logo = ({ width = 180, height = 150 }) => {
         priority
       />
       <span className={styles.tagline}>
-        the llm evaluation platform<span className={styles.cursorBlink}>_</span>
+        the <span className={styles.deepeval}>deepeval</span> platform<span className={styles.cursorBlink}>_</span>
       </span>
     </div>
   );
