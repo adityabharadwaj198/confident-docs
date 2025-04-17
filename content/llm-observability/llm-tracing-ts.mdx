@@ -416,7 +416,6 @@ const generateCompletion = ObserveLLM({
   model: "gpt-4",
   fn: async (prompt: string) => {
     ...
-
     updateCurrentSpanAttributes({
       input: prompt,
       output: response,
