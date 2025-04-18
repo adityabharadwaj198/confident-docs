@@ -1,11 +1,13 @@
-import { Footer, Layout, Navbar } from 'nextra-theme-docs'
+import {  Layout, Navbar } from 'nextra-theme-docs'
 import { Banner, Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 import '@/app/styles/globals.css'
 import Logo from '@/components/Logo/Logo'
 import CustomFooter from '@/components/CustomFooter/CustomFooter'
- 
+import SignUpButton from '@/components/SignUpButton'
+import GitHubButton from '@/components/GitHubButton/GitHubButton'
+
 export const metadata = {
   title: {
     default: 'Confident AI Docs',
@@ -14,13 +16,16 @@ export const metadata = {
   description: 'The Official Documentation for Confident AI'
 }
 
-const banner = <Banner storageKey="confident-docs-banner">Confident AI is free to try. No credit card required.</Banner>
+const banner = <Banner storageKey="confident-docs-banner">Confident AI is <a target="_blank" href="https://app.confident-ai.com/auth/signup" style={{textDecoration: 'underline'}}>free to try <svg xmlns="http://www.w3.org/2000/svg" width="0.9em" height="0.9em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display: 'inline', verticalAlign: 'text-top'}}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>. No credit card required.</Banner>
 const navbar = (
   <Navbar
     logo={<Logo />}
     projectLink="https://github.com/confident-ai/deepeval"
-    chatLink="https://discord.gg/Up3gbNTF"
-  />
+    projectIcon={<GitHubButton />}
+    // chatLink="https://discord.gg/Up3gbNTF"
+  >
+    <SignUpButton />
+  </Navbar>
 )
 const footer = <CustomFooter />
  
@@ -62,7 +67,6 @@ export default async function RootLayout({ children }) {
           pageMap={await getPageMap()}
           docsRepositoryBase="https://github.com/confident-ai/confident-docs/tree/main/docs"
           footer={footer}
-          // ... Your additional layout options
         >
           {children}
         </Layout>

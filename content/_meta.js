@@ -1,76 +1,35 @@
 import { CircleHelp, Rocket, MessageSquareText, PenLine, Settings, FlaskConical, Telescope, User, Lightbulb, House, ShieldAlert, BookOpen, Folders, Zap } from 'lucide-react'
+import NavIconTabItem from '@/components/NavIconTabItem'
 
 export default {
-  "why-confident-ai": <div style={{ display: 'flex', alignItems: 'center' }}>
-    <CircleHelp style={{ marginRight: '8px' }} size={16} />
-    <span>Why Confident AI</span>
-  </div>,
-  "llm-use-cases": <div style={{ display: 'flex', alignItems: 'center' }}>
-    <Lightbulb style={{ marginRight: '8px' }} size={16} />
-    <span>LLM Use Cases</span>
-  </div>,
-  "data-handling": <div style={{ display: 'flex', alignItems: 'center' }}>
-    <Folders style={{ marginRight: '8px' }} size={16} />
-    <span>Data Handling</span>
-  </div>,
-  "on-prem-hosting": <div style={{ display: 'flex', alignItems: 'center' }}>
-    <House style={{ marginRight: '8px' }} size={16} />
-    <span>On-Prem Hosting</span>
-  </div>,
-  "llm-red-teaming": <div style={{ display: 'flex', alignItems: 'center' }}>
-    <ShieldAlert style={{ marginRight: '8px' }} size={16} />
-    <span>LLM Red Teaming</span>
-  </div>,
+  "why-confident-ai": <NavIconTabItem icon={CircleHelp} label="Why Confident AI" />,
+  "llm-use-cases": <NavIconTabItem icon={Lightbulb} label="LLM Use Cases" />,
+  "data-handling": <NavIconTabItem icon={Folders} label="Data Handling" />,
+  "on-prem-hosting": <NavIconTabItem icon={House} label="On-Prem Hosting" />,
+  "llm-red-teaming": <NavIconTabItem icon={ShieldAlert} label="LLM Red Teaming" />,
   concepts: {
-    title: <div style={{ display: 'flex', alignItems: 'center' }}>
-      <BookOpen style={{ marginRight: '8px' }} size={16} />
-      <span>Concepts</span>
-    </div>,
+    title: <NavIconTabItem icon={BookOpen} label="Concepts" />,
     theme: {
       collapsed: true
     }
   },
   "---": {
     type: "separator",
-    title: <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Zap style={{ marginRight: '8px' }} size={16} />
-      <span>Quickstart</span>
-    </div>
+    title: <NavIconTabItem icon={Zap} label="Quickstart" />
   },
   index: "",
   "how-it-works": "",
   "getting-started": "Getting Started",
   "---2": {
     type: "separator",
-    title: <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Rocket style={{ marginRight: '8px' }} size={16} />
-      <span>Platform Features</span>
-    </div>
+    title: <NavIconTabItem icon={Rocket} label="Platform Features" />
   },
-  "dataset-editor": <div style={{ display: 'flex', alignItems: 'center' }}>
-    <PenLine style={{ marginRight: '8px' }} size={16} />
-    <span>Dataset Editor</span>
-  </div>,
-  "prompt-studio": <div style={{ display: 'flex', alignItems: 'center' }}>
-    <MessageSquareText style={{ marginRight: '8px' }} size={16} />
-    <span>Prompt Studio</span>
-  </div>,
-  "llm-evaluation": <div style={{ display: 'flex', alignItems: 'center' }}>
-    <FlaskConical style={{ marginRight: '8px' }} size={16} />
-    <span>LLM Evaluation</span>
-  </div>,
-  "llm-observability": <div style={{ display: 'flex', alignItems: 'center' }}>
-    <Telescope style={{ marginRight: '8px' }} size={16} />
-    <span>LLM Observability</span>
-  </div>,
-  "human-in-the-loop": <div style={{ display: 'flex', alignItems: 'center' }}>
-    <User style={{ marginRight: '8px' }} size={16} />
-    <span>Human-in-the-Loop</span>
-  </div>,
-  "project-settings": <div style={{ display: 'flex', alignItems: 'center' }}>
-    <Settings style={{ marginRight: '8px' }} size={16} />
-    <span>Project Settings</span>
-  </div>,
+  "dataset-editor": <NavIconTabItem icon={PenLine} label="Dataset Editor" />,
+  "prompt-studio": <NavIconTabItem icon={MessageSquareText} label="Prompt Studio" />,
+  "llm-evaluation": <NavIconTabItem icon={FlaskConical} label="LLM Evaluation" />,
+  "llm-observability": <NavIconTabItem icon={Telescope} label="LLM Observability" />,
+  "human-in-the-loop": <NavIconTabItem icon={User} label="Human-in-the-Loop" />,
+  "project-settings": <NavIconTabItem icon={Settings} label="Project Settings" />,
   // "---3": {
   //   type: "separator",
   //   title: "Non-Functional Features"

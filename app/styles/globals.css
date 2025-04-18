@@ -118,3 +118,9 @@ h4, h5, h6 {
 .dark .nextra-card p {
   color: #999;
 }
+
+@media (max-width: 1080px) {
+  nav .nextra-scrollbar {
+    display: none;
+  }
+}
