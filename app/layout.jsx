@@ -3,12 +3,15 @@ import { Banner, Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 import '@/app/styles/globals.css'
-import Logo from '@/components/Logo'
+import Logo from '@/components/Logo/Logo'
 import CustomFooter from '@/components/CustomFooter/CustomFooter'
  
 export const metadata = {
-  // Define your metadata here
-  // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+  title: {
+    default: 'Confident AI Docs',
+    template: '%s | Confident AI - The DeepEval Platform'
+  },
+  description: 'The Official Documentation for Confident AI'
 }
 
 const banner = <Banner storageKey="confident-docs-banner">Confident AI is free to try. No credit card required.</Banner>
@@ -41,8 +44,12 @@ export default async function RootLayout({ children }) {
           }
         }}
       >
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Official Confident AI Documentation" />
+        <script
+          defer
+          data-domain="confident-ai.com"
+          src="https://plausible.io/js/script.js"
+        ></script>
+        {/* Don't set title or description here as they're handled by Nextra via useNextSeoProps */}
       </Head>
       <body suppressHydrationWarning>
         <Layout

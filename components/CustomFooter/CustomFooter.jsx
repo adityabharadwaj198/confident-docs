@@ -1,5 +1,4 @@
 import { Footer } from 'nextra-theme-docs'
-import Link from 'next/link'
 import Image from 'next/image'
 import styles from './CustomFooter.module.scss'
 
@@ -11,13 +10,13 @@ const CustomFooter = () => {
           <div className={`${styles.footerColumn} ${styles.companyInfo}`}>
             <img className={styles.logo} src="/icons/confident-docs-logo.svg" alt="Confident AI Logo" />
             <div className={styles.companyName}>
-              Confident AI, the DeepEval Platform
-            </div>
-            <div className={styles.madeWithLove}>
-              Made with ❤️ and confidence
+              Confident AI - The DeepEval Platform
             </div>
             <div className={styles.copyright}>
               Copyright © {new Date().getFullYear()} Confident AI, Inc. All rights reserved.
+            </div>
+            <div className={styles.madeWithLove}>
+              Made with ❤️ and confidence
             </div>
             <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
               <iframe 
@@ -29,6 +28,10 @@ const CustomFooter = () => {
                 title="Confident AI Status"
               />
             </div>
+          </div>
+        </div>
+        <div className={styles.footerRow}>
+          <div className={styles.footerColumn}>
             <div className={styles.complianceBadges}>
               <Image 
                 src="/img/HIPAA.png" 
@@ -46,7 +49,6 @@ const CustomFooter = () => {
               />
             </div>
           </div>
-
           <div className={styles.footerColumn}>
             <h3 className={styles.columnTitle}>Company</h3>
             <ul className={styles.linksList}>

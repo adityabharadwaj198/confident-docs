@@ -48,21 +48,30 @@ h4, h5, h6 {
 
 /* Add right border to the left navigation drawer */
 .nextra-sidebar {
-  border-right: 1px solid rgba(0, 0, 0, 0.068);
+  border-right: 1px solid rgba(0, 0, 0, 0.081);
 }
 
-/* .nextra-sidebar li a {
-  color: rgb(53, 53, 53);
+.nextra-sidebar li a {
+  color: rgba(0, 0, 23, 0.65);
 }
 
 .nextra-sidebar li button {
-  color: rgb(53, 53, 53);
+  color: rgba(0, 0, 23, 0.65);
+}
+
+/* .nextra-sidebar ul {
+  border-left: none;
+}
+
+.nextra-sidebar ul ul {
+  border-left: 1px solid rgba(136, 0, 255, 0.216);
 } */
 
-
-/* Dark mode border */
-.dark .nextra-sidebar-container {
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+/* Active/selected item in sidebar */
+.nextra-sidebar li.active a,
+.nextra-sidebar li.active a.active,
+.nextra-sidebar li.active button[aria-expanded="true"] {
+  color: #5800d3 !important;
 }
 
 /* Card background customization */
@@ -108,4 +117,5 @@ h4, h5, h6 {
 
 .dark .nextra-card p {
   color: #999;
-} 
+}
+

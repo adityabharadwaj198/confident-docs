@@ -3,7 +3,12 @@
 .customFooter {
   display: flex;
   flex-direction: column;
+  row-gap: 3rem;
   width: 100%;
+
+  @media (max-width: 768px) {
+    row-gap: 0rem;
+  }
 }
 
 .footerRow {
@@ -27,8 +32,13 @@
 }
 
 .companyInfo {
-  @media (min-width: 768px) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (max-width: 768px) {
     flex: 2; // Give more space to company info column
+    align-items: flex-start;
   }
 }
 
@@ -61,28 +71,28 @@
 }
 
 .logo {
-    width: 4rem;
-    height: 4rem;
+    width: 5rem;
+    height: 5rem;
     margin-bottom: 0.5rem;
 }
 
 .companyName {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   color: black;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .copyright {
   font-size: 13px;
   color: var(--nextra-secondary-text-color);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .madeWithLove {
   font-size: 13px;
   color: var(--nextra-secondary-text-color);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .statusBadge {
@@ -112,7 +122,10 @@
 .complianceBadges {
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
+
+  @media (max-width: 1050px) and (min-width: 769px) {
+    flex-direction: column;
+  }
 }
 
 .complianceBadge {
