@@ -4,56 +4,19 @@ title: Java/TypeScript
 
 import { Callout } from "nextra/components";
 
-# LLM Tracing (JS/TS)
+# Java/Typescript 
 
-With LLM tracing, Confident AI allows you to visualize and analyze component‑level performance throughout your LLM application's workflows. In addition to `DeepEval` [decorators](/llm-observability/llm-tracing), Confident AI also supports JavaScript and TypeScript wrapper functions to easily capture traces in JS/TS-native applications through `DeepEval.ts`.
+Confident AI also offers **DeepEval.ts**, which suuports tracing in Java and Typescript in the form of wrapper functions to easily capture traces in JS/TS-native applications.
 
-<Callout type="info">
-  Tracing originates from traditional software telemetry practices, where
-  individual components (retrievers, tools, etc.) are represented as **SPANS**,
-  while the complete call hierarchy is visualized as a **TRACE**. To learn more
-  about tracing terminologies, refer to [DeepEval's tracing
-  documentation](/llm-observability/llm-tracing#terminologies-for-tracing).
+<Callout>
+  You should first read [this original guide](/llm-observability/llm-tracing) on
+  tracing in Python, before reading this page to get a full grasp on the concept
+  of LLM tracing, what spans are, etc.
 </Callout>
-
-`DeepEval.ts`'s tracing implementation is designed to be non-intrusive and effective, with:
-
-- Zero code restructuring - wrap your existing functions with provided wrappers
-- Background execution - no performance impact on your application
-- Silent failure handling - your application continues running without interruption
-- Compatibility with any function signature - runtime attribute updates let you customize what's captured
-- Support for [online metrics](/llm-observability/online-metrics) - evaluate spans and traces in production
-
-## Installation
-
-<Callout type="tip">
-  From here onwards: we will refer to DeepEval's python implementation simply as
-  `DeepEval`, and the JavaScript/TypeScript implementation as `DeepEval.ts`
-</Callout>
-
-Before using the tracing functionality in your LLM application, follow these steps
-to install `DeepEval.ts`:
-
-### 1. Install the package
-
-```bash
-npm install deepeval-ts
-# or
-yarn add deepeval-ts
-```
-
-### 2. Set environment variables
-
-The SDK requires your Confident AI API key to be set as an environment variable:
-
-```bash
-# In your .env file or environment
-CONFIDENT_API_KEY=your-api-key
-```
 
 ## Code & Video Summary
 
-Here's a concise example of tracing in a TypeScript LLM application:
+Consider this tracing example in a TypeScript application (same architecture as the [Python tracing example](/llm-observability/llm-tracing)):
 
 ```mermaid
 graph TD
@@ -64,20 +27,22 @@ graph TD
     A --> E
 ```
 
-```tsx showLineNumbers copy {13, 22, 42, 60, 77}
+```bash
+npm install deepeval-ts
+```
+
+```ts showLineNumbers copy {11, 22, 44, 64, 82}
 import {
-  ObserveTool,
-  ObserveRetriever,
-  ObserveLLM,
-  ObserveCustom,
-  ObserveAgent,
+  observe,
   updateCurrentSpanAttributes,
   RetrieverAttributes,
   LlmAttributes,
 } from "deepeval-ts/tracing";
 
+
 // Tool
-const webSearch = ObserveTool({
+const webSearch = observe({
+  type="tool",
   name: "web_search",
   fn: async (query: string) => {
     // <--Include implementation to search web here-->
@@ -85,8 +50,10 @@ const webSearch = ObserveTool({
   },
 });
 
+
 // Retriever
-const retrieveDocuments = ObserveRetriever({
+const retrieveDocuments = observe({
+  type="retriever",
   embedder: "text-embedding-ada-002",
   fn: async (query: string) => {
     // <--Include implementation to fetch from vector database here-->
@@ -105,8 +72,10 @@ const retrieveDocuments = ObserveRetriever({
   },
 });
 
+
 // LLM
-const generateResponse = ObserveLLM({
+const generateResponse = observe({
+  type: "llm",
   model: "gpt-4",
   fn: async (input: string) => {
     // <--Include format prompts and call your LLM provider here-->
@@ -123,8 +92,9 @@ const generateResponse = ObserveLLM({
   },
 });
 
+
 // Custom span wrapping the RAG pipeline
-const ragPipeline = ObserveCustom({
+const ragPipeline = observe({
   type: "custom",
   name: "RAG Pipeline",
   fn: async (query: string) => {
@@ -140,33 +110,29 @@ const ragPipeline = ObserveCustom({
   },
 });
 
+
 // Agent that does RAG + tool calling
-const researchAgent = ObserveAgent({
+const researchAgent = observe({
+  type: "agent",
   name: "Research Agent",
   availableTools: ["web_search"],
   fn: async (query: string) => {
-    // Call RAG pipeline
     const initialResponse = await ragPipeline(query);
-
-    // Use web search tool on the results
     const searchResults = await webSearch(initialResponse);
-
-    // Generate final response incorporating both RAG and search results
     const finalResponse = await generateResponse(
       `Initial response: ${initialResponse}\n` +
         `Additional search results: ${searchResults}\n` +
         `Query: ${query}`
     );
+
     updateCurrentSpanAttributes({
-      thought: "Using RAG and web search to answer the query",
-      plan: "Call RAG pipeline, then use web search tool",
-      selectedTool: "web_search",
       input: query,
       output: finalResponse,
     });
     return finalResponse;
   },
 });
+
 
 // Calling the agent will create traces on Confident AI
 researchAgent("What is the weather like in San Francisco?");
@@ -178,203 +144,212 @@ researchAgent("What is the weather like in San Francisco?");
   title="LLM Tracing for an Agentic RAG App"
 />
 
-## Key Differences from `DeepEval`
+## Preparation
 
-### Wrapper Functions vs Decorators
+### Install DeepEval.ts
 
-Instead of `DeepEval`'s `@observe` decorators, the `DeepEval.ts` uses wrapper functions. Below is a mapping of each `DeepEval` decorator to its `DeepEval.ts` wrapper equivalent. In the sections below, we'll see how to use these wrappers in practice.
+Before using the tracing functionality in your TypeScript/JavaScript application, follow these steps to install and initialize the DeepEval.ts:
 
-| `DeepEval`                   | `DeepEval.ts`        |
-| ---------------------------- | -------------------- |
-| `@observe(type="llm")`       | `ObserveLLM()`       |
-| `@observe(type="retriever")` | `ObserveRetriever()` |
-| `@observe(type="tool")`      | `ObserveTool()`      |
-| `@observe(type="agent")`     | `ObserveAgent()`     |
-| `@observe(type="custom")`    | `ObserveCustom()`    |
-
-## Using the `Observe` Wrappers
-
-The `Observe` wrappers are the primary way to instrument your LLM application for tracing. They are a set of wrapper functions that provide domain-specific tracing for different types of spans.
-
-For example, let's take a look at an LLM generation function:
-
-```tsx showLineNumbers
-// Your original function
-const generateCompletion = async (input: string) => {
-  ...
-  return generatedResponse;
-};
+```bash
+npm install deepeval-ts
+# or
+yarn add deepeval-ts
 ```
 
-To instrument the function as a span, wrap it with `ObserveLLM`. Unlike `DeepEval` decorators which modify functions in-place, `DeepEval.ts` wrapper functions accepts both span parameters and the function to be traced.
+Then, set your Confident AI API key as an environment variable:
 
-```tsx showLineNumbers
-import { ObserveLLM } from "deepeval-ts/tracing";
+```bash
+# In your .env file or environment
+CONFIDENT_API_KEY=your-api-key
+```
 
-// Wrap the function with ObserveLLM
-const generateCompletion = ObserveLLM({
-  model: "gpt-4", // parameters specific to the span type
-  fn: async (input: string) => {
-    ...
-    return generatedResponse;
-  },
+DeepEval.ts automatically detects and uses these environment variables without
+requiring explicit initialization code.
+
+### DeepEval vs DeepEval.ts for tracing
+
+<Callout>
+  From here onwards, we will refer to DeepEval’s python implementation simply as
+  DeepEval, and the JavaScript/TypeScript implementation as DeepEval.ts.
+</Callout>
+
+Instead of DeepEval `@observe` decorators, the JS/TS SDK uses the `observe` wrapper. Below is a mapping of each Python decorator to its JavaScript/TypeScript wrapper equivalent:
+
+| DeepEval `@obesrve` Decorator | DeepEval.ts `observe`       |
+| ----------------------------- | --------------------------- |
+| `@observe(type="llm")`        | `observe(type="llm")`  |
+| `@observe(type="retriever")`  | `observe(type="retriever")`  |
+| `@observe(type="tool")`       | `observe(type="tool")`  |
+| `@observe(type="agent")`      | `observe(type="agent")`  |
+| `@observe(type="custom")`     | `observe(type="custom")`  |
+
+> [!NOTE]
+>
+> A more comprehensive explanation and the terminologies on tracing is available [here](/llm-observability/llm-tracing#terminologies-for-tracing), which is the python version of this page you're reading.
+
+## Using `observe` Wrappers
+
+The `observe` wrappers are the primary way to instrument your LLM application for tracing. They are a set of wrapper functions that provide domain-specific tracing for different types of spans.
+
+<Callout type="warning">
+  Each `observe` wrapper **CREATES A SPAN**, and **MANY SPANS MAKE UP A TRACE**.
+</Callout>
+
+Here's an example with the `observe` wrapper of `type` "llm", which creates an LLM span:
+
+```ts
+import { observe } from "deepeval-ts/tracing";
+
+const observedGenerate = observe({
+  type="llm"
+  model: "gpt-4",
+  fn: originalGenerateFunction, // Your function to be traced
 });
 ```
+
+Unlike Python decorators which are placed above function definitions, DeepEval.ts's observers take your span arguments then your original function as the following argument.
 
 ## Different Types of Spans
 
-Confident AI offers five span types to instrument different parts of your LLM application. You may read more about these span types in [DeepEval's tracing documentation.](/llm-observability/llm-tracing#span-types)
+Confident AI offers five span types to instrument different parts of your LLM application. These built‑in spans cover common workflows yet remain fully customizable. For example, in an agentic RAG setup, you can nest retriever and LLM spans inside a custom “RAG Pipeline” span before invoking tool calls.
 
-### LLM Span
+### LLM span
 
 An LLM span represents a call to a language model. It tracks the input, output, and token usage of the model.
 
-```tsx showLineNumbers
-import { ObserveLLM } from "deepeval-ts/tracing";
+```ts showLineNumbers copy {9, 11}
+import { observe } from "deepeval-ts/tracing";
 
-// Original function
-const generateLLMResponse = async (prompt: string) => {
-  ...
+const generate = async (prompt: string): Promise<string> => {
+  // Your LLM logic here
   return "LLM response";
-};
+}
 
-// Wrapped with ObserveLLM
-const generateLLMResponse = ObserveLLM({
+const observedGenerate = observe({
+  type: "llm",
   model: "gpt-4",
-  fn: async (prompt: string) => {
-    ...
-    return "LLM response";
-  },
+  fn: generate,
 });
 ```
 
-There are **ONE** mandatory and **FOUR** optional parameters when configuring an LLM span:
+There are **THREE** mandatory and **FOUR** optional parameters when configuring an LLM span:
 
+- `type`: The type of span. Must be `"llm"` for LLM spans.
 - `model`: A string representing the name of the LLM used.
+- `fn`: The function you wish to trace as an LLM span.
 - [Optional] `costPerInputToken`: A number specifying the cost per input token. Defaults to undefined.
 - [Optional] `costPerOutputToken`: A number specifying the cost per output token. Defaults to undefined.
-- [Optional] `name`: A string specifying the display name on Confident AI. Defaults to the name of the wrapped function.
+- [Optional] `name`: A string specifying the display name on Confident AI. Defaults to the name of the observed function.
 - [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
-### Retriever Span
+### Retriever span
 
-A Retriever span represents a component that fetches information from a vector store or knowledge base.
+A retriever span represents a component that fetches information from a vector store or knowledge base.
 
-```tsx showLineNumbers
-import { ObserveRetriever } from "deepeval-ts/tracing";
+```ts showLineNumbers copy {9, 11}
+import { observe } from "deepeval-ts/tracing";
 
-// Original function
-const fetchDocuments = async (query: string) => {
-  ...
+const retrieve = async (query: string): Promise<string[]> => {
+  // Your retrieval logic here
   return ["document1", "document2"];
 };
 
-// Wrapped with ObserveRetriever
-const fetchDocuments = ObserveRetriever({
+const observedRetrieve = observe({
+  type: "retriever",
   embedder: "text-embedding-ada-002",
-  fn: async (query: string) => {
-    ...
-    return ["document1", "document2"];
-  },
+  fn: retrieve
 });
 ```
 
-There is **ONE** mandatory and **TWO** optional parameters when configuring a retriever span:
+There is **THREE** mandatory and **TWO** optional parameters when configuring a retriever span:
 
+- `type`: The type of span. Must be `"retriever"` for LLM spans.
 - `embedder`: A string representing the name of the embedding model used.
-- [Optional] `name`: A string specifying the display name on Confident AI. Defaults to the name of the wrapped function.
+- `fn`: The function you wish to trace as a retriever span.
+- [Optional] `name`: A string specifying the display name on Confident AI. Defaults to the name of the observed function.
 - [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
-### Tool Span
+### Tool span
 
-A Tool span represents a function that an agent can call to perform specific tasks.
+A tool span represents a function that an agent can call to perform specific tasks.
 
-```tsx showLineNumbers
-import { ObserveTool } from "deepeval-ts/tracing";
+```ts showLineNumbers copy {9, 11}
+import { observe } from "deepeval-ts/tracing";
 
-// Original function
-const searchWeb = async (query: string) => {
-  ...
-  return "Search results";
-};
-
-// Wrapped with ObserveTool
-const searchWeb = ObserveTool({
-  name: "web_search",
-  description: "Search the web for information",
-  fn: async (query: string) => {
-    ...
+const webSearch = async (query: string): Promise<string> => {
+    // Your tool implementation
     return "Search results";
-  },
+}
+
+const observedWebSearch = observe({
+  type: "tool",
+  description: "Search the web for information",
+  fn: webSearch,
 });
 ```
 
-There is **ONE** mandatory and **TWO** optional parameters when configuring a tool span:
+There is **TWO** mandatory and **THREE** optional parameters when configuring a tool span:
 
-- `name`: A string specifying the name of the tool.
+- `type`: The type of span. Must be `"tool"` for LLM spans.
+- `fn`: The function you wish to trace as a tool span.
+- [Optional] `name`: A string specifying the name of the tool to display on Confident AI. Defaults to the name of the observed function.
 - [Optional] `description`: A string that describes what the tool does.
 - [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
-### Agent Span
+### Agent span
 
-An Agent span represents an autonomous entity that can make decisions and interact with other components.
+An agent span represents an autonomous entity that can make decisions and interact with other components.
 
-```tsx showLineNumbers
-import { ObserveAgent } from "deepeval-ts/tracing";
+```ts showLineNumbers copy {9, 12}
+import { observe } from "deepeval-ts/tracing";
 
-// Original function
-const researchTask = async (query: string) => {
-  ...
+const researchAgent = async (query: string): Promise<string> => {
+  // Your agent implementation
   return "Agent response";
 };
 
-// Wrapped with ObserveAgent
-const researchTask = ObserveAgent({
+const observedResearchAgent = observe({
+  type: "agent",
   name: "Research Agent",
   availableTools: ["web_search", "calculator"],
-  fn: async (query: string) => {
-    ...
-    return "Agent response";
-  },
+  fn: researchAgent
 });
 ```
 
-There is **ONE** mandatory and **THREE** optional parameters when configuring an agent span:
+There is **TWO** mandatory and **FOUR** optional parameters when configuring an agent span:
 
-- `name`: A string specifying the display name on Confident AI. Defaults to the name of the wrapped function.
+- `type`: The type of span. Must be `"agent"` for LLM spans.
+- `fn`: The function you wish to trace as an agent span.
+- [Optional] `name`: A string specifying the name of the agent to display on Confident AI. Defaults to the name of the observed function.
 - [Optional] `availableTools`: An array of strings representing available tools.
 - [Optional] `agentHandoffs`: An array of strings representing other agents this agent can delegate to.
 - [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
 Agents can be nested within other agents, which is useful for implementing hierarchical agent architectures. For instance, a "supervisor" agent might coordinate communication between specialized agents.
 
-### Custom Span
+### Custom span
 
-Custom spans are essential for creating hierarchical structures or grouping related spans together.
+Custom spans are essential for creating hierarchical structures or grouping related spans together (for example, grouping a retriever and llm span together to form a "RAG" span).
 
-```tsx showLineNumbers
-import { ObserveCustom } from "deepeval-ts/tracing";
+```ts showLineNumbers copy {9, 11}
+import { observe } from "deepeval-ts/tracing";
 
-// Original function
-const processData = async (input: string) => {
-  ...
+const custom = async (input: string): Promise<string> => {
+  // Your custom implementation
   return "Result";
 };
 
-// Wrapped with ObserveCustom
-const processData = ObserveCustom({
+const observedCustom = observe({
   type: "custom",
   name: "Custom Process",
-  fn: async (input: string) => {
-    ...
-    return "Result";
-};,
+  fn: custom
 });
 ```
 
-There is **ONE** mandatory and **TWO** optional parameters when configuring a custom span:
+There is **TWO** mandatory and **TWO** optional parameters when configuring a custom span:
 
-- `type`: The type of span. Can be set to any string for custom spans.
+- `type`: The type of span. Can be anything other than `"llm"`, `"retriever"`, `"tool"`, and `"agent"` for custom spans.
+- `fn`: The function you wish to trace as a custom span.
 - [Optional] `name`: A string specifying how this custom span is displayed on Confident AI. Defaults to the name of the wrapped function.
 - [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
 
@@ -382,15 +357,13 @@ There is **ONE** mandatory and **TWO** optional parameters when configuring a cu
 
 Attributes can be set at runtime by using the `updateCurrentSpanAttributes()` function. This updates the attributes for the **CURRENT** span in the execution context.
 
-```tsx showLineNumbers
-import { ObserveLLM, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+```ts showLineNumbers
+import { observe, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
 
-const generateCompletion = ObserveLLM({
-  model: "gpt-4",
-  fn: async (prompt: string) => {
+const generate = async (prompt: string)=> {
     ...
 
-    // updateCurrentSpanAttributes must be called within a traced function
+    // MUST be called within an observed function
     updateCurrentSpanAttributes({
       input: prompt,
       output: response,
@@ -399,32 +372,41 @@ const generateCompletion = ObserveLLM({
     });
 
     return response;
-  },
+}
+
+const observedGenerate = observe({
+  type: "llm",
+  model: "gpt-4",
+  fn: generate,
 });
 ```
 
-JavaScript's async context automatically tracks the current span, so you don't need to pass it around manually. This makes it easy to update tracing attributes—like `retrievalContext`—at runtime using `updateCurrentSpanAttributes()`, without changing your function's return type.
+JavaScript’s async context automatically tracks the current span, so you don’t need to pass it around manually. This makes it easy to update tracing attributes — like `retrievalContext` — at runtime using `updateCurrentSpanAttributes()`, without changing your function’s return type.
 
-### LLM Attributes
+### LLM attributes
 
 LLM attributes track the input, output, and token usage of language model calls:
 
-```tsx showLineNumbers
-import { ObserveLLM, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+```ts showLineNumbers {6}
+import { observe, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
 
-const generateCompletion = ObserveLLM({
+const generate = async (prompt: string): Promise<string> => {
+  // Your LLM logic here
+
+  updateCurrentSpanAttributes({
+    input: prompt,
+    output: response,
+    inputTokenCount: 7,
+    outputTokenCount: 7,
+  });
+
+  return "LLM response";
+}
+
+const observedGenerate = observe({
+  type: "llm",
   model: "gpt-4",
-  fn: async (prompt: string) => {
-    ...
-    updateCurrentSpanAttributes({
-      input: prompt,
-      output: response,
-      inputTokenCount: 7,
-      outputTokenCount: 7,
-    });
-
-    return response;
-  },
+  fn: generate,
 });
 ```
 
@@ -441,16 +423,14 @@ There are **TWO** mandatory and **TWO** optional parameters for `LlmAttributes`:
   same applies to output tokens.
 </Callout>
 
-### Retriever Attributes
+### Retriever attributes
 
 Retriever attributes track the query and retrieved context from vector stores or other retrieval systems:
 
-```tsx showLineNumbers
-import { ObserveRetriever, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+```ts showLineNumbers {5}
+import { observe, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
 
-const fetchDocuments = ObserveRetriever({
-  name: "pinecone",
-  fn: async (query: string) => {
+const retrieve = async (query: string) => {
     ...
     updateCurrentSpanAttributes({
       embeddingInput: query,
@@ -458,7 +438,12 @@ const fetchDocuments = ObserveRetriever({
     });
 
     return documents;
-  },
+  }
+
+const observedRetrieve = observe({
+  type: "retriever",
+  name: "Pinecone",
+  fn: retrieve,
 });
 ```
 
@@ -467,16 +452,14 @@ There are **TWO** mandatory parameters for `RetrieverAttributes`:
 - `embeddingInput`: The text of type `string` that needs to be embedded for vector search.
 - `retrievalContext`: The documents/chunks of type `string | string[]` retrieved from your vector store.
 
-### Tool Attributes
+### Tool attributes
 
 Tool attributes track the input parameters and output of tool executions:
 
-```tsx showLineNumbers
-import { ObserveTool, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+```ts showLineNumbers {5}
+import { observe, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
 
-const getWeather = ObserveTool({
-  name: "weather-api",
-  fn: async (location: string) => {
+const getWeather = async (location: string) => {
     ...
     updateCurrentSpanAttributes({
       inputParameters: location,
@@ -484,25 +467,28 @@ const getWeather = ObserveTool({
     });
 
     return weather;
-  },
+}
+
+const observedGetWeather = observe({
+  tool: "tool",
+  name: "weather-api",
+  fn: getWeather,
 });
 ```
 
 There are **TWO** optional parameters for `ToolAttributes`:
 
-- [Optional] `inputParameters`: The parameters passed to the tool function of type `Record<string, any>`. Defaulted to the function args.
-- [Optional] `output`: The result returned by the tool function of type `any`. Defaulted to the function output.
+[Optional] `inputParameters`: The parameters passed to the tool function of type `Record<string, any>`. Defaulted to the function args.
+[Optional] `output`: The result returned by the tool function of type `any`. Defaulted to the function output.
 
-### Agent Attributes
+### Agent attributes
 
 Agent attributes track the thought process and actions of an agent:
 
-```tsx showLineNumbers
-import { ObserveAgent, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
+```ts showLineNumbers {5}
+import { observe, updateCurrentSpanAttributes } from "deepeval-ts/tracing";
 
-const researchTask = ObserveAgent({
-  name: "travel-agent",
-  fn: async (request: string) => {
+const researchAgent = async (request: string) => {
     ...
     updateCurrentSpanAttributes({
       input: request,
@@ -510,20 +496,22 @@ const researchTask = ObserveAgent({
     });
 
     return finalResponse;
-  },
-});
+  }
 
+const observedResearchAgent = observe({
+  type: "agent",
+  name: "travel-agent",
+  fn: researchAgent,
+});
 ```
 
 There are **TWO** optional parameters for `AgentAttributes`:
 
 - [Optional] `input`: The input to the agent of type `any`, typically the initial query or task description. Defaulted to the function args.
-- [Optional] `output`: The agent's response or output of type `any`, including any actions taken or results produced. Defaulted to the function output.
+- [Optional] `output`: The agent’s response or output of type `any`, including any actions taken or results produced. Defaulted to the function output.
 
 ## View Traces in Observatory
 
 To view your traces, navigate to the **Observatory** page under your project space in Confident AI. Here you'll find detailed visualizations of your LLM application's execution flow, including span hierarchies, timing information, and error tracking. You can also open up your trace in full-screen for better visuals.
 
-The trace visualization works exactly the same way regardless of whether you used the Python or TypeScript/JavaScript SDK to generate the traces. All span types (LLM, Retriever, Tool, Agent, Custom) are displayed with their hierarchical relationships, making it easy to analyze your application's performance and behavior.
-
-For a more detailed walkthrough, please refer to the [video summary in the Python documentation](/llm-observability/llm-tracing#code--video-summary).
+For a more detailed walkthrough, please refer to the [video summary above](/llm-observability/integrations/typescript#code--video-summary).

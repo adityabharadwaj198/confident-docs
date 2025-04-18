@@ -1,0 +1,8 @@
+# Ignore all MDX files
+**/*.mdx
+
+# Ignore Next.js build directory
+.next/
+
+# Ignore node_modules
+node_modules/ 

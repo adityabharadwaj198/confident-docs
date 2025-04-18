@@ -67,9 +67,9 @@ export default {
     <User style={{ marginRight: '8px' }} size={16} />
     <span>Human-in-the-Loop</span>
   </div>,
-  "project-configurations": <div style={{ display: 'flex', alignItems: 'center' }}>
+  "project-settings": <div style={{ display: 'flex', alignItems: 'center' }}>
     <Settings style={{ marginRight: '8px' }} size={16} />
-    <span>Project Configurations</span>
+    <span>Project Settings</span>
   </div>,
   // "---3": {
   //   type: "separator",

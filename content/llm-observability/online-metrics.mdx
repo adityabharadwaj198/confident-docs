@@ -3,12 +3,18 @@ title: Online Metrics
 ---
 
 import { Callout } from "nextra/components";
+import { Tabs } from "nextra/components";
 
 # Online Metrics
 
 You can define online metrics on a span level by providing the names of the metric enabled for monitoring on Confident AI in the `@obesrve` decorator
 
 ## Code & Video Summary
+
+<Callout>
+  There are no code summaries for languages other than Python. However you can
+  find typescript examples in individual code snippets below.
+</Callout>
 
 Consider this exact same LLM app/agentic workflow from the [previous section](/llm-observability/llm-tracing):
 
@@ -140,17 +146,39 @@ This will make every **referenceless** metric, including custom metrics, you've 
 
 Not all spans/components serve the same function, and so you don't want to be running the same metrics on each span. To specify which metrics inside your online metric collection should be ran, supply it as an argument in the `@observe` decorator:
 
+<Tabs items={['Python', 'TypeScript']}>
+  <Tabs.Tab>
 ```python showLineNumbers copy {6}
 from deepeval.tracing import observe
 
 @observe(
     type="custom",
     name="RAG Pipeline",
-    metrics=["Name of Metrics Enabled for Monitoring"],
+    metrics=["Answer Relevancy", "Faithfulness", "Contextual Relevancy"],
 )
 def rag_pipeline(query: str) -> str:
     pass
 ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript showLineNumbers copy {11}
+import { observe } from '@confident/tracing';
+
+const generate = async (prompt: string): Promise<string> => {
+  // Your LLM logic here
+  return "LLM response";
+}
+ 
+const observedGenerate = observe(
+    type="llm",
+    model: "gpt-4",
+    metrics=["Answer Relevancy", "Faithfulness", "Contextual Relevancy"],
+    fn: generate,
+);
+````
+
+  </Tabs.Tab>
+</Tabs>
 
 The `metrics` argument is an optional list of strings that determines which metrics in your online metric collection will be ran for this current span.
 
@@ -165,6 +193,8 @@ The `metrics` argument is an optional list of strings that determines which metr
 
 Once you've set your metrics, you'll need to define what the test case parameters are by using the `update_current_span_test_case_parameters()` function.
 
+<Tabs items={['Python', 'TypeScript']}>
+  <Tabs.Tab>
 ```python showLineNumbers copy {9-13}
 from deepeval.tracing import observe, update_current_span_test_case_parameters
 
@@ -181,6 +211,30 @@ def process_rag_pipeline(query: str) -> str:
     )
     return
 ```
+  </Tabs.Tab>
+    <Tabs.Tab>
+```ts showLineNumbers copy {6-9}
+import { observe, updateCurrentSpanTestCaseParameters } from '@confident/tracing';
+ 
+const generate = async (prompt: string): Promise<string> => {
+    fake_output = `Wow thanks for the ${prompt}`
+
+    updateCurrentSpanTestCaseParameters(
+        input=prompt,
+        output=fake_output
+    )
+    return fake_output;
+}
+ 
+const observedGenerate = observe(
+    type="llm",
+    model: "gpt-4",
+    metrics=["Answer Relevancy", "Faithfulness", "Contextual Relevancy"],
+    fn: generate,
+);
+```
+  </Tabs.Tab>
+</Tabs>
 
 These parameters maps 1-1 to those parameters in an `LLMTestCase`. You should [definitely read this](/concepts/test-cases#llmtestcase) if you're not sure what an `LLMTestCase` is.
 

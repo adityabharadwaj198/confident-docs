@@ -1,0 +1,11 @@
+{
+  "overrides": [
+    {
+      "files": "*.mdx",
+      "options": {
+        "parser": "markdown",
+        "embeddedLanguageFormatting": "off"
+      }
+    }
+  ]
+} 
