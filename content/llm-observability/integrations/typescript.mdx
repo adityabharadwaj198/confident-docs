@@ -30,19 +30,16 @@ graph TD
 ```bash
 npm install deepeval-ts
 ```
-
 ```ts showLineNumbers copy {11, 22, 44, 64, 82}
 import {
   observe,
   updateCurrentSpanAttributes,
-  RetrieverAttributes,
-  LlmAttributes,
 } from "deepeval-ts/tracing";
 
 
 // Tool
 const webSearch = observe({
-  type="tool",
+  type: "tool",
   name: "web_search",
   fn: async (query: string) => {
     // <--Include implementation to search web here-->
@@ -53,7 +50,7 @@ const webSearch = observe({
 
 // Retriever
 const retrieveDocuments = observe({
-  type="retriever",
+  type: "retriever",
   embedder: "text-embedding-ada-002",
   fn: async (query: string) => {
     // <--Include implementation to fetch from vector database here-->
@@ -155,12 +152,16 @@ npm install deepeval-ts
 # or
 yarn add deepeval-ts
 ```
+<Callout type="warning">
+If you get `TS2307: Cannot find module`, your TypeScript config likely doesn't support subpath imports.
+Fix it by setting `"module": "Node16"` and `"moduleResolution": "node16"` in your `tsconfig.json`.
+</Callout>
 
 Then, set your Confident AI API key as an environment variable:
 
 ```bash
 # In your .env file or environment
-CONFIDENT_API_KEY=your-api-key
+export CONFIDENT_API_KEY=your-api-key
 ```
 
 DeepEval.ts automatically detects and uses these environment variables without
@@ -168,7 +169,7 @@ requiring explicit initialization code.
 
 ### DeepEval vs DeepEval.ts for tracing
 
-<Callout>
+<Callout type="info">
   From here onwards, we will refer to DeepEval’s python implementation simply as
   DeepEval, and the JavaScript/TypeScript implementation as DeepEval.ts.
 </Callout>
