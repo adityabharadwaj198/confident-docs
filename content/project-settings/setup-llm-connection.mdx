@@ -79,3 +79,8 @@ That's not to say you can't include other things to return in your Json response
 ## Test Your LLM Connection
 
 Click on the **Ping Endpoint** button, and see if you're getting a `200` status response. If not, fix the problem based on the error on the screen.
+
+
+## A Note on Security
+
+If you're setting up an LLM endpoint specifically for Confident AI, or are concerned about the authentication of your endpoint, you can verify requests by checking the headers. Confident AI will send a header named `CONFIDENT_API_KEY` that contains your project API key. You should validate this key before processing any requests to ensure they originate from Confident AI.
