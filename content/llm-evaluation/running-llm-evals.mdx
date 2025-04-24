@@ -2,7 +2,7 @@
 title: Running LLM Evals
 ---
 
-import { Callout } from "nextra/components";
+import { Callout, Tabs } from "nextra/components";
 
 # Running LLM Evals
 
@@ -146,10 +146,35 @@ If you're using another language other than Python (i.e. Typescript) or wish to 
   onto this section, since it is much harder to customize metrics on the cloud.
 </Callout>
 
-### Trigger evals via HTTPs
 
-To trigger an evaluation on the cloud via HTTPS, simply use `curl` to send test cases to Confident AI for evaluation.
+### Trigger evals in Typescript or HTTPS
 
+To trigger an evaluation on the cloud via HTTPS, simply use `deepeval-ts` or `curl` to send test cases to Confident AI for evaluation.
+
+<Tabs items={['TypeScript', 'curl']}>
+  <Tabs.Tab>
+```typescript
+import { evaluate, EvaluationDataset, LLMTestCase } from 'deepeval-ts';
+
+const dataset = new EvaluationDataset();
+await dataset.pull({ alias: "your-dataset-alias" });
+
+for (const golden of dataset.testCases) {
+  const testCase = new LLMTestCase({
+    input: golden.input,
+    actualOutput: await yourLlmApp(golden.input) 
+  });
+  dataset.addTestCase(testCase);
+}
+
+// Run evals on Confident AI
+await evaluate({
+  metricCollection: "your-collection-name", 
+  testCases: testCases
+});
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```curl
 curl -X POST "https://deepeval.confident-ai.com/evaluate" \
      -H "Content-Type: application/json" \
@@ -169,6 +194,8 @@ curl -X POST "https://deepeval.confident-ai.com/evaluate" \
            ]
          }`
 ```
+  </Tabs.Tab>
+</Tabs>
 
 <Callout type="info">
   Not all parameters in `"testCases"` are required. You should figure out what
