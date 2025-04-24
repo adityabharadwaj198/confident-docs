@@ -73,12 +73,13 @@ This step is optional but, you can enable online metrics to evaluate all traces 
 
 Now in your code, add these lines to automatically run online evals in production:
 
-```python showLineNumbers {9, 18}
+```python showLineNumbers {10, 19}
 from openai import OpenAI
+from deepeval.test_case import LLMTestCase
 from deepeval.tracing import (
     observe,
     update_current_span_attributes,
-    update_current_span_test_case_parameters,
+    update_current_span_test_case,
     LlmAttributes,
 )
 
@@ -91,7 +92,9 @@ def generate_response(prompt: str) -> str:
     output = response.choices[0].message.content
 
     update_current_span_attributes(LlmAttributes(input=prompt, output=output))
-    update_current_span_test_case_parameters(input=prompt, actual_output=output)
+    update_current_span_test_case(
+      tests_case=LLMTestCase(input=prompt, actual_output=output)
+    )
     return output
 ```
 

@@ -298,7 +298,7 @@ The current span is determined using Python's context variables, which automatic
 
 ### LLM Attributes
 
-LLM attributes track the `input`, `output`, and token usage of language model calls. You **MUST** set the attributes for an LLM span.
+LLM attributes track the `input`, `output`, and token usage of language model calls. It is highly **RECOMMENDED** that you set the attributes for an LLM span.
 
 ```python showLineNumbers copy
 from deepeval.tracing import update_current_span_attributes, LlmAttributes
@@ -327,7 +327,7 @@ There are **TWO** mandatory and **TWO** optional parameters for `LLMAttributes`:
 
 ### Retriever Attributes
 
-Retriever attributes track the `embedding_input` and `retrieved_context` in RAG pipelines. You **MUST** set the attributes for a retriever span.
+Retriever attributes track the `embedding_input` and `retrieved_context` in RAG pipelines. It is highly **RECOMMENDED** that you set the attributes for a retriever span.
 
 ```python showLineNumbers copy
 from deepeval.tracing import update_current_span_attributes, RetrieverAttributes
