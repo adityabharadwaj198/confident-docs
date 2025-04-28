@@ -45,6 +45,16 @@ Replace `YOUR_API_KEY` with the API key you copied from the Confident AI dashboa
 
 Once logged in, you're ready to start using Confident AI with DeepEval for your LLM evaluations.
 
+### Set your data region (if required)
+
+Confident AI's data lives in the US by default, but if you're a customer with a data residency in the EU, you'll need to run this command to point `deepeval` to use Confdient AI's API endpoints on our EU servers and databases instead:
+
+```bash
+deepeval confident-set-url EU
+```
+
+This step is only required if you've created an account in the EU data region. For more information on data residency, [click here.](/data-handling#data-residency)
+
 ## What's Next?
 
 In the next section, we'll quickly setup a prompt and dataset on Confident AI, so that we can start running LLM evaluations.
