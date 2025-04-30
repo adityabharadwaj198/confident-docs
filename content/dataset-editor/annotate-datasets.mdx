@@ -63,7 +63,17 @@ You can add custom columns to your dataset to store additional information that 
 1. Click the **Add Column** button in the **Dataset Editor**
 2. Enter a unique name for your column (it cannot match any default field names like "Input" or "Actual Output")
 
-You can also add a new golden in the **Golden Editor** and when [uploading a dataset via CSV.](/dataset-editor/import-datasets#import-goldens-from-csv)
+To use data stored in custom columns, simply pull your dataset and access the `custom_column_key_values` field of a golden:
+
+```python
+from deepeval.dataset import EvaluationDataset
+
+dataset = EvaluationDataset()
+dataset.pull(alias="your alias")
+
+# `custom_column_key_values` is a Dict[str, str]
+print(dataset.goldens[0].custom_column_key_values)
+```
 
 <Callout type="info">
   The `additional_metadata` field in a golden can often serve as an alternative

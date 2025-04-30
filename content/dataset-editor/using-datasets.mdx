@@ -61,7 +61,13 @@ If you have a pre-computed dataset, aka. your `actual_output`s are already popul
 dataset.pull(alias="My Evals Dataset", auto_convert_test_cases_to_goldens=True)
 ```
 
-The `auto_convert_test_cases_to_goldens` is defaulted to `False`, and the preferred way is to convert goldens to test cases **manually** before evaluation.
+The `auto_convert_test_cases_to_goldens` is defaulted to `False`, and the preferred way is to convert goldens to test cases **manually** before evaluation. Another tip is, if you have custom columns, this is how you would access it:
+
+```python
+...
+
+print(dataset.goldens[0].custom_column_key_values)
+```
 
 ## Convert Golden(s) to Test Case(s)
 

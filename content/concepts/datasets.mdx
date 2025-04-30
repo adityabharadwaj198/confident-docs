@@ -26,6 +26,7 @@ A golden is similar to a test case but is more flexible. The key differences are
 - Goldens are useful when you want to generate LLM outputs at evaluation time
 - Goldens are ideal for scenarios where you have a **set of inputs** but haven't run them through your LLM yet
 - Goldens are best for **storing ground truth data** such as `expected_output` and `expected_tools`
+- Goldens contain a `custom_column_key_values` field, which allows you to use data from custom columns pairs you have [created on Confident AI's dataset editor](/dataset-editor/annotate-datasets#adding-custom-columns)
 
 Goldens are particularly useful when:
 
@@ -34,7 +35,7 @@ Goldens are particularly useful when:
 
 Another way to think about it is, **goldens are designed for editing** and are basically test cases that aren't ready for evaluation, since the dynamic values: `actual_output`, `retrieval_context`, and `tools_called`, haven't been called yet.
 
-A `Golden` has the same data structure as an `LLMTestCase`:
+A `Golden` has nearly the same data structure as an `LLMTestCase`:
 
 ```python showLineNumbers copy
 from deepeval.dataset import Golden
@@ -60,7 +61,10 @@ class Golden:
     comments: Optional[str]
     additional_metadata: Optional[Dict]
     finalized: bool
+    custom_column_key_values: Optional[Dict[str, str]]
 ```
+
+The `custom_column_key_values` field will be populated by your dataset's custom column values (if any) when you [pull a dataset](/dataset-editor/using-datasets#pull-a-dataset) from Confident AI.
 
 #### Why shouldn't goldens contain `actual_output`?
 
