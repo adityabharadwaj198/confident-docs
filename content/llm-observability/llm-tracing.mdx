@@ -314,10 +314,12 @@ def generate_response(prompt: str) -> str:
 
 There are **TWO** mandatory and **TWO** optional parameters for `LLMAttributes`:
 
-- `input`: The prompt or text of type `str` sent to the language model.
+- `input`: The prompt of type `List[Dict[str, Any]]` **OR** `str` provided to the language model. 
 - `output`: The response generated of type `str` by the language model.
 - [Optional] `input_token_count`: The number of tokens of type `int` in the input.
 - [Optional] `output_token_count`: The number of tokens of type `int` in the generated response.
+
+Note that for `input`, typically you would either send the list of messages as a list of `{"role": <role>, "content": <content>}` directly as you would to your LLM provider's APIs, or simply the user input as a pure `str` instead.
 
 <Callout type="info">
   If `cost_per_input_token` is not set in the `@observe` decorator, setting the

@@ -413,10 +413,12 @@ const observedGenerate = observe({
 
 There are **TWO** mandatory and **TWO** optional parameters for `LlmAttributes`:
 
-- `input`: The prompt or text of type `string` sent to the language model.
+- `input`: The prompt of type `Record<string, any>[]` **OR** `string` sent to the language model.
 - `output`: The response generated of type `string` by the language model.
 - [Optional] `inputTokenCount`: The number of tokens of type `number` in the input.
 - [Optional] `outputTokenCount`: The number of tokens of type `number` in the generated response.
+
+Note that for `input`, typically you would either send the list of messages as a list of `{"role": <role>, "content": <content>}` directly as you would to your LLM provider's APIs, or simply the user input as a pure `string` instead.
 
 <Callout type="info">
   If `costPerInputToken` is not set in the wrapper configuration, setting the

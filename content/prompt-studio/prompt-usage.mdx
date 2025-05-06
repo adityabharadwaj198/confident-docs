@@ -44,7 +44,7 @@ from deepeval.prompt import Prompt
 prompt = Prompt(alias="System Prompt")
 prompt.pull()
 
-print(prompt.template)
+print(prompt._text_template)
 ```
 
 You'll notice that unlike the `pull()` method on an `EvaluationDataset`, the `alias` is actually defined on `Prompt` instantiation instead. This is because the `pull()` method on a `Prompt` is reserved to specify the version instead.
@@ -57,7 +57,7 @@ When no parameters are provided to the `pull()` method, the latest version is pu
 ...
 
 prompt.pull(version="00.00.01")
-print(prompt.template)
+print(prompt._text_template)
 ```
 
 ## Interpolate Variables
@@ -79,14 +79,14 @@ And if you don't have any variables, you should still use the `interpolate()` me
 
 ## Pull a List of Prompt Messages
 
-You pull prompt messages the same way you would pull a single prompt, the difference is it is now stored in the `message_templates` variable instead, and you can print it out to see it for yourself:
+You pull prompt messages the same way you would pull a single prompt, the difference is it is now stored in the `_messages_template` variable instead, and you can print it out to see it for yourself:
 
 ```python
 from deepeval.prompt import Prompt
 
 prompt = Prompt(alias="your-alias-here")
 prompt.pull()
-print(prompt.message_templates)
+print(prompt._messages_template)
 # [
 #   PromptMessage(role="system", content="You are a helpful assistant."),
 #   PromptMessage(role="user", content="What is the capital of France?"),
