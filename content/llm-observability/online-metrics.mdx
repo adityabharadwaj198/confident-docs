@@ -32,8 +32,7 @@ from typing import List
 from deepeval.test_case import LLMTestCase
 from deepeval.tracing import (
     observe,
-    update_current_span_attributes,
-    update_current_span_test_case,
+    update_current_span,
     RetrieverAttributes,
     LlmAttributes,
 )
@@ -56,8 +55,8 @@ def retrieve_documents(query: str) -> List[str]:
         "Document 3: Additional context that might be useful.",
     ]
 
-    update_current_span_attributes(
-        RetrieverAttributes(
+    update_current_span(
+        attributes=RetrieverAttributes(
             embedding_input=query, retrieval_context=fetched_documents
         )
     )
@@ -70,7 +69,7 @@ def generate_response(input: str) -> str:
     # <--Include format prompts and call your LLM provider here-->
     output = "Generated response based on the prompt: " + input
 
-    update_current_span_attributes(LlmAttributes(input=input, output=output))
+    update_current_span(attributes=LlmAttributes(input=input, output=output))
     return output
 
 
@@ -89,7 +88,7 @@ def rag_pipeline(query: str) -> str:
     response = generate_response(f"Context: {context}\nQuery: {query}")
 
     # Set test case to evaluate current span
-    update_current_span_test_case(
+    update_current_span(
       test_case=LLMTestCase(input=query, actual_output=response, retrieval_context=docs)
     )
     return response
@@ -192,13 +191,13 @@ The `metrics` argument is an optional list of strings that determines which metr
 
 ## Set Runtime Test Case Parameters for Spans
 
-Once you've set your metrics, you'll need to define what the test case parameters are by using the `update_current_span_test_case()` function.
+Once you've set your metrics, you'll need to define what the test case parameters are by using the `update_current_span()` function with its `test_case` argument.
 
 <Tabs items={['Python', 'TypeScript']}>
   <Tabs.Tab>
 ```python showLineNumbers copy {10}
 from deepeval.test_case import LLMTestCase
-from deepeval.tracing import observe, update_current_span_test_case
+from deepeval.tracing import observe, 
 
 @observe(
     type="custom",
@@ -206,8 +205,8 @@ from deepeval.tracing import observe, update_current_span_test_case
     metrics=["Name of Metrics Enabled for Monitoring"],
 )
 def process_rag_pipeline(query: str) -> str:
-    update_current_span_test_case(
-        LLMTestCase(
+    update_current_span(
+        test_case=LLMTestCase(
             input="Replace with your input",
             actual_output="Repalce with the response to your input",
             retrieval_context=["Replace with text chunks from your vector db"]
@@ -252,32 +251,29 @@ These parameters maps 1-1 to those parameters in an `LLMTestCase`. You should [d
 If you're also wondering, when you have nested spans (one function decorated with `@observe` calling another decorated function), the system always works with the most recently started span. Think of it like a stack of plates - you always work with the top plate.
 
 ```python showLineNumbers
-from deepeval.tracing import observe, update_current_span_test_case
+from deepeval.tracing import observe, update_current_span
 
 @observe(type="custom", name="outer")
 def outer_function():
     @observe(type="llm", name="inner", metrics=["Your metric name"])
     def inner_function():
-        # Here, update_current_span_test_case() will update the LLM span
-        update_current_span_test_case(...)
+        # Here, update_current_span() will update the LLM span
+        update_current_span(test_case=...)
 ```
 
 In this example:
 
 1. When `outer_function` starts, it creates the "outer" span
 2. When `inner_function` is called, it creates the "inner" span on top
-3. Any calls to `update_current_span_test_case()` during `inner_function`'s execution will update the "inner" span, not the "outer" one
+3. Any calls to `update_current_span()` during `inner_function`'s execution will update the "inner" span, not the "outer" one
 4. This ensures that metrics and attributes are always applied to the correct, most specific span in your trace
 
 Therefore, it is the `inner_function()` that will have the online metrics evaluated **NOT** the `outer_function()`.
 
 <Callout>
-  You'll notice this is extremely similar to the
-  [`update_current_span_attributes()`](/llm-observability/llm-tracing#set-runtime-attributes-for-default-spans)
-  function for setting span specific attributes, with the difference being the
-  `update_current_span_test_case()` function can be called in custom
-  spans as well.
+  You can pass a <code>test_case</code> argument to <code>update_current_span()</code> for any span (including custom spans), but the <code>attributes</code> argument only works on default spans. For more on setting span attributes, see [this section](/llm-observability/llm-tracing#set-runtime-attributes-for-default-spans).
 </Callout>
+
 
 ## View Metrics in Observatory
 
