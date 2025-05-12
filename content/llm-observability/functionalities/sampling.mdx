@@ -5,31 +5,39 @@ import { Callout } from "nextra/components";
 
 # Sampling
 
-Sampling allows you to control what percentage of traces are sent to Confident's observatory. This is useful for high-volume applications where you may want to reduce the amount of data being sent while still maintaining visibility into your system's performance. 
+Sampling allows you to control what percentage of traces are sent to Confident's observatory. 
+
+<Callout>
+This is useful for high-volume applications where you may want to reduce the amount of data being sent while still maintaining visibility into your system's performance. 
+</Callout>
 
 ## Configure Sample Rate
 
-Configure the sampling rate by setting the `CONFIDENT_SAMPLE_RATE` environment variable, which represents the percentage of traces that will be sent to the observatory. 
+Configure the sampling rate by setting the `CONFIDENT_SAMPLE_RATE` environment variable, which represents the proportion of traces that will be sent to the observatory. 
 
 ```bash
 export CONFIDENT_SAMPLE_RATE=0.5 
 ```
 
-Alternatively, you can set the sampling rate directly in python code:
+Alternatively, you can set the sampling rate directly in code:
 
-```python
+```python showLineNumbers {4}
 import os
-from deepeval.tracing import observe
+from deepeval.tracing import observe, trace_manager
 
-os.environ["CONFIDENT_SAMPLE_RATE"] = "0.5"
+trace_manager.configure(sample_rate=0.5)
 
-# LLM App
-@observe(type="agent")
-def agent(query: str):
-    return "Agent Response"
+@observe()
+def llm_app(query: str):
+    return openai.ChatCompletion.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "user", "content": query}
+        ]
+    ).choices[0].message["content"]
 
 for _ in range(10):
-    agent("Test sampling")  # roughly half of these traces will be sent
+    llm_app("Write me a poem.")  # roughly half of these traces will be sent
 ```
 
 <Callout type="info">

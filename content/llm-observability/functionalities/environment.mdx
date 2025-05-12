@@ -4,7 +4,7 @@ title: Environment
 
 # Environment
 
-The environment feature allows you to specify which environment your traces are coming from. This is useful for separating traces from different environments such as development, staging, or production.
+The environment feature allows you to specify which environment your traces are coming from. This is useful for separating traces from different environments in `"development"`, `"staging"`, or `"production"`.
 
 ## Configure Environment
 
@@ -14,19 +14,24 @@ You can configure the environment with the `CONFIDENT_TRACE_ENVIRONMENT` environ
 export CONFIDENT_TRACE_ENVIRONMENT="staging"
 ```
 
-Alternatively, you can set the environment directly in python code:
+Alternatively, you can set the environment directly in code:
 
-```python
-from deepeval.tracing import trace_manager, observe
+```python showLineNumbers {3}
+from deepeval.tracing import observe, trace_manager
 
 trace_manager.configure(environment="production")
 
-# LLM App
-@observe(type="agent")
-def agent(query: str):
-    return "Agent Response"
+@observe()
+def llm_app(query: str):
+    return openai.ChatCompletion.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "user", "content": query}
+        ]
+    ).choices[0].message["content"]
 
-my_agent("Test Environment")
+
+llm_app("Write me a poem.")
 ```
 
-The `environment` can be any string that helps you identify where your traces are coming from.
+The `environment` can be either `"production"`, `"staging"`, or `"development"`, and helps you identify where your traces are coming from.
