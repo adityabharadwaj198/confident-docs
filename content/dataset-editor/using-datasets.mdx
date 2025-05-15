@@ -46,7 +46,13 @@ dataset = EvaluationDataset()
 dataset.pull(alias="My Evals Dataset")
 ```
 
-When you `pull()` a dataset, you are pulling goldens by default, **NOT** test cases.
+When you `pull()` a dataset, you are pulling **finalized** goldens by default, **NOT** test cases. To pull **unfinalized** goldens as well, set `finalized=False`:
+
+```python
+...
+
+dataset.pull(alias="My Evals Dataset", finalized=False)
+```
 
 <Callout type="warning">
   If you're unsure what is the difference between a golden and a test case,

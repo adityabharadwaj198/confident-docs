@@ -46,9 +46,9 @@ Once you're done with your mapping, click **Next** to review your upload details
 
 ## Upload Golden(s) Via DeepEval
 
-You can also upload goldens to Confident AI through DeepEval.
+### Push
 
-`EvaluationDataset` on Confident using `deepeval` is simply involves creating an `EvaluationDataset` with a list of `Golden`s, and pushing it to Confident AI by supplying the dataset alias.
+You can also push **finalized** goldens to Confident AI through DeepEval. Simply create an `EvaluationDataset` with a list of `Golden`s, and pushing it to Confident AI by supplying the dataset `alias`.
 
 ```python
 from deepeval.dataset import EvaluationDataset, Golden
@@ -62,6 +62,9 @@ dataset = EvaluationDataset(goldens=[golden])
 # Provide an alias when pushing a dataset
 dataset.push(alias="QA Dataset")
 ```
+
+By default, the `push` method marks goldens as **finalized**, and will be pulled by default using the [`pull` method](/dataset-editor/using-datasets#pull-a-dataset). To push goldens as **unfinalized**, use the [queue method](#queue) instead.
+
 
 You can also choose to overwrite or append to an existing dataset if an existing dataset with the same alias already exist.
 
@@ -78,6 +81,30 @@ dataset.push(alias="QA Dataset", overwrite=True)
 </Callout>
 
 You can also **load a dataset from CSV or JSON locally** before uploading it to Confident AI through `deepeval`. For more information on `deepeval`'s `EvaluationDataset`, visit the [official DeepEval documentation.](https://deepeval.com/docs/evaluation-datasets#load-an-existing-dataset)
+
+### Queue
+
+If your goldens are not ready for evaluation, need human annotation, as is the case when you want to have a second pair of eyes going through uploaded goldens before using them for evaluation, you can queue them to dataset instead. Queued goldens are automatically marked as **unfinalized**.
+
+```python
+from deepeval.dataset import EvaluationDataset, Golden
+
+# Initialize dataset
+dataset = EvaluationDataset()
+
+# Provide a dataset alias when queueing goldens
+dataset.push(alias="QA Dataset", goldens=[Golden(input="Input of my first golden!")])
+```
+
+There are **TWO** mandatory and **ONE** optional parameters when using the `queue` method:
+
+- `alias`: A string specifying the alias of the dataset.
+- `goldens`: A list of `Golden`s and must not be empty.
+- [Optional] `print_response`: A boolean specifying whether to print a success message after queueing. Defaulted to `True`.
+
+<Callout>
+The term "queue" is used to signify that unfinalized goldens need editing before they are ready for evaluation. 
+</Callout>
 
 ## From Existing Test Runs
 
