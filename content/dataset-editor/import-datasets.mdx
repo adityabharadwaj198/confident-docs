@@ -102,6 +102,8 @@ There are **TWO** mandatory and **ONE** optional parameters when using the `queu
 - `goldens`: A list of `Golden`s and must not be empty.
 - [Optional] `print_response`: A boolean specifying whether to print a success message after queueing. Defaulted to `True`.
 
+The `queue` method also creates a new dataset with the `alias` you provided if no such dataset exist.
+
 <Callout>
 The term "queue" is used to signify that unfinalized goldens need editing before they are ready for evaluation. 
 </Callout>
