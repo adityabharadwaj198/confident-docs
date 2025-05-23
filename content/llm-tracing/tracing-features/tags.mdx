@@ -49,9 +49,9 @@ Tags are applied at the trace level, making them visible for all spans within th
       return openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
-                { role: "user", content: query }
-            ]
-        }).choices[0].message.content;
+          { role: "user", content: query }
+        ]
+      }).choices[0].message.content;
     };
     
     const observedLlmApp = observe({
