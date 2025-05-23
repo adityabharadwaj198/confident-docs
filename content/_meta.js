@@ -8,10 +8,7 @@ export default {
   "on-prem-hosting": <NavIconTabItem icon={House} label="On-Prem Hosting" />,
   "llm-red-teaming": {
     title: <NavIconTabItem icon={ShieldAlert} label="LLM Red Teaming" />,
-    // "hidden": true
-    theme: {
-      hidden: true
-    }
+    "display": "hidden"
   },
   concepts: {
     title: <NavIconTabItem icon={BookOpen} label="Concepts" />,
