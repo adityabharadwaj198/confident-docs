@@ -2,7 +2,7 @@
 title: Users
 ---
 
-import { Callout } from "nextra/components";
+import { Callout, Tabs } from "nextra/components";
 
 # Users
 
@@ -12,22 +12,52 @@ You can track user interactions with your LLM app by setting the `user_id` in a 
 
 You can use the `update_current_trace` function to set the `user_id` within traces:
 
-```python showLineNumbers {12}
-from deepeval.tracing import observe, update_current_trace
- 
-@observe()
-def llm_app(query: str):
-    res = openai.ChatCompletion.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "user", "content": query}
-        ]
-    ).choices[0].message["content"]
+<Tabs items={['Python', 'JS/TypeScript']}>
+  <Tabs.Tab>
+    ```python showLineNumbers {13}
+    from deepeval.tracing import observe, update_current_trace
+    import openai
+    
+    @observe()
+    def llm_app(query: str):
+        res = openai.ChatCompletion.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "user", "content": query}
+            ]
+        ).choices[0].message["content"]
 
-    update_current_trace(user_id="your-user-id")
-    return res
- 
-llm_app("Write me a poem.")
-```
+        update_current_trace(user_id="your-user-id")
+        return res
+    
+    llm_app("Write me a poem.")
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```typescript showLineNumbers {13}
+    import { observe, updateCurrentTrace } from '@confident/tracing';
+    import OpenAI from 'openai';
+    
+    const llmApp = (query: string) => {
+      const openai = new OpenAI();
+      const res = openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { role: "user", content: query }
+        ]
+      }).choices[0].message.content;
+      
+      updateCurrentTrace({ userId: "your-user-id" });
+      return res;
+    };
+    
+    const observedLlmApp = observe({
+      fn: llmApp
+    });
+    
+    observedLlmApp("Write me a poem.");
+    ```
+  </Tabs.Tab>
+</Tabs>
 
 The `user_id` can be any string, including the actual IDs of customers in your own database, or even their email addresses. Everything will be viewable and searched in the UI.
