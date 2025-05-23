@@ -50,15 +50,15 @@ Each metadata argument is a dictionary whose keys are strings and whose values a
         updateCurrentSpan({
             metadata: {
                 source: "knowledge_base_1",
-                retrievedDocuments: 3
+                retrieved_documents: 3
             }
         });
         
         // Add trace-level metadata
         updateCurrentTrace({
             metadata: {
-                userId: "user-456",
-                appVersion: "1.2.3",
+                user_id: "user-456",
+                app_version: "1.2.3",
             }
         });
     };
