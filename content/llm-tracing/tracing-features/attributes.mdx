@@ -2,7 +2,7 @@
 title: Attributes
 ---
 
-import { Callout } from "nextra/components";
+import { Callout, Tabs } from "nextra/components";
 
 # Attributes
 
@@ -18,23 +18,52 @@ Setting attributes will make the tracing UI easier to navigate on Confident AI, 
 
 Attributes are set at runtime using the `update_current_span()` function with its `attributes` argument. This function updates the attributes for the **CURRENT** span - which is the nearest `@observe` decorator level we are currently tracing. For example, if you have nested spans like:
 
-```python showLineNumbers {10}
-from deepeval.tracing import observe, update_current_span, RetrieverAttributes
-
-@observe(type="custom")
-def outer_function():
-
-    @observe(type="retriever")
-    def inner_function():
-
-        # Here, update_current_span() will update the Retriever span
-        update_current_span(
-            attribtues=RetrieverAttributes(
-                embedding_input=query, 
-                retrieval_context=fetched_documents
+<Tabs items={['Python', 'JS/TypeScript']}>
+  <Tabs.Tab>
+    ```python showLineNumbers {10}
+    from deepeval.tracing import observe, update_current_span, RetrieverAttributes
+    
+    @observe(type="custom")
+    def outer_function():
+    
+        @observe(type="retriever")
+        def inner_function():
+    
+            # Here, update_current_span() will update the Retriever span
+            update_current_span(
+                attribtues=RetrieverAttributes(
+                    embedding_input=query, 
+                    retrieval_context=fetched_documents
+                )
             )
-        )
-```
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```typescript showLineNumbers {6}
+    import { observe, updateCurrentSpanAttributes, RetrieverAttributes } from '@confident/tracing';
+    
+    const innerFunction = () => {
+
+        // Here, updateCurrentSpanAttributes() will update the Retriever span
+        updateCurrentSpanAttributes({
+            embeddingInput: query,
+            retrievalContext: fetchedDocuments
+        });
+    };
+    
+    const observedInnerFunction = observe({
+        type: "retriever",
+        name: "travel-agent",
+        fn: innerFunction,
+    });
+
+    const outerFunction = observe({
+        type: "custom",
+        fn: () => {observedInnerFunction()},
+    });
+    ```
+  </Tabs.Tab>
+</Tabs>
 
 The current span is determined using Python's context variables, which automatically track the active span based on the execution context. This means you don't need to manually pass span references around - the system knows which span you're currently executing within.
 
@@ -42,17 +71,41 @@ The current span is determined using Python's context variables, which automatic
 
 LLM attributes track the `input`, `output`, and token usage of language model calls. It is highly **RECOMMENDED** that you set the attributes for an LLM span.
 
-```python showLineNumbers copy
-from deepeval.tracing import update_current_span, LlmAttributes
-
-@observe(type="llm", model="gpt-4")
-def generate_response(prompt: str) -> str:
-    output = "Generated response"
-    update_current_span(
-        attributes=LlmAttributes(input=prompt, output=output)
-    )
-    return output
-```
+<Tabs items={['Python', 'JS/TypeScript']}>
+  <Tabs.Tab>
+    ```python showLineNumbers copy
+    from deepeval.tracing import update_current_span, LlmAttributes
+    
+    @observe(type="llm", model="gpt-4")
+    def generate_response(prompt: str) -> str:
+        output = "Generated response"
+        update_current_span(
+            attributes=LlmAttributes(input=prompt, output=output)
+        )
+        return output
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```typescript showLineNumbers copy
+    import { observe, updateCurrentSpanAttributes } from '@confident/tracing';
+    
+    const generateResponse = (prompt: string): string => {
+      const output = "Generated response";
+      updateCurrentSpanAttributes({
+        input: prompt,
+        output: output
+      });
+      return output;
+    };
+    
+    const observedGenerateResponse = observe({
+      type: "llm",
+      model: "gpt-4",
+      fn: generateResponse,
+    });
+    ```
+  </Tabs.Tab>
+</Tabs>
 
 There are **TWO** mandatory and **TWO** optional parameters for `LLMAttributes`:
 
@@ -73,20 +126,44 @@ Note that for `input`, typically you would either send the list of messages as a
 
 Retriever attributes track the `embedding_input` and `retrieved_context` in RAG pipelines. It is highly **RECOMMENDED** that you set the attributes for a retriever span.
 
-```python showLineNumbers copy
-from deepeval.tracing import update_current_span, RetrieverAttributes
-
-@observe(type="retriever", embedder="text-embedding-ada-002")
-def retrieve_documents(query: str) -> List[str]:
-    fetched_documents = ["doc1", "doc2"]
-    update_current_span(
-        attributes=RetrieverAttributes(
-            embedding_input=query, 
-            retrieval_context=fetched_documents
+<Tabs items={['Python', 'JS/TypeScript']}>
+  <Tabs.Tab>
+    ```python showLineNumbers copy
+    from deepeval.tracing import update_current_span, RetrieverAttributes
+    
+    @observe(type="retriever", embedder="text-embedding-ada-002")
+    def retrieve_documents(query: str) -> List[str]:
+        fetched_documents = ["doc1", "doc2"]
+        update_current_span(
+            attributes=RetrieverAttributes(
+                embedding_input=query, 
+                retrieval_context=fetched_documents
+            )
         )
-    )
-    return fetched_documents
-```
+        return fetched_documents
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```typescript showLineNumbers copy
+    import { observe, updateCurrentSpanAttributes } from '@confident/tracing';
+    
+    const retrieveDocuments = (query: string): string[] => {
+      const fetchedDocuments = ["doc1", "doc2"];
+      updateCurrentSpanAttributes({
+        embeddingInput: query,
+        retrievalContext: fetchedDocuments
+      });
+      return fetchedDocuments;
+    };
+    
+    const observedRetrieveDocuments = observe({
+      type: "retriever",
+      embedder: "text-embedding-ada-002",
+      fn: retrieveDocuments,
+    });
+    ```
+  </Tabs.Tab>
+</Tabs>
 
 There are **TWO** mandatory parameters for `RetrieverAttributes`:
 
@@ -97,17 +174,40 @@ There are **TWO** mandatory parameters for `RetrieverAttributes`:
 
 Tool attributes track the input parameters and output of tool executions.
 
-```python showLineNumbers copy
-from deepeval.tracing import update_current_span, ToolAttributes
-
-@observe(type="tool")
-def web_search(query: str) -> str:
-    result = "Search results"
-    update_current_span(
-        attributes=ToolAttributes(input_parameters={"query": query}, output=result)
-    )
-    return result
-```
+<Tabs items={['Python', 'JS/TypeScript']}>
+  <Tabs.Tab>
+    ```python showLineNumbers copy
+    from deepeval.tracing import update_current_span, ToolAttributes
+    
+    @observe(type="tool")
+    def web_search(query: str) -> str:
+        result = "Search results"
+        update_current_span(
+            attributes=ToolAttributes(input_parameters={"query": query}, output=result)
+        )
+        return result
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```typescript showLineNumbers copy
+    import { observe, updateCurrentSpanAttributes } from '@confident/tracing';
+    
+    const webSearch = (query: string): string => {
+      const result = "Search results";
+      updateCurrentSpanAttributes({
+        inputParameters: { query },
+        output: result
+      });
+      return result;
+    };
+    
+    const observedWebSearch = observe({
+      type: "tool",
+      fn: webSearch,
+    });
+    ```
+  </Tabs.Tab>
+</Tabs>
 
 There are **TWO** optional parameters for `ToolAttributes`:
 
@@ -122,17 +222,41 @@ There are **TWO** optional parameters for `ToolAttributes`:
 
 Agent attributes track the input and output of agent decisions and actions.
 
-```python showLineNumbers copy
-from deepeval.tracing import update_current_span, AgentAttributes
-
-@observe(type="agent", available_tools=["web_search"])
-def research_agent(query: str) -> str:
-    response = "Agent response"
-    update_current_span(
-        attributes=AgentAttributes(input=query, output=response)
-    )
-    return response
-```
+<Tabs items={['Python', 'JS/TypeScript']}>
+  <Tabs.Tab>
+    ```python showLineNumbers copy
+    from deepeval.tracing import update_current_span, AgentAttributes
+    
+    @observe(type="agent", available_tools=["web_search"])
+    def research_agent(query: str) -> str:
+        response = "Agent response"
+        update_current_span(
+            attributes=AgentAttributes(input=query, output=response)
+        )
+        return response
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```typescript showLineNumbers copy
+    import { observe, updateCurrentSpanAttributes } from '@confident/tracing';
+    
+    const researchAgent = (query: string): string => {
+      const response = "Agent response";
+      updateCurrentSpanAttributes({
+        input: query,
+        output: response
+      });
+      return response;
+    };
+    
+    const observedResearchAgent = observe({
+      type: "agent",
+      availableTools: ["web_search"],
+      fn: researchAgent,
+    });
+    ```
+  </Tabs.Tab>
+</Tabs>
 
 There are **TWO** optional parameters for Agent attributes:
 
