@@ -55,10 +55,10 @@ const generate = async (prompt: string): Promise<string> => {
 }
  
 const observedGenerate = observe(
-    type="llm",
-    model: "gpt-4",
-    metrics=["Answer Relevancy", "Faithfulness", "Contextual Relevancy"],
-    fn: generate,
+  type="llm",
+  model: "gpt-4",
+  metrics=["Answer Relevancy", "Faithfulness", "Contextual Relevancy"],
+  fn: generate,
 );
 ````
 

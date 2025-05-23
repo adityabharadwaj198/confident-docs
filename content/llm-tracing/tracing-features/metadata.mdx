@@ -46,25 +46,25 @@ Each metadata argument is a dictionary whose keys are strings and whose values a
     import { observe, updateCurrentSpan, updateCurrentTrace } from '@confident/tracing';
     
     const llmApp = (query: string) => {
-        // Add span-level metadata
-        updateCurrentSpan({
-            metadata: {
-                source: "knowledge_base_1",
-                retrieved_documents: 3
-            }
-        });
+      // Add span-level metadata
+      updateCurrentSpan({
+        metadata: {
+          source: "knowledge_base_1",
+          retrieved_documents: 3
+        }
+      });
         
-        // Add trace-level metadata
-        updateCurrentTrace({
-            metadata: {
-                user_id: "user-456",
-                app_version: "1.2.3",
-            }
-        });
+      // Add trace-level metadata
+      updateCurrentTrace({
+        metadata: {
+          user_id: "user-456",
+          app_version: "1.2.3",
+        }
+      });
     };
     
     const observedLlmApp = observe({
-        fn: llmApp
+      fn: llmApp
     });
     
     observedLlmApp("Test Metadata");
