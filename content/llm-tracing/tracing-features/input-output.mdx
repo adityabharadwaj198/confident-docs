@@ -53,7 +53,7 @@ You can set the `input` and `output` of a trace using the `update_current_trace`
     };
     
     const observedLlmApp = observe({
-        fn: llmApp
+      fn: llmApp
     });
     
     observedLlmApp("Write me a poem.");
@@ -112,14 +112,14 @@ For example, the `"retriever"` span `type` expects a string as the `input` and l
         model: "gpt-4o",
         messages: [
           { role: "user", content: query }
-            ]
-        }).choices[0].message.content;
+        ]
+      }).choices[0].message.content;
       updateCurrentSpan({ input: query, output: res });
       return res;
     };
     
     const observedLlmApp = observe({
-        fn: llmApp
+      fn: llmApp
     });
     
     observedLlmApp("Write me a poem.");

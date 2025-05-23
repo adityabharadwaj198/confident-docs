@@ -44,22 +44,21 @@ Attributes are set at runtime using the `update_current_span()` function with it
     
     const innerFunction = () => {
 
-        // Here, updateCurrentSpanAttributes() will update the Retriever span
-        updateCurrentSpanAttributes({
-            embeddingInput: query,
-            retrievalContext: fetchedDocuments
-        });
+      // Here, updateCurrentSpanAttributes() will update the Retriever span
+      updateCurrentSpanAttributes({
+        embeddingInput: query,
+        retrievalContext: fetchedDocuments
+      });
     };
     
     const observedInnerFunction = observe({
-        type: "retriever",
-        name: "travel-agent",
-        fn: innerFunction,
+      type: "retriever",
+      fn: innerFunction,
     });
 
     const outerFunction = observe({
-        type: "custom",
-        fn: () => {observedInnerFunction()},
+      type: "custom",
+      fn: () => {observedInnerFunction()},
     });
     ```
   </Tabs.Tab>
