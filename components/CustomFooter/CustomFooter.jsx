@@ -120,7 +120,7 @@ const CustomFooter = () => {
             <h3 className={styles.columnTitle}>LLM Evals Community</h3>
             <ul className={styles.linksList}>
               <li className={styles.linkItem}>
-                <a href="https://discord.gg/Up3gbNTF" target="_blank" rel="noopener" className={styles.link}>
+                <a href="https://discord.gg/3SEyvpgu2f" target="_blank" rel="noopener" className={styles.link}>
                   Join Discord
                 </a>
               </li>
