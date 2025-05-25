@@ -5,13 +5,15 @@ import { Callout } from "nextra/components";
 
 # Opentelemetry Span Exporter
 
-Confidential AI integrates with OpenTelemetry that allows teams to export traces to the **Observatory** via a Span Exporter.
+Confidential AI integrates with OpenTelemetry that allows teams to export traces to the **[Observatory](https://documentation.confident-ai.com/llm-observability/overview)** via a Span Exporter.
 
 <Callout>
   A [trace](https://opentelemetry.io/docs/concepts/signals/traces/) is a collection of **spans**, which are the basic unit of work in OpenTelemetry.
 </Callout>
 
 ## Quick Start
+Setup the Opentelemetry tracer to export traces to the Observatory. We encourage the use of `BatchSpanProcessor` to export traces for performance reasons.
+
 ```python
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
@@ -39,7 +41,12 @@ tracer = trace.get_tracer("test_tracer")
 ```
 
 ### LLM Span
-```python
+Confidential AI supports the following LLM operations:
+- `chat`
+- `text_completion`
+- `generate_content`
+
+```python showLineNumbers
 with tracer.start_as_current_span("chat gpt-4o") as parent_span:
     
     parent_span.set_attribute("gen_ai.operation.name", "chat")  # can be chat, text_completion, generate_content
@@ -64,7 +71,11 @@ with tracer.start_as_current_span("chat gpt-4o") as parent_span:
 </Callout>
 
 ### Tool Span
-```python
+Confidential AI supports the following tool operations:
+- `execute_tool`
+- `invoke_agent`
+
+```python showLineNumbers
 with tracer.start_as_current_span("execute_tool example_tool") as tool_span:
     # set tool name and description
     tool_span.set_attribute("gen_ai.operation.name", "execute_tool")
@@ -76,7 +87,11 @@ with tracer.start_as_current_span("execute_tool example_tool") as tool_span:
 ```
 
 ### Agent Span
-```python
+Confidential AI supports the following agent operations:
+- `create_agent`
+- `invoke_agent`
+
+```python showLineNumbers
 with tracer.start_as_current_span("create_agent example_agent") as agent_span:
     
     agent_span.set_attribute("gen_ai.operation.name", "create_agent")  # can be create_agent or invoke_agent
@@ -92,7 +107,11 @@ with tracer.start_as_current_span("create_agent example_agent") as agent_span:
 ```
 
 ### Retriever Span
-```python
+Confidential AI supports the following retriever operations:
+- `embeddings`
+- `retrieve`
+
+```python showLineNumbers
 with tracer.start_as_current_span("embeddings openai_ada") as retriever_span:
     # set name, model, top_k, and chunk_size
     retriever_span.set_attribute("gen_ai.operation.name", "embeddings")
@@ -105,5 +124,22 @@ with tracer.start_as_current_span("embeddings openai_ada") as retriever_span:
     retriever_span.add_event("confident.retriever.output", {"output": "example_output"})
 ```
 
+### Nested spans
 
+The Opentelemetry tracer supports nested spans. Nested spans appear as a child of the parent span in the Observatory.
+```python showLineNumbers
+with tracer.start_as_current_span("chat gpt-4o") as parent_span:
+    parent_span.set_attribute("gen_ai.operation.name", "generate_content")
+    parent_span.set_attribute("gen_ai.request.model", "gpt-4o")
+
+    parent_span.add_event("gen_ai.system.message", {"content": "you are a helpful assistant"})
+    parent_span.add_event("gen_ai.user.message", {"content": "What is the capital of France?"})
+
+    with tracer.start_as_current_span("execute_tool example_tool") as tool_span:
+        tool_span.set_attribute("gen_ai.operation.name", "execute_tool")
+        tool_span.set_attribute("gen_ai.tool.description", "example_tool_description")
+
+        tool_span.add_event("confident.tool.input", {"temp": "example_tool_input"})
+        tool_span.add_event("confident.tool.output", {"temp": "example_tool_output"})
+```
 
