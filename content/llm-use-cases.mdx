@@ -21,7 +21,7 @@ A use case is something like:
 A use case can be built using different systems. You'll notice a clear pattern in how different systems are evaluated:
 
 - Simpler systems (like summarization and writing assistants) focus more on use case-specific **custom** metrics that evaluate output quality
-- Complex systems (like code generation and autonomous agents) require both system metrics and **reference-based evaluation** against [golden `expected_output`s](/concepts/datasets#goldens), along with [tracing](/llm-observability/llm-tracing) for debugging
+- Complex systems (like code generation and autonomous agents) require both system metrics and **reference-based evaluation** against [golden `expected_output`s](/concepts/datasets#goldens), along with [tracing](/llm-tracing/introduction) for debugging
 
 <Callout>
   It is recommended that you allocate one project space per use case on
@@ -49,11 +49,11 @@ For our medical knowledge base example, we'll want to include a mix of system-sp
 
 In this example, the answer **WITHOUT THE PROMPT TEMPLATE** is the `input` to a test case, while the `answer` is the `actual_output`, and any medical documents retrieval to generate the answer is the `retrieval_context`.
 
-[Click here](/llm-evaluation/metrics) to learn how to implement and use these metrics for evaluation.
+[Click here](/llm-evaluation/metrics/create-locally) to learn how to create and use these metrics for evaluation.
 
 <Callout>
   The prompt in this case should be [logged as a
-  hyperparameter](/llm-evaluation/running-llm-evals#logging-hyperparameters)
+  hyperparameter](/llm-evaluation/evaluation-features/parameter-insights)
   instead during evaluation.
 </Callout>
 
@@ -82,7 +82,7 @@ In this example, the customer query is the `input` to an `LLMTestCase` in `turn`
   [here.](/concepts/test-cases#conversationaltestcase)
 </Callout>
 
-[Click here](/llm-evaluation/metrics) to learn how to implement and use these metrics for evaluation.
+[Click here](/llm-evaluation/metrics/create-locally) to learn how to create and use these metrics for evaluation.
 
 ## Writing Assistants
 
@@ -104,9 +104,9 @@ Since this use case is more about the specific use case requirements than the sy
 - **Format Correctness** (custom DAG): How well the writing meets the specified formatting requirements
 - **Brand Voice Alignment** (custom G-Eval): How well the content matches the brand's tone and messaging
 
-In this example, the original text and requirements are the `input` to a test case, while the improved text is the `actual_output`. The style guides and formatting rules are part of the system's configuration, not `retrieval_context`, and should most likely go in the system prompt and [logged as a hyperparameter.](/llm-evaluation/running-llm-evals#logging-hyperparameters)
+In this example, the original text and requirements are the `input` to a test case, while the improved text is the `actual_output`. The style guides and formatting rules are part of the system's configuration, not `retrieval_context`, and should most likely go in the system prompt and [logged as a hyperparameter.](/llm-evaluation/evaluation-features/parameter-insights)
 
-[Click here](/llm-evaluation/metrics) to learn how to implement and use these metrics for evaluation.
+[Click here](/llm-evaluation/metrics/create-locally) to learn how to create and use these metrics for evaluation.
 
 > [!WARNING]
 >
@@ -132,9 +132,9 @@ For our meeting assistant example, we'll focus on summary quality and accuracy. 
 - **Format Correctness** (custom DAG): How well the summary follows the required structure (e.g., bullet points, sections)
 - **Conciseness** (custom G-Eval): How well the summary captures key information without unnecessary details
 
-In this example, the original text is the `input` to a test case, while the summary is the `actual_output`. The prompts that gives the summarization instructions should be provided in the system prompt and [logged as hyperparameters](/llm-evaluation/running-llm-evals#logging-hyperparameters).
+In this example, the original text is the `input` to a test case, while the summary is the `actual_output`. The prompts that gives the summarization instructions should be provided in the system prompt and [logged as hyperparameters](/llm-evaluation/evaluation-features/parameter-insights).
 
-[Click here](/llm-evaluation/metrics) to learn how to implement and use these metrics for evaluation.
+[Click here](/llm-evaluation/metrics/create-locally) to learn how to create and use these metrics for evaluation.
 
 ## Autonomous Agents
 
@@ -154,10 +154,10 @@ For our travel planner example, we'll focus on system execution. Unlike simpler 
 - **Tool Correctness** (generic agentic): How accurately the agent uses tools like search, booking, and calendar APIs
 - **Task Completion** (generic agentic): How successfully the agent completes the full travel planning workflow
 
-In this example, the user's travel requirements are the `input` to a test case, while the final itinerary and bookings are the `actual_output`. [Click here](/llm-evaluation/metrics) to learn how to implement and use these metrics for evaluation.
+In this example, the user's travel requirements are the `input` to a test case, while the final itinerary and bookings are the `actual_output`. [Click here](/llm-evaluation/metrics/create-locally) to learn how to create and use these metrics for evaluation.
 
 <Callout>
-  For autonomous agents, [setting up tracing](/llm-observability/llm-tracing) is
+  For autonomous agents, [setting up tracing](/llm-tracing/introduction) is
   **highly recommended**. Tracing allows to debug nested components in your
   agent that might not be performing as expected.
 </Callout>
@@ -179,7 +179,7 @@ For our business intelligence tool example, we'll focus on SQL generation qualit
 - **Faithfulness** (generic RAG): Whether the generated SQL is supported by the retrieved schema
 - **SQL Correctness** (custom DAG): How well the generated SQL follows syntax rules and best practices
 
-In this example, the natural language query is the `input` to a test case, while the generated SQL is the `actual_output`, and the retrieved schema information is the `retrieval_context`. [Tracing](/llm-observability/llm-tracing) is also extremely helpful here to visualize the retrieved tables and SQL execution times.
+In this example, the natural language query is the `input` to a test case, while the generated SQL is the `actual_output`, and the retrieved schema information is the `retrieval_context`. [Tracing](/llm-tracing/introduction) is also extremely helpful here to visualize the retrieved tables and SQL execution times.
 
 <Callout type="info">
   Database tables are typically indexed by condensed summaries of their
@@ -189,7 +189,7 @@ In this example, the natural language query is the `input` to a test case, while
   system to quickly retrieve relevant tables based on the query intent.
 </Callout>
 
-[Click here](/llm-evaluation/metrics) to learn how to implement and use these metrics for evaluation.
+[Click here](/llm-evaluation/metrics/create-locally) to learn how to create and use these metrics for evaluation.
 
 ## Code Generation
 
@@ -208,7 +208,7 @@ For our frontend UI generator example, we'll focus on both system execution and 
 - **Code Correctness** (generic DAG): Whether the generated code runs without errors
 - **Code Quality** (custom G-Eval): How well the generated code compares to ideal, production-ready code
 
-In this example, the natural language requirements are the `input` to a test case, while the generated code is the `actual_output`. You'll definitely want [tracing](/llm-observability/llm-tracing) for this use case.
+In this example, the natural language requirements are the `input` to a test case, while the generated code is the `actual_output`. You'll definitely want [tracing](/llm-tracing/introduction) for this use case.
 
 <Callout type="info">
   For code generation, it's undoubtedly complex and requires `expected_output`s
@@ -217,7 +217,7 @@ In this example, the natural language requirements are the `input` to a test cas
   retrieve the relevant code files to generate the ideal piece of code.
 </Callout>
 
-[Click here](/llm-evaluation/metrics) to learn how to implement and use these metrics for evaluation.
+[Click here](/llm-evaluation/metrics/create-locally) to learn how to create and use these metrics for evaluation.
 
 ## Important note
 

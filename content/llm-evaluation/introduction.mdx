@@ -4,14 +4,32 @@ title: Introduction
 
 import { Callout, Cards } from "nextra/components";
 
-# Introduction for LLM Evaluation
+# Introduction to LLM Evaluation on Confident AI
 
 Confident AI's evaluation features are second-to-none, and in fact all features you've seen up to this point in the documentation leads up to the LLM evaluation suite.
+
+<details>
+
+<summary>What features does Confident AI's LLM Evaluation offer?</summary>
+
+We offer metrics that are:
+
+- **Default**, battle-tested, and plug-and-play
+- **Custom**, research-backed, and easy to create in natrual language
+- **For any use case**, LLM system architecture, or framework
+
+And allow you to run evaluation in both CI/CD environments and as a separate Python script. 
+
+<Callout>
+You can also run evals on an individual [component-level](/llm-evaluation/run-evals/component-level-evals), or [end-to-end](/llm-evaluation/run-evals/end-to-end-evals) should you wish to treat your LLM app as a black-box.
+</Callout>
+
+</details>
 
 ## Feature Highlights
 
 <Cards>
-  <Cards.Card arrow title="Metrics" href="/llm-evaluation/metrics" />
+  <Cards.Card arrow title="Metrics" href="/llm-evaluation/metrics/create-locally" />
   <Cards.Card
     arrow
     title="Running Evals"
@@ -20,64 +38,73 @@ Confident AI's evaluation features are second-to-none, and in fact all features 
   <Cards.Card
     arrow
     title="Unit-Testing in CI/CD"
-    href="/llm-evaluation/unit-testing-in-cicd"
+    href="/llm-evaluation/evaluation-features/unit-testing-in-cicd-in-cicd"
   />
   <Cards.Card
     arrow
     title="Testing Reports"
-    href="/llm-evaluation/testing-reports"
+    href="/llm-evaluation/evaluation-features/testing-reports"
   />
   <Cards.Card
     arrow
     title="A|B Regression Testing"
-    href="/llm-evaluation/ab-regression-testing"
+    href="/llm-evaluation/evaluation-features/ab-regression-testing"
   />
   <Cards.Card arrow title="Insights" href="/llm-evaluation/insights" />
 </Cards>
 
-## Simple Walkthrough
+## Quickstart
 
 This walkthrough will show how to run LLM evaluations on Confident AI. Not all features will be covered, but if you follow all the steps you’ll have an ideal LLM evaluation pipeline setup.
 
-### Implement Metrics
+### Create Metric
 
-Import metrics import DeepEval. In this example we're using the `AnswerRelevancyMetric`:
+Import metrics import DeepEval. In this example we're using `GEval` to create a custom answer relevancy metric:
 
 ```python
-from deepeval.metrics import AnswerRelevancyMetric
+from deepeval.test_case import LLMTestCaseParams
+from deepeval.metrics import GEval
 
-metric = AnswerRelevancyMetric()
+metric = GEval(
+  name="Relevancy",
+  criteria="Determine how relevant the 'actual output' is to the 'input'"
+  evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT]
+)
 ```
 
-99.99% of metrics on DeepEval uses LLM-as-a-judge, which means you'll have to set your evaluation model. For most users, this will be using OpenAI, and you'll need to set your OpenAI API key:
+<details>
+  <summary>How to customize your LLM judge?</summary>
 
-```bash
-export OPENAI_API_KEY="sk-..."
-```
+  99.99% of metrics on DeepEval uses LLM-as-a-judge, which means you'll have to set your evaluation model. For most users, this will be using OpenAI, and you'll need to set your OpenAI API key:
 
-You can also use other model providers that `deepeval` has integrations with, such as:
+  ```bash
+  export OPENAI_API_KEY="sk-..."
+  ```
 
-- [Ollama](https://deepeval.com/integrations/models/ollama)
-- [Azure OpenAI](https://deepeval.com/integrations/models/azure-openai)
-- [Anthropic](https://deepeval.com/integrations/models/anthropic)
-- [Gemini](https://deepeval.com/integrations/models/gemini)
-- [Vertex AI](https://deepeval.com/integrations/models/vertex-ai)
-- [vLLM](https://deepeval.com/integrations/models/vllm)
-- [LMStudio](https://deepeval.com/integrations/models/lmstudio)
+  You can also use other model providers that `deepeval` has integrations with, such as:
 
-Lastly, you can wrap your own LLM API in `deepeval`'s `DeepEvalBaseLLM` class to use **ANY** model of your choice. [Click here](https://deepeval.com/guides/guides-using-custom-llms) to learn how.
+  - [Ollama](https://deepeval.com/integrations/models/ollama)
+  - [Azure OpenAI](https://deepeval.com/integrations/models/azure-openai)
+  - [Anthropic](https://deepeval.com/integrations/models/anthropic)
+  - [Gemini](https://deepeval.com/integrations/models/gemini)
+  - [Vertex AI](https://deepeval.com/integrations/models/vertex-ai)
+  - [vLLM](https://deepeval.com/integrations/models/vllm)
+  - [LMStudio](https://deepeval.com/integrations/models/lmstudio)
 
-<Callout type="info">
-  This will run evaluations locally before sending results over to Confident AI.
-  You can also run evals on the cloud by [creating a metric
-  collection.](/llm-evaluation/metrics#metrics-on-the-cloud)
-</Callout>
+  Lastly, you can wrap your own LLM API in `deepeval`'s `DeepEvalBaseLLM` class to use **ANY** model of your choice. [Click here](https://deepeval.com/guides/guides-using-custom-llms) to learn how.
+
+  <Callout type="info">
+    This will run evaluations locally before sending results over to Confident AI.
+    You can also run evals on the cloud by [creating a metric
+    collection.](/llm-evaluation/metrics/create-on-the-cloud)
+  </Callout>
+</details>
 
 ### Prepare for Evaluation
 
 #### Pull dataset
 
-Pull the dataset you've created (full guide [here](/dataset-editor/overview)):
+Pull the dataset you've created (full guide [here](/dataset-editor/introduction)):
 
 ```python
 from deepeval.dataset import EvaluationDataset
@@ -90,7 +117,7 @@ dataset.pull(alias="your-dataset-alias")
 
 #### Pull prompt version
 
-Pull the prompt version you've created (full guide [here](/prompt-studio/overview)):
+Pull the prompt version you've created (full guide [here](/prompt-management/introduction)):
 
 ```python
 from deepeval.prompt import Prompt
@@ -153,5 +180,6 @@ Identify your failing test cases in the testing report on Confident AI.
 ## Future Roadmap
 
 - [x] Editor table columns for custom metrics
-- [ ] Better hyperparameters display
-- [ ] Insights page
+- [x] Better hyperparameters display
+- [x] Insights page
+- [ ] Full text-search on test cases

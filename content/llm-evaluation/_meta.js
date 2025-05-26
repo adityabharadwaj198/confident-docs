@@ -9,7 +9,7 @@ export default {
   "run-evals": {
     title: "Running Evals",
     theme: {
-      collapsed: true
+      collapsed: false
     }
   },
   "evaluation-features": {
@@ -18,5 +18,4 @@ export default {
       collapsed: true
     }
   },
-  "insights": '',
 }

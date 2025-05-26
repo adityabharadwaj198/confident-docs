@@ -6,12 +6,12 @@ import { Callout, Tabs } from "nextra/components";
 
 # Attributes
 
-Attributes are like [`metadata`](/llm-observability/functionalities/metadata) but specific for different span `type`s, with the only difference being attributes are stricter in type. 
+Attributes are like [`metadata`](/llm-tracing/tracing-features/metadata) but specific for different span `type`s, with the only difference being attributes are stricter in type. 
 
 For example, you are expected to provide an `input` of type string when setting attribute for the `retriever` span type to represent the text to be embedded, which is also why you should avoid [setting `input`/`output`s manually](/llm-tracing/tracing-features/input-output#set-span-io-at-runtime) for default span types to avoid running into typing errors.
 
 <Callout type="warning">
-Setting attributes will make the tracing UI easier to navigate on Confident AI, but is by no means required. You also cannot set attributes for custom [span `type`s](/llm-observability/functionalities/span-types).
+Setting attributes will make the tracing UI easier to navigate on Confident AI, but is by no means required. You also cannot set attributes for custom [span `type`s](/llm-tracing/tracing-features/span-types).
 </Callout>
 
 ## Set Attributes At Runtime
@@ -40,7 +40,7 @@ Attributes are set at runtime using the `update_current_span()` function with it
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers {6}
-    import { observe, updateCurrentSpanAttributes, RetrieverAttributes } from '@confident/tracing';
+    import { observe, updateCurrentSpanAttributes, RetrieverAttributes } from '@deepeval-ts/tracing';
     
     const innerFunction = () => {
 
@@ -66,7 +66,7 @@ Attributes are set at runtime using the `update_current_span()` function with it
 
 The current span is determined using Python's context variables, which automatically track the active span based on the execution context. This means you don't need to manually pass span references around - the system knows which span you're currently executing within.
 
-### LLM Attributes
+### LLM attributes
 
 LLM attributes track the `input`, `output`, and token usage of language model calls. It is highly **RECOMMENDED** that you set the attributes for an LLM span.
 
@@ -86,7 +86,7 @@ LLM attributes track the `input`, `output`, and token usage of language model ca
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers copy
-    import { observe, updateCurrentSpanAttributes } from '@confident/tracing';
+    import { observe, updateCurrentSpanAttributes } from '@deepeval-ts/tracing';
     
     const generateResponse = (prompt: string): string => {
       const output = "Generated response";
@@ -121,7 +121,7 @@ Note that for `input`, typically you would either send the list of messages as a
   same applies to output tokens.
 </Callout>
 
-### Retriever Attributes
+### Retriever attributes
 
 Retriever attributes track the `embedding_input` and `retrieved_context` in RAG pipelines. It is highly **RECOMMENDED** that you set the attributes for a retriever span.
 
@@ -144,7 +144,7 @@ Retriever attributes track the `embedding_input` and `retrieved_context` in RAG 
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers copy
-    import { observe, updateCurrentSpanAttributes } from '@confident/tracing';
+    import { observe, updateCurrentSpanAttributes } from '@deepeval-ts/tracing';
     
     const retrieveDocuments = (query: string): string[] => {
       const fetchedDocuments = ["doc1", "doc2"];
@@ -169,7 +169,7 @@ There are **TWO** mandatory parameters for `RetrieverAttributes`:
 - `embedding_input`: The text of type `str` that needs to be embedded for vector search.
 - `retrieval_context`: The list of type `str` that represents the relevant documents or text chunks retrieved from your vector store.
 
-### Tool Attributes
+### Tool attributes
 
 Tool attributes track the input parameters and output of tool executions.
 
@@ -189,7 +189,7 @@ Tool attributes track the input parameters and output of tool executions.
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers copy
-    import { observe, updateCurrentSpanAttributes } from '@confident/tracing';
+    import { observe, updateCurrentSpanAttributes } from '@deepeval-ts/tracing';
     
     const webSearch = (query: string): string => {
       const result = "Search results";
@@ -217,7 +217,7 @@ There are **TWO** optional parameters for `ToolAttributes`:
 >
 > If `update_current_span(attributes=...)` is not called for a tool span, `deepeval` will automatically take the input and outputs of the function as the `input_parameters` and `output`.
 
-### Agent Attributes
+### Agent attributes
 
 Agent attributes track the input and output of agent decisions and actions.
 
@@ -237,7 +237,7 @@ Agent attributes track the input and output of agent decisions and actions.
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers copy
-    import { observe, updateCurrentSpanAttributes } from '@confident/tracing';
+    import { observe, updateCurrentSpanAttributes } from '@deepeval-ts/tracing';
     
     const researchAgent = (query: string): string => {
       const response = "Agent response";

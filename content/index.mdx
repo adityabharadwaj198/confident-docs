@@ -8,6 +8,10 @@ import { Cards, Callout } from "nextra/components";
 
 Confident AI is the cloud platform for DeepEval, the most widely adopted _open-source_ framework to evaluate LLM applications such as RAG pipielines, agentics, chatbots, or even just an LLM itself.
 
+<details>
+
+<summary>How does Confident AI work?</summary>
+
 Confident AI enables organizations to iterate on LLM applications by allowing you to pick the best model and improve on different versions of your prompts. This helps you achieve the best performance for any particular LLM use case you may have.
 
 In a nutshell, we do this by running LLM evaluations for both:
@@ -16,6 +20,8 @@ In a nutshell, we do this by running LLM evaluations for both:
 2. **In production**, as your app is live and real-time reporting of performance is required.
 
 There are a dozen more features which will be shown in depth later in this documentation that compliments this evaluation workflow as LLM applications can get very complicated very quickly.
+
+</details>
 
 <Callout>Confident AI created and owns DeepEval.</Callout>
 
@@ -26,17 +32,18 @@ When you choose Confident AI, you can rest assured that:
 
 Even if you're not using Confident AI, you can [join our discord community](https://discord.com/invite/3SEyvpgu2f) to talk LLM evaluation anytime.
 
+
 ## Features Overview
 
 <Cards>
-  <Cards.Card arrow title="LLM Evaluation" href="/llm-evaluation/overview" />
+  <Cards.Card arrow title="LLM Evaluation" href="/llm-evaluation/introduction" />
   <Cards.Card
     arrow
-    title="LLM Observability"
-    href="/llm-observability/overview"
+    title="LLM Tracing"
+    href="/llm-tracing/introduction"
   />
-  <Cards.Card arrow title="Prompt Studio" href="/prompt-studio/overview" />
-  <Cards.Card arrow title="Dataset Editor" href="/dataset-editor/overview" />
+  <Cards.Card arrow title="Prompt Studio" href="/prompt-management/introduction" />
+  <Cards.Card arrow title="Dataset Editor" href="/dataset-editor/introduction" />
   <Cards.Card
     arrow
     title="Human-in-the-Loop"
@@ -53,11 +60,11 @@ This documentation is designed to teach you how to use Confident AI to evaluate 
 - **Quickstart** section provides the fundamentals needed to begin using the platform effectively
 - **Data Handling** [page](/data-handling) explains data organization, privacy controls, and residency options
 - **Platform Features** section details the complete suite of Confident AI capabilities:
-  - [LLM Evaluations](/llm-evaluation/overview)
-  - [LLM Observability](/llm-observability/overview)
-  - [Dataset Management](/dataset-editor/overview)
-  - [Prompt Engineering](/prompt-studio/overview)
-  - [Human-in-the-Loop](/human-in-the-loop/overview)
+  - [LLM Evaluations](/llm-evaluation/introduction)
+  - [LLM Tracing](/llm-tracing/introduction)
+  - [Dataset Management](/dataset-editor/introduction)
+  - [Prompt Engineering](/prompt-management/introduction)
+  - [Human-in-the-Loop](/human-in-the-loop/introduction)
 
 <Callout>
   Each individual platform feature page includes either a code and/or video
@@ -86,7 +93,7 @@ Confident AI has tailored metrics and platform capabilities for different types 
 
 ### What about complex agentic systems?
 
-Complex agentic systems are definitely supported on Confident AI through [LLM tracing.](/llm-observability/llm-tracing) One thing to note though is that it is extremely important to decide carefully on what to (not) evaluate in a complex LLM agentic workflow, since trying to evaluate everything means you're actually evaluating nothing.
+Complex agentic systems are definitely supported on Confident AI through [LLM tracing.](/llm-tracing/introduction) One thing to note though is that it is extremely important to decide carefully on what to (not) evaluate in a complex LLM agentic workflow, since trying to evaluate everything means you're actually evaluating nothing.
 
 The first step to evaluating agentic use cases is to setup tracing before deciding on which and where LLM evaluation metrics should be used. You can also join our discord community or contact support@confident-ai.com to share what you're building and get recommendations on how to best run evals if in doubt.
 

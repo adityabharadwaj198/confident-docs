@@ -21,8 +21,8 @@ Prompt versioning refers to the process of curating and developing different pro
 
 There are two types of prompts you can create:
 
-- **[(Single) Text Prompt](/prompt-studio/prompt-versioning#create-a-text-prompt)**: Use this when you need a straightforward, one-off prompt for simple completions.
-- **[Prompt Message List](/prompt-studio/prompt-versioning#create-a-prompt-message-list)**: Use this when you need to define multiple messages with specific roles (system, user, assistant) in a conversation. This format is ideal for few-shot prompting, where you can start with a system message that sets the context, followed by several example pairs of user questions and assistant responses, and end with your actual user message. This structured approach helps guide the LLM to provide more accurate and consistent responses.
+- **[(Single) Text Prompt](/prompt-management/prompt-versioning#create-a-text-prompt)**: Use this when you need a straightforward, one-off prompt for simple completions.
+- **[Prompt Message List](/prompt-management/prompt-versioning#create-a-prompt-message-list)**: Use this when you need to define multiple messages with specific roles (system, user, assistant) in a conversation. This format is ideal for few-shot prompting, where you can start with a system message that sets the context, followed by several example pairs of user questions and assistant responses, and end with your actual user message. This structured approach helps guide the LLM to provide more accurate and consistent responses.
 
 [TODO: image of two types of prompts]
 
@@ -84,7 +84,7 @@ You can select which variable interpolation type you wish to use in the **Prompt
 
 ## Create a Prompt Message List
 
-This is exactly the same as creating a prompt in the [previous step](/prompt-studio/prompt-versioning#create-a-text-prompt), but this time toggle **ON** the "message list" option to create a prompt as a list of messages.
+This is exactly the same as creating a prompt in the [previous step](/prompt-management/prompt-versioning#create-a-text-prompt), but this time toggle **ON** the "message list" option to create a prompt as a list of messages.
 
 ### Commit a Prompt Version
 
@@ -104,7 +104,7 @@ Committing a new version is similar to how you would commit changes on GitHub, a
 
 ### Include Dynamic Variables
 
-Dynamic variables can be included in the prompt template of each prompt message the same way as how you would include a variable in for a single text prompt, which you can learn about [in more detail above.](/prompt-studio/prompt-versioning#include-dynamic-variables)
+Dynamic variables can be included in the prompt template of each prompt message the same way as how you would include a variable in for a single text prompt, which you can learn about [in more detail above.](/prompt-management/prompt-versioning#include-dynamic-variables)
 
 One thing to note is, whatever variable you include in one promtp message will be interpolated the same way as all other messages in the same prompt version.
 

@@ -1,5 +1,5 @@
 export default {
-    overview: '',
+    introduction: '',
     "prompt-versioning": '',
     "prompt-usage": '',
     "prompt-testing": '',

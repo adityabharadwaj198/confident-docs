@@ -1,11 +1,11 @@
 ---
-title: Online Metrics
+title: Online Evaluation
 ---
 
 import { Callout } from "nextra/components";
 import { Tabs } from "nextra/components";
 
-# Online Metrics
+# Online Evaluation
 
 You can define online metrics on a span level by providing the names of the metric enabled for monitoring on Confident AI in the `@obesrve` decorator
 
@@ -13,7 +13,7 @@ You can define online metrics on a span level by providing the names of the metr
 
 ## Enable Metric Collection for Monitoring
 
-To enable referenceless metrics to run in production, you will need to [create a metric collection](/llm-evaluation/metrics#metrics-on-the-cloud), and press the **Enable for Monitoring** button for that metric collection.
+To enable referenceless metrics to run in production, you will need to [create a metric collection](/llm-evaluation/metrics/create-on-the-cloud), and press the **Enable for Monitoring** button for that metric collection.
 
 This will make every **referenceless** metric, including custom metrics, you've enabled inside the metric collection runnable upon receiving the trace you've logged. For non-referenceless metrics, Confident AI will simply ignore them.
 
@@ -45,7 +45,7 @@ llm_app("Write me a poem.")
   </Tabs.Tab>
   <Tabs.Tab>
 ```typescript showLineNumbers copy {5,13}
-import { observe, updateCurrentSpanTestCase } from '@confident/tracing';
+import { observe, updateCurrentSpanTestCase } from '@deepeval-ts/tracing';
 
 const generate = async (prompt: string): Promise<string> => {
   updateCurrentSpanTestCase(

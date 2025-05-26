@@ -36,7 +36,7 @@ You can set the `input` and `output` of a trace using the `update_current_trace`
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers {13}
-    import { observe, updateCurrentTrace } from '@confident/tracing';
+    import { observe, updateCurrentTrace } from '@deepeval-ts/tracing';
     import OpenAI from 'openai';
     
     const openai = new OpenAI();
@@ -102,7 +102,7 @@ For example, the `"retriever"` span `type` expects a string as the `input` and l
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers {13}
-    import { observe, updateCurrentSpan } from '@confident/tracing';
+    import { observe, updateCurrentSpan } from '@deepeval-ts/tracing';
     import OpenAI from 'openai';
     
     const openai = new OpenAI();

@@ -9,14 +9,14 @@ import { Callout } from "nextra/components";
 Confident AI also offers **DeepEval.ts**, which suuports tracing in JS/Typescript in the form of wrapper functions to easily capture traces in JS/TS-native applications.
 
 <Callout>
-  You should first read [this original guide](/llm-observability/llm-tracing) on
+  You should first read [this original guide](/llm-tracing/introduction) on
   tracing in Python, before reading this page to get a full grasp on the concept
   of LLM tracing, what spans are, etc.
 </Callout>
 
 ## Code & Video Summary
 
-Consider this tracing example in a JS/TS application (same architecture as the [Python tracing example](/llm-observability/llm-tracing)):
+Consider this tracing example in a JS/TS application (same architecture as the [Python tracing example](/llm-tracing/introduction)):
 
 ```mermaid
 graph TD
@@ -186,7 +186,7 @@ Instead of DeepEval `@observe` decorators, the JS/TS SDK uses the `observe` wrap
 
 > [!NOTE]
 >
-> A more comprehensive explanation and the terminologies on tracing is available [here](/llm-observability/llm-tracing#terminologies-for-tracing), which is the python version of this page you're reading.
+> A more comprehensive explanation and the terminologies on tracing is available [here](/llm-tracing/introduction#terminologies-for-tracing), which is the python version of this page you're reading.
 
 ## Using `observe` Wrappers
 
@@ -241,7 +241,7 @@ There are **THREE** mandatory and **FOUR** optional parameters when configuring 
 - [Optional] `costPerInputToken`: A number specifying the cost per input token. Defaults to undefined.
 - [Optional] `costPerOutputToken`: A number specifying the cost per output token. Defaults to undefined.
 - [Optional] `name`: A string specifying the display name on Confident AI. Defaults to the name of the observed function.
-- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
+- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/tracing-features/online-evaluation)
 
 ### Retriever span
 
@@ -268,7 +268,7 @@ There is **THREE** mandatory and **TWO** optional parameters when configuring a 
 - `embedder`: A string representing the name of the embedding model used.
 - `fn`: The function you wish to trace as a retriever span.
 - [Optional] `name`: A string specifying the display name on Confident AI. Defaults to the name of the observed function.
-- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
+- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/tracing-features/online-evaluation)
 
 ### Tool span
 
@@ -295,7 +295,7 @@ There is **TWO** mandatory and **THREE** optional parameters when configuring a 
 - `fn`: The function you wish to trace as a tool span.
 - [Optional] `name`: A string specifying the name of the tool to display on Confident AI. Defaults to the name of the observed function.
 - [Optional] `description`: A string that describes what the tool does.
-- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
+- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/tracing-features/online-evaluation)
 
 ### Agent span
 
@@ -324,7 +324,7 @@ There is **TWO** mandatory and **FOUR** optional parameters when configuring an 
 - [Optional] `name`: A string specifying the name of the agent to display on Confident AI. Defaults to the name of the observed function.
 - [Optional] `availableTools`: An array of strings representing available tools.
 - [Optional] `agentHandoffs`: An array of strings representing other agents this agent can delegate to.
-- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
+- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/tracing-features/online-evaluation)
 
 Agents can be nested within other agents, which is useful for implementing hierarchical agent architectures. For instance, a "supervisor" agent might coordinate communication between specialized agents.
 
@@ -352,7 +352,7 @@ There is **TWO** mandatory and **TWO** optional parameters when configuring a cu
 - `type`: The type of span. Can be anything other than `"llm"`, `"retriever"`, `"tool"`, and `"agent"` for custom spans.
 - `fn`: The function you wish to trace as a custom span.
 - [Optional] `name`: A string specifying how this custom span is displayed on Confident AI. Defaults to the name of the wrapped function.
-- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-observability/online-metrics)
+- [Optional] `metrics`: An array of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/tracing-features/online-evaluation)
 
 ## Set Runtime Attributes for Default Spans
 
@@ -517,4 +517,4 @@ There are **TWO** optional parameters for `AgentAttributes`:
 
 To view your traces, navigate to the **Observatory** page under your project space in Confident AI. Here you'll find detailed visualizations of your LLM application's execution flow, including span hierarchies, timing information, and error tracking. You can also open up your trace in full-screen for better visuals.
 
-For a more detailed walkthrough, please refer to the [video summary above](/llm-observability/integrations/typescript#code--video-summary).
+For a more detailed walkthrough, please refer to the [video summary above](/llm-tracing/integrations/typescript#code--video-summary).

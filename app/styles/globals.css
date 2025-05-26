@@ -2,7 +2,7 @@
 
 /* Add subtle dot pattern to the background */
 body {
-  background-image: radial-gradient(rgba(0, 0, 0, 0.131) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.121) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
@@ -52,11 +52,11 @@ h4, h5, h6 {
 }
 
 .nextra-sidebar li a {
-  color: rgba(0, 0, 23, 0.65);
+  color: rgba(0, 0, 23, 0.688);
 }
 
 .nextra-sidebar li button {
-  color: rgba(0, 0, 23, 0.65);
+  color: rgba(0, 0, 23, 0.688);
 }
 
 /* .nextra-sidebar ul {
@@ -76,15 +76,15 @@ h4, h5, h6 {
 
 /* Card background customization */
 .nextra-card {
-  background-color: rgba(255, 255, 255, 0.7) !important;
+  background-color: rgb(255, 255, 255) !important;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   transition: all 0.2s ease;
 }
-
+  
 .nextra-card:hover {
-  background-color: rgba(255, 255, 255, 0.9) !important;
+  background-color: rgb(255, 255, 255) !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -166,4 +166,13 @@ li:has(button[data-href="/human-in-the-loop"]) > div,
 li:has(button[data-href="/project-settings"]) > div {
   margin-left: 0 !important;
   padding-left: 0 !important;
+}
+
+.nextra-scrollbar {
+  /* margin-bottom: -1.5rem !important; */
+}
+
+details > summary + div {
+  padding: 0.5rem 1rem 1rem 1rem;
+  font-size: 15px;
 }

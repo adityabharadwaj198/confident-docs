@@ -1,4 +1,6 @@
 export default {
-    overview: '',
-    "dataset-features": ''
+    introduction: '',
+    "annotate-datasets": '',
+    "import-datasets": '',
+    "using-datasets": ''
 }

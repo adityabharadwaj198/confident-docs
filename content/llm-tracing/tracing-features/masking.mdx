@@ -37,7 +37,7 @@ To implement masking, you need to define a masking function and configure the tr
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers {10}
-    import { observe, traceManager } from '@confident/tracing';
+    import { observe, traceManager } from '@deepeval-ts/tracing';
     
     const maskingFunction = (data: any): any => {
       if (typeof data === 'string') {

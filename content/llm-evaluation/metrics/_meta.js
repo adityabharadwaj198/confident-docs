@@ -1,4 +1,4 @@
 export default {
-    "deepeval": '',
-    "on-the-cloud": '',
+    "create-locally": '',
+    "create-on-the-cloud": '',
 }

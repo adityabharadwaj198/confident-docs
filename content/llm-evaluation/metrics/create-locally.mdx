@@ -1,16 +1,14 @@
 ---
-title: Locally via DeepEval
+title: Create Locally
 ---
 
 import { Callout } from "nextra/components";
 
-# Metrics
+# Create Metrics Locally
 
-Confident AI provides a comprehensive set of metrics with **over 20+ metrics powered by DeepEval** for evaluating LLM applications. This page covers the available metrics and how to use them.
+Confident AI provides a comprehensive set of metrics with **over 40+ metrics powered by DeepEval** for evaluating LLM applications. This page covers the available metrics and how to use them.
 
-## Code & Video Summary
-
-To define metrics locally using DeepEval (recommended):
+## Code Summary
 
 ```python showLineNumbers copy
 from deepeval.metrics import GEval, AnswerRelevancyMetric
@@ -22,14 +20,6 @@ custom_metric = GEval(
     evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT]
 )
 ```
-
-To define metrics on the cloud:
-
-<VideoDisplayer
-  src="https://confident-docs.s3.us-east-1.amazonaws.com/evaluation:metric-collections.mp4"
-  width="100%"
-  title="Creating metric collections on Confident AI"
-/>
 
 ## Quick Recap of Metrics
 
@@ -43,63 +33,6 @@ The metrics you choose should be based on:
 > [!WARNING]
 >
 > Double if not triple guess yourself if you're using more than 5 metrics per test run. While each metric may seem valuable, having too many metrics can dilute your focus and make it harder to draw meaningful insights. Using fewer, carefully chosen metrics often leads to clearer, more actionable results. For guidance on selecting the most impactful metrics for your use case, see our [metrics selection guide](/concepts/metrics#choosing-the-right-metrics).
-
-### Generic metrics
-
-These are the metrics agnostic to use cases but specific to different LLM systems. If you're using agentic RAG for example, you'll want to use a combination of RAG and agentic metrics.
-
-- **[RAG metrics](/concepts/metrics#rag)** evaluate how well your system retrieves and uses context to generate answers. Key metrics include answer relevancy, faithfulness, and contextual metrics.
-
-- **[Agentic metrics](/concepts/metrics#agentic)** assess how well your LLM agent performs tasks, makes decisions, and follows workflows. These metrics help evaluate the agent's ability to break down complex tasks and execute them effectively.
-
-- **[Conversational metrics](/concepts/metrics#conversational)** measure the quality of multi-turn conversations, including coherence, context retention, and response appropriateness across multiple exchanges.
-
-<Callout type="info">
-  You can read more about how each individual metric is calculated and the
-  `LLMTestCase` parameters required for each test case by clicking on the
-  respective links in the [metrics selection
-  guide](/concepts/metrics#choosing-the-right-metrics).
-</Callout>
-
-These metrics are available both [via DeepEval](/llm-evaluation/metrics#metrics-via-deepeval) and [on the cloud.](/llm-evaluation/metrics#run-metrics-on-the-cloud)
-
-### Custom metrics
-
-Custom metrics are system-agnostic evaluations that measure specific aspects of your LLM application's performance, regardless of its underlying architecture. Unlike generic metrics that are tied to specific system types (like RAG or agentic workflows), custom metrics focus on universal qualities that matter across all LLM applications.
-
-There are three types of custom metrics:
-
-- **GEval**: Allows you to define custom evaluation criteria using natural language. GEval is particularly useful for creating domain-specific evaluations that are **subjective** in nature.
-
-- **DAG (Deep Acyclic Graph)**: Allows you to define deterministic, LLM-as-a-judge decision trees, for accurate and reliable evals. DAG is perfect for domain-specific evaluations that have a **clear, objective** success criteria. You can also use `GEval` as one of the nodes in the `DAGMetric`.
-
-- **Custom Code**: For highly specific evaluation needs, you can implement your own metric logic using Python. Common scenarios includes statistical calculations, where LLM-as-a-judge is not required.
-
-Custom metrics are valuable because they:
-
-- Remain relevant even if you change your system architecture
-- Can be tailored to your specific use case requirements
-- Provide consistent evaluation across different implementations of the same functionality
-
-All three custom metrics are available [via DeepEval](/llm-evaluation/metrics#metrics-via-deepeval), only `GEval` is available and [on the cloud.](/llm-evaluation/metrics#run-metrics-on-the-cloud)
-
-> [!TIP]
->
-> The [supported LLM use cases page](/concepts/llm-use-cases) is a great resource to see how each custom metric can be used for specific use cases.
-
-### Other metrics
-
-Other metrics include ones like bias, toxicity, summarization (although this is better handled by `GEval` and `DAGMetric`), and you can read [more about the list here.](/concepts/metrics#other-metrics)
-
-These metrics are mostly only available [via DeepEval](/llm-evaluation/metrics#metrics-via-deepeval).
-
-## Threshold, Include Reason, and Strict Mode
-
-You’ll have the option to configure each individual metric’s threshold, explanability, and strictness, either in `deepeval` or within a metric collection on the cloud. There are three settings you can be tuning:
-
-- **Threshold:** Determines the minimum evaluation score required for your metric to pass. If a metric fails, the test case also fails. Defaults to `0.5`.
-- **Include reason:** When turned on, a metric will generate a reason alongside the evaluation score for each metric run. Defaults to `True`.
-- **Strict mode:** When turned on, a metric will pass only and if only the evaluation is perfect (ie. 1.0). Defaults to `False`.
 
 ## Metrics via DeepEval
 
@@ -140,7 +73,10 @@ task_completion = TaskCompletionMetric(include_reason=False)
 
 Once your metrics have finished running, testing reports will be automatically available on Confident AI. Also if you're unsure where the dataset is coming form, [click here.](/dataset-editor/using-datasets)
 
-### Use any customize LLM judge
+<details>
+
+<summary>Use any custom LLM judge</summary>
+
 
 The `deepeval` metrics are LLM-as-a-judge metrics and although defaulted to OpenAI's `gpt-4o`, you can customize them by providing a string to specify the model you wish to use:
 
@@ -162,7 +98,9 @@ You can also use other model providers that `deepeval` has integrations with, su
 
 Lastly, you can wrap your own LLM API in `deepeval`'s `DeepEvalBaseLLM` class to use **ANY** model of your choice. [Click here](https://deepeval.com/guides/guides-using-custom-llms) to learn how.
 
-### Example Implementation
+</details>
+
+## Example Implementation
 
 We'll be showing 3 quick examples of how the same answer relevancy metric can be implemented in 3 different ways.
 
@@ -172,7 +110,7 @@ We'll be showing 3 quick examples of how the same answer relevancy metric can be
   learn how to use each of them.
 </Callout>
 
-#### Default
+### Default
 
 The default [`AnswerRelevancyMetric`](https://deepeval.com/docs/metrics-answer-relevancy) is simple and requires no additional configuration:
 
@@ -182,7 +120,7 @@ from deepeval.metrics import AnswerRelevancyMetric()
 metric = AnswerRelevancyMetric()
 ```
 
-#### G-Eval
+### G-Eval
 
 A [`GEval`](https://deepeval.com/docs/metrics-llm-evals) implementation of the same answer relevancy metric, with more tailor criteria that specifies that the `actual_output` has to be shorter than 3 sentences:
 
@@ -200,7 +138,7 @@ The `actual_output` should also be less than 3 sentences long.""",
 
 What you'll find however, is `GEval` is better for subjective custom criteria, so when incorperating the hard requirement of < 3 sentences in the `actual_output` it will sometimes give a flaky score.
 
-#### DAG
+### DAG
 
 A [`DAGMetric`](https://deepeval.com/docs/metrics-dag) implementation is perfect for combining objective and subjective criteria. It is an LLM powered decision tree that can combine other metrics such as `AnswerRelevancyMetric` or `GEval`:
 
@@ -238,35 +176,6 @@ dag_relevancy = DAGMetric(name="Custom Relevancy", dag=dag)
 ```
 
 Here, you actually see the `DAGMetric` first makes a binary classification on whethere there are indeed less than 3 sentences in the `actual_output` (objective criteria), before passing it to the `GEval` metric for a subjective evaluation of relevancy once this requirement has been met.
-
-## Metrics on the Cloud
-
-Metrics on the cloud are also powered by DeepEval (but ran on Confident AI's servers instead) and gives you exactly the same results, and so we highly recommend that you only continue with this section once you are happy with your selection of metrics and their performance.
-
-That being said, if you are using another programming language such as Typescript, or wish to trigger evaluations on the platform directly in a click of a button, you'll need to define and run metrics on Confident AI instead.
-
-<Callout>
-  There are way more advantages to running evaluations locally via `deepeval`,
-  mainly being the ease of metrics customization. Feel free to skip this section
-  if you're already able to run evaluations locally.
-</Callout>
-
-There are two ways to run evals with metrics on the cloud:
-
-1. [Through Typescript or an HTTPS `POST` request](/llm-evaluation/running-evals#run-llm-evals-on-the-cloud) that sends over a list of test cases with the generated outputs from your LLM app, or
-2. [On the platform directly](/llm-evaluation/running-evals#trigger-evals-without-code), which will be triggered through the click of a button without the need of code
-
-Ultimately, regardless of your chosen approach, you must first define a collection of metrics to specify which metrics to run on Confident AI.
-
-### Create a metric collection
-
-Creating a collection of metrics on Confident AI allows you to specify which group of metrics you wish to evaluate your LLM application on.
-
-To create a metric collection, in your project space go to **Metrics** > **Collections**, click on the **Create Collection** button, and enter a collection name. Your collection name must not already be taken in your project.
-
-### Configure metric settings
-
-When you add a metric to a collection, the threshold, reasoning, and strictness settings are automatically configured to their default values, and you can change them and click the **Save**.
 
 ## Big Disclaimer
 
