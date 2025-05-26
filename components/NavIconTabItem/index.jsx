@@ -3,12 +3,13 @@ import React from 'react';
 const NavIconTabItem = ({ 
   icon: Icon, 
   label, 
-  iconSize = 16, 
-  marginRight = '8px' 
+  iconSize = 16,
 }) => {
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Icon style={{ marginRight }} size={iconSize} />
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div className='custom-icon-tab-item'>
+        <Icon size={iconSize} />
+      </div>
       <span>{label}</span>
     </div>
   );
