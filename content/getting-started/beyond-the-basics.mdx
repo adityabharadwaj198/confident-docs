@@ -8,34 +8,28 @@ All the steps in the previous sections are probably the simplest evaluation work
 
 This section will go through how to get the most out of Confident AI, and offer some points and hand you off into other parts of the documentation where you might have questions for.
 
+## Other Things You Should Do
+
+You should also:
+
+- [Create and version](/prompt-management/introduction) your prompts in **Prompt Studio**.
+- [Log hyperparameters](/llm-evaluation/evaluation-features/parameter-insights) during evaluation for parameter insights.
+- [Unit-test in CI/CD](/llm-evaluation/evaluation-features/unit-testing-in-cicd-in-cicd) pipelines to run evals pre-deployment
+- [Setup notifications](/project-settings/integrations) to get notified when evaluations complete
+- [Setup more LLM tracing](/llm-tracing/introduction) to debug nested components, like retrievers and tool calls, especially for agents
+- [Online metrics](/llm-tracing/tracing-features/online-evaluation) to monitor real-time performance
+- [Talk to us](https://discord.gg/3SEyvpgu2f) to validate whether the metrics you've chosen are approrpiate for your use case
+
+
 ## Important Disclaimers To Note
 
 In this quickstart, there are important things to take notice of:
 
 - You can use [any custom LLM judge](https://deepeval.com/guides/guides-using-custom-llms) as evaluation model when running evals **locally**
 - You can run evaluations using Confident AI's LLM judges when running evals **on the cloud**
-- You should include more than the `"System Prompt"` in **Prompt Studio**, doing so allows Confident AI to give you better insights
 - You should **DEFINITELY** put more time into [choosing the right metrics](/concepts/metrics#choosing-the-right-metrics) and not blindly use the `AnswerRelevancyMetric`
 - You should analyze whether your dataset has good enough [test coverage](/dataset-editor/analyzing-test-coverage)
 
-## Other Things You Should Do
-
-You should also:
-
-- [Unit-test in CI/CD](/llm-evaluation/unit-testing-in-cicd) pipelines to run evals pre-deployment
-- [Setup notifications](/project-settings/integrations) to get notified when evaluations complete
-- [LLM Tracing](/llm-observability/llm-tracing) to debug nested components, like retrievers and tool calls, especially for agents
-- [Online metrics](/llm-observability/online-metrics) to monitor real-time performance
-- [Talk to us](https://discord.gg/Up3gbNTF) to validate whether the metrics you've chosen are approrpiate for your use case
-
-This is what [tracing](/llm-observability/llm-tracing) looks like on Confident AI, which allows you to debug your LLM app and not just rely on surface level insights:
-
-<VideoDisplayer
-  src="https://confident-docs.s3.us-east-1.amazonaws.com/observability:llm-tracing.mp4"
-  width="100%"
-  title="LLM Tracing Quick Glance | Confident AI"
-/>
-
 ## Need More Help?
 
-Come ask any questions by [joining our discord community of 2,000 members](https://discord.gg/Up3gbNTF), we'll be thrilled to have you.
+Come ask any questions by [joining our discord community of 2,000 members](https://discord.gg/3SEyvpgu2f), we'll be thrilled to have you.

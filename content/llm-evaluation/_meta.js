@@ -1,9 +1,21 @@
 export default {
-  overview: '',
-  metrics: '',
-  "running-llm-evals": '',
-  "unit-testing-in-cicd": '',
-  "testing-reports": '',
-  "ab-regression-testing": '',
-  "insights": ''
+  introduction: '',
+  "metrics": {
+    title: "Metrics",
+    theme: {
+      collapsed: true
+    }
+  },
+  "run-evals": {
+    title: "Running Evals",
+    theme: {
+      collapsed: false
+    }
+  },
+  "evaluation-features": {
+    title: "Evaluation Features",
+    theme: {
+      collapsed: true
+    }
+  },
 }

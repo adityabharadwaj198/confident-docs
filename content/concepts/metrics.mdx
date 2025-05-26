@@ -110,7 +110,7 @@ Metrics in Confident AI can be either reference-based or referenceless:
 >
 > While referenceless metrics can be used in development, they are particularly valuable in production environments where you typically don't have reference data available. In development, you usually have access to annotated datasets, making reference-based metrics more common.
 
-You'll learn how to use referenceless metrics exclusively in production in [this section](/llm-observability/online-metrics), where we refer to them as online metrics on Confident AI.
+You'll learn how to use referenceless metrics exclusively in production in [this section](/llm-tracing/tracing-features/online-evaluation), where we refer to them as online metrics on Confident AI.
 
 ## Choosing the Right Metrics
 
@@ -147,7 +147,7 @@ graph TD
     G --> H[Constantly reassess if still relevant for use case]
 ```
 
-Whichever metric that you find is a referenceless one in your final set of metrics, you can [enable it for online evaluation](/llm-observability/online-metrics) in production.
+Whichever metric that you find is a referenceless one in your final set of metrics, you can [enable it for online evaluation](/llm-tracing/tracing-features/online-evaluation) in production.
 
 > [!IMPORTANT]
 >
@@ -158,8 +158,8 @@ Whichever metric that you find is a referenceless one in your final set of metri
 ## Metric Implementation
 
 <Callout>
-  A more comprehensive walkthrough can be found in the [evaluation metrics
-  section.](/llm-evaluation/metrics)
+  You can use the metrics by following the [evaluation metrics
+  section.](/llm-evaluation/metrics/create-locally)
 </Callout>
 
 Metrics are applied to test cases during evaluation. Each metric may require different parameters in your `LLMTestCase`. For example:
@@ -184,7 +184,7 @@ evaluate(test_cases=[test_case], metrics=[
 
 ## Can I Metrics Run On The Cloud?
 
-Yes, [metrics can be ran on the cloud](/llm-evaluation/metrics#metrics-on-the-cloud). However, we recommend starting with local evaluation first. Running metrics locally makes it easier to:
+Yes, [metrics can be ran on the cloud](/llm-evaluation/metrics/create-on-the-cloud). However, we recommend starting with local evaluation first. Running metrics locally makes it easier to:
 
 - Iterate quickly on accuracy and reliability
 - Debug and fix issues

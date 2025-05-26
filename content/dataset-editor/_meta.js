@@ -1,7 +1,6 @@
 export default {
-    overview: '',
+    introduction: '',
     "annotate-datasets": '',
     "import-datasets": '',
-    "using-datasets": '',
-    "analyze-test-coverage": '',
+    "using-datasets": ''
 }

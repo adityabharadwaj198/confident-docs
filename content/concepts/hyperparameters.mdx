@@ -27,7 +27,7 @@ Associating hyperparameters to test runs is crucial for:
 - Reproducing results consistently
 - Understanding which settings work best for your use case
 
-You can edit prompts, both text and a list of messages, on Confident AI's [prompt studio.](/prompt-studio/overview)
+You can edit prompts, both text and a list of messages, on Confident AI's [prompt studio.](/prompt-management/introduction)
 
 ## Types of Hyperparameters
 
@@ -36,7 +36,7 @@ Although you can have as many combinations of hyperparameters you wish for a tes
 - Hyperparameters that are prompts
 - Hyperparameters that are **NOT** prompts
 
-When a hyperparameter is a prompt, you can leverage Confident AI's prompt studio to [version, edit, and management](/prompt-studio/prompt-versioning) them in one centralized place. This allows Confident AI to tell you which prompt version performs best for your use case.
+When a hyperparameter is a prompt, you can leverage Confident AI's prompt studio to [version, edit, and management](/prompt-management/prompt-versioning) them in one centralized place. This allows Confident AI to tell you which prompt version performs best for your use case.
 
 When a hyperparameter is not a prompt, there won't be any versioning. For example, a model is not a prompt, and you can simply log different model names (e.g. `claude-3.5-sonnet`, `gpt-4`, `llama-2`) to compare their performance across test runs.
 
@@ -57,7 +57,7 @@ Prompt versioning is a critical feature for optimizing your LLM applications. By
 
 Confident AI automatically tracks which prompt version was used for each test run, allowing you to correlate prompt changes with performance metrics. This data-driven approach to prompt engineering helps you make informed decisions about which prompt version to use in production.
 
-Confident AI provides a [Prompt Studio](/prompt-studio/overview) for managing your prompt templates:
+Confident AI provides a [Prompt Studio](/prompt-management/introduction) for managing your prompt templates:
 
 - **Versioning**: Track changes to your prompts over time
 - **A/B Testing**: Compare different prompt versions to see which performs better
@@ -167,4 +167,4 @@ This approach:
 >
 > These "components", can be conceptualized as **spans within a trace** of your application's execution. A trace represents the complete call hierarchy and structure of your LLM application for a single request, while spans are the individual operations (like LLM calls, retrieval steps, or tool usage) that make up that trace.
 
-[LLM tracing on Confident AI](/llm-observability/llm-tracing) allows you to monitor performance, track hyperparameter impacts across different components, and identify optimization opportunities in complex systems.
+[LLM tracing on Confident AI](/llm-tracing/introduction) allows you to monitor performance, track hyperparameter impacts across different components, and identify optimization opportunities in complex systems.
