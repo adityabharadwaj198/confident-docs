@@ -59,13 +59,18 @@ h4, h5, h6 {
   color: rgba(0, 0, 23, 0.688);
 }
 
-/* .nextra-sidebar ul {
-  border-left: none;
+.custom-icon-tab-item {
+  padding: 4px;
+  border: 1px solid rgb(213, 213, 216);
+  background: white;
+  border-radius: 4px;
 }
 
-.nextra-sidebar ul ul {
-  border-left: 1px solid rgba(136, 0, 255, 0.216);
-} */
+.nextra-sidebar li.active .custom-icon-tab-item {
+  color: #5800d3 !important;
+  background-color: white !important;
+  border: 1px solid #983eff !important;
+}
 
 /* Active/selected item in sidebar */
 .nextra-sidebar li.active a,
