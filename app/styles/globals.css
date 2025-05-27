@@ -49,6 +49,7 @@ h4, h5, h6 {
 /* Add right border to the left navigation drawer */
 .nextra-sidebar {
   border-right: 1px solid rgba(0, 0, 0, 0.081);
+  font-weight: 500;
 }
 
 .nextra-sidebar li a {

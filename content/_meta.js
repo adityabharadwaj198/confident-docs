@@ -2,16 +2,16 @@ import { CircleHelp, Rocket, MessageSquareText, PenLine, Settings, FlaskConical,
 import NavIconTabItem from '@/components/NavIconTabItem'
 
 export default {
-  "why-confident-ai": <NavIconTabItem icon={CircleHelp} label="Why Confident AI" />,
-  "llm-use-cases": <NavIconTabItem icon={Lightbulb} label="LLM Use Cases" />,
-  "data-handling": <NavIconTabItem icon={Folders} label="Data Handling" />,
-  "on-prem-hosting": <NavIconTabItem icon={House} label="On-Prem Hosting" />,
+  "why-confident-ai": <NavIconTabItem icon={CircleHelp} label="Why Confident AI" fontWeight="500" />,
+  "llm-use-cases": <NavIconTabItem icon={Lightbulb} label="LLM Use Cases" fontWeight="500" />,
+  "data-handling": <NavIconTabItem icon={Folders} label="Data Handling" fontWeight="500" />,
+  "on-prem-hosting": <NavIconTabItem icon={House} label="On-Prem Hosting" fontWeight="500" />,
   "llm-red-teaming": {
-    title: <NavIconTabItem icon={ShieldAlert} label="LLM Red Teaming" />,
+    title: <NavIconTabItem icon={ShieldAlert} label="LLM Red Teaming" fontWeight="500" />,
     "display": "hidden"
   },
   concepts: {
-    title: <NavIconTabItem icon={BookOpen} label="Concepts" />,
+    title: <NavIconTabItem icon={BookOpen} label="Concepts" fontWeight="500" />,
     theme: {
       collapsed: true
     }
