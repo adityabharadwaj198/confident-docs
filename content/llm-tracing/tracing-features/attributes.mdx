@@ -40,14 +40,16 @@ Attributes are set at runtime using the `update_current_span()` function with it
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers {6}
-    import { observe, updateCurrentSpanAttributes, RetrieverAttributes } from '@deepeval-ts/tracing';
+    import { observe, updateCurrentSpan } from '@deepeval-ts/tracing';
     
     const innerFunction = () => {
 
       // Here, updateCurrentSpanAttributes() will update the Retriever span
-      updateCurrentSpanAttributes({
-        embeddingInput: query,
-        retrievalContext: fetchedDocuments
+      updateCurrentSpan({
+        attributes: {
+          embeddingInput: query,
+          retrievalContext: fetchedDocuments
+        }
       });
     };
     
@@ -86,13 +88,15 @@ LLM attributes track the `input`, `output`, and token usage of language model ca
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers copy
-    import { observe, updateCurrentSpanAttributes } from '@deepeval-ts/tracing';
+    import { observe, updateCurrentSpan } from '@deepeval-ts/tracing';
     
     const generateResponse = (prompt: string): string => {
       const output = "Generated response";
-      updateCurrentSpanAttributes({
-        input: prompt,
-        output: output
+      updateCurrentSpan({
+        attributes: {
+          input: prompt,
+          output: output
+        }
       });
       return output;
     };
@@ -144,13 +148,15 @@ Retriever attributes track the `embedding_input` and `retrieved_context` in RAG 
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers copy
-    import { observe, updateCurrentSpanAttributes } from '@deepeval-ts/tracing';
+    import { observe, updateCurrentSpan } from '@deepeval-ts/tracing';
     
     const retrieveDocuments = (query: string): string[] => {
       const fetchedDocuments = ["doc1", "doc2"];
-      updateCurrentSpanAttributes({
-        embeddingInput: query,
-        retrievalContext: fetchedDocuments
+      updateCurrentSpan({
+        attributes: {
+          embeddingInput: query,
+          retrievalContext: fetchedDocuments
+        }
       });
       return fetchedDocuments;
     };
@@ -189,13 +195,15 @@ Tool attributes track the input parameters and output of tool executions.
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers copy
-    import { observe, updateCurrentSpanAttributes } from '@deepeval-ts/tracing';
+    import { observe, updateCurrentSpan } from '@deepeval-ts/tracing';
     
     const webSearch = (query: string): string => {
       const result = "Search results";
-      updateCurrentSpanAttributes({
-        inputParameters: { query },
-        output: result
+      updateCurrentSpan({
+        attributes: {
+          inputParameters: { query },
+          output: result
+        }
       });
       return result;
     };
@@ -237,13 +245,15 @@ Agent attributes track the input and output of agent decisions and actions.
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers copy
-    import { observe, updateCurrentSpanAttributes } from '@deepeval-ts/tracing';
+    import { observe, updateCurrentSpan } from '@deepeval-ts/tracing';
     
     const researchAgent = (query: string): string => {
       const response = "Agent response";
-      updateCurrentSpanAttributes({
-        input: query,
-        output: response
+      updateCurrentSpan({
+        attributes: {
+          input: query,
+          output: response
+        }
       });
       return response;
     };
