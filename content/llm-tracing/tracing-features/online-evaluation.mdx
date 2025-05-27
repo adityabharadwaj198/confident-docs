@@ -45,12 +45,12 @@ llm_app("Write me a poem.")
   </Tabs.Tab>
   <Tabs.Tab>
 ```typescript showLineNumbers copy {5,13}
-import { observe, updateCurrentSpanTestCase } from '@deepeval-ts/tracing';
+import { observe, updateCurrentSpan } from '@deepeval-ts/tracing';
 
 const generate = async (prompt: string): Promise<string> => {
-  updateCurrentSpanTestCase(
-    new LLMTestCase({input=prompt, actualOutput=fake_output})
-  )
+  updateCurrentSpan({
+    test_case: new LLMTestCase({input=prompt, actualOutput=fake_output})
+  })
   return "LLM response";
 }
  
