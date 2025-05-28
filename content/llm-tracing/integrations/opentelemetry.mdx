@@ -40,7 +40,12 @@ tracer_provider.add_span_processor(span_processor)
 tracer = trace.get_tracer("test_tracer")
 ```
 
-### LLM Span
+
+<Callout>
+  ConfidentExporter accepts any span that adheres to the [OpenTelemetry specification](https://opentelemetry.io/docs/concepts/signals/traces/). We encourage the use of [Semantic conventions for generative AI systems](https://opentelemetry.io/docs/specs/semconv/gen-ai/) to ensure that the spans are compatible with the Confidential AI Observability Platform.
+</Callout>
+
+### LLM Attributes
 Confidential AI supports the following LLM operations:
 - `chat`
 - `text_completion`
@@ -66,11 +71,20 @@ with tracer.start_as_current_span("chat gpt-4o") as parent_span:
     parent_span.add_event("gen_ai.assistant.message", {"content": "The capital of France is Paris."})  # can be gen_ai.assistant.message, gen_ai.choice, gen_ai.tool.message
 ```
 
-<Callout>
-  We encourage the use of [Semantic conventions for generative AI systems](https://opentelemetry.io/docs/specs/semconv/gen-ai/) to ensure that the spans are compatible with the Confidential AI Observability Platform.
-</Callout>
+The following table shows the properties that are mapped to [LLM spans](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#llm-attributes) in Confident AI attributes.
 
-### Tool Span
+|Confident AI Attribute| Property | Type |
+|----------|---------|--------|
+`model` | `gen_ai.request.model` | Attribute | 
+`input_tokens` | `gen_ai.usage.input_tokens` | Attribute |
+`output_tokens` | `gen_ai.usage.output_tokens` | Attribute |
+`cost_per_input_token` | `confident.llm.cost_per_input_token` | Attribute |
+`cost_per_output_token` | `confident.llm.cost_per_output_token` | Attribute |
+`input` |`gen_ai.system.message` `gen_ai.user.message`| Event | 
+`output` |`gen_ai.assistant.message` `gen_ai.choice` `gen_ai.tool.message`| Event | 
+
+
+### Tool Attributes
 Confidential AI supports the following tool operations:
 - `execute_tool`
 - `invoke_agent`
@@ -86,7 +100,15 @@ with tracer.start_as_current_span("execute_tool example_tool") as tool_span:
     tool_span.add_event("confident.tool.output", {"temp": "example_tool_output"})
 ```
 
-### Agent Span
+The following table shows the properties that are mapped to [Tool spans](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#tool-attributes) in Confident AI attributes.
+
+| Confident AI Attribute | Property | Type |
+|----------|---------|--------|
+| `description` | `gen_ai.tool.description` | Attribute |
+| `input_parameters` | `confident.tool.input` | Event |
+| `output` | `confident.tool.output` | Event |
+
+### Agent Attributes
 Confidential AI supports the following agent operations:
 - `create_agent`
 - `invoke_agent`
@@ -106,7 +128,18 @@ with tracer.start_as_current_span("create_agent example_agent") as agent_span:
     agent_span.add_event( "confident.agent.output", {"output": "example_output"})
 ```
 
-### Retriever Span
+
+The following table shows the properties that are mapped to [Agent spans](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#agent-attributes) in Confident AI attributes.
+
+| Confident AI Attribute | Property | Type |
+|----------|---------|--------|
+| `available_tools` | `confident.agent.available_tools` | Attribute |
+| `agent_handoffs` | `confident.agent.agent_handoffs` | Attribute |
+| `input` | `confident.agent.input` | Event |
+| `output` | `confident.agent.output` | Event |
+
+
+### Retriever Attributes
 Confidential AI supports the following retriever operations:
 - `embeddings`
 - `retrieve`
@@ -123,6 +156,16 @@ with tracer.start_as_current_span("embeddings openai_ada") as retriever_span:
     retriever_span.add_event("confident.retriever.input", {"input": "example_input"})
     retriever_span.add_event("confident.retriever.output", {"output": "example_output"})
 ```
+
+The following table shows the properties that are mapped to [Retriever spans](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#retriever-attributes) in Confident AI attributes.
+
+| Confident AI Attribute | Property | Type |
+|----------|---------|--------|
+| `embedder` | `gen_ai.request.model` | Attribute |
+| `top_k` | `confident.retriever.top_k` | Attribute |
+| `chunk_size` | `confident.retriever.chunk_size` | Attribute |
+| `embedding_input` | `confident.retriever.input` | Event |
+| `retrieval_context` | `confident.retriever.output` | Event |
 
 ### Nested spans
 
@@ -142,4 +185,9 @@ with tracer.start_as_current_span("chat gpt-4o") as parent_span:
         tool_span.add_event("confident.tool.input", {"temp": "example_tool_input"})
         tool_span.add_event("confident.tool.output", {"temp": "example_tool_output"})
 ```
+
+<Callout>
+  All the OpenTelemetry span's attributes and events are available in the Confident `metadata` property as a fallback.
+</Callout>
+
 
