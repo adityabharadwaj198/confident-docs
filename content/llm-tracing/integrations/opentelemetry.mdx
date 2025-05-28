@@ -5,7 +5,7 @@ import { Callout } from "nextra/components";
 
 # Opentelemetry Span Exporter
 
-Confidential AI integrates with OpenTelemetry that allows teams to export traces to the **[Observatory](https://documentation.confident-ai.com/llm-observability/overview)** via a Span Exporter.
+Confident AI integrates with OpenTelemetry that allows teams to export traces to the **[Observatory](https://documentation.confident-ai.com/llm-observability/overview)** via a Span Exporter.
 
 <Callout>
   A [trace](https://opentelemetry.io/docs/concepts/signals/traces/) is a collection of **spans**, which are the basic unit of work in OpenTelemetry.
@@ -42,11 +42,11 @@ tracer = trace.get_tracer("test_tracer")
 
 
 <Callout>
-  ConfidentExporter accepts any span that adheres to the [OpenTelemetry specification](https://opentelemetry.io/docs/concepts/signals/traces/). We encourage the use of [Semantic conventions for generative AI systems](https://opentelemetry.io/docs/specs/semconv/gen-ai/) to ensure that the spans are compatible with the Confidential AI Observability Platform.
+  ConfidentExporter accepts any span that adheres to the [OpenTelemetry specification](https://opentelemetry.io/docs/concepts/signals/traces/). We encourage the use of [Semantic conventions for generative AI systems](https://opentelemetry.io/docs/specs/semconv/gen-ai/) to ensure that the spans are compatible with the Confident AI Observability Platform.
 </Callout>
 
 ### LLM Attributes
-Confidential AI supports the following LLM operations:
+Confident AI supports the following LLM operations:
 - `chat`
 - `text_completion`
 - `generate_content`
@@ -85,7 +85,7 @@ The following table shows the properties that are mapped to [LLM spans](https://
 
 
 ### Tool Attributes
-Confidential AI supports the following tool operations:
+Confident AI supports the following tool operations:
 - `execute_tool`
 - `invoke_agent`
 
@@ -109,7 +109,7 @@ The following table shows the properties that are mapped to [Tool spans](https:/
 | `output` | `confident.tool.output` | Event |
 
 ### Agent Attributes
-Confidential AI supports the following agent operations:
+Confident AI supports the following agent operations:
 - `create_agent`
 - `invoke_agent`
 
@@ -140,7 +140,7 @@ The following table shows the properties that are mapped to [Agent spans](https:
 
 
 ### Retriever Attributes
-Confidential AI supports the following retriever operations:
+Confident AI supports the following retriever operations:
 - `embeddings`
 - `retrieve`
 
