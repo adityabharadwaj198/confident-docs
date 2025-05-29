@@ -1,34 +1,28 @@
 ---
-title: Using Datasets
+title: Pull for Evaluation
 ---
 
 import { Callout } from "nextra/components";
 
-# Using Datasets
+# Pull for Evaluation
 
 Pulling a dataset from Confident AI to run LLM evals on is as easy as pulling a repo from GitHub.
 
 ## Code Summary
 
-```python showLineNumbers copy
+```python showLineNumbers copy {6, 15}
 from deepeval.dataset import EvaluationDataset
 from deepeval.test_case import LLMTestCase
 from deepeval import evaluate
 
 dataset = EvaluationDataset()
-# Replace with your actual dataset alias
-dataset.pull(alias="My Evals Dataset")
-
+dataset.pull(alias="your-dataset-alias")
 
 # Convert goldens to test cases
 for golden in dataset.goldens:
-    test_case = LLMTestCase(
-        input=golden.input,
-        # Replace your_llm_app() with your actual LLM application function
-        actual_output=your_llm_app(golden.input)
-    )
+    # Replace your_llm_app()
+    test_case = LLMTestCase(input=golden.input, actual_output=your_llm_app(golden.input))
     dataset.test_cases.append(test_case)
-
 
 # Run an evaluation
 evaluate(test_cases=dataset.test_cases, metrics=[...])
@@ -38,12 +32,11 @@ evaluate(test_cases=dataset.test_cases, metrics=[...])
 
 Pull your dataset from Confident AI by providing the `alias` you've defined:
 
-```python showLineNumbers copy {5}
+```python showLineNumbers copy {4}
 from deepeval.dataset import EvaluationDataset
 
 dataset = EvaluationDataset()
-# Replace with your actual alias
-dataset.pull(alias="My Evals Dataset")
+dataset.pull(alias="your-dataset-alias")
 ```
 
 When you `pull()` a dataset, you are pulling **finalized** goldens by default, **NOT** test cases. To pull **unfinalized** goldens as well, set `finalized=False`:
@@ -51,7 +44,7 @@ When you `pull()` a dataset, you are pulling **finalized** goldens by default, *
 ```python
 ...
 
-dataset.pull(alias="My Evals Dataset", finalized=False)
+dataset.pull(alias="your-dataset-alias", finalized=False)
 ```
 
 <Callout type="warning">
@@ -64,7 +57,7 @@ If you have a pre-computed dataset, aka. your `actual_output`s are already popul
 ```python
 ...
 
-dataset.pull(alias="My Evals Dataset", auto_convert_test_cases_to_goldens=True)
+dataset.pull(alias="your-dataset-alias", auto_convert_test_cases_to_goldens=True)
 ```
 
 The `auto_convert_test_cases_to_goldens` is defaulted to `False`, and the preferred way is to convert goldens to test cases **manually** before evaluation. Another tip is, if you have custom columns, this is how you would access it:
@@ -79,15 +72,13 @@ print(dataset.goldens[0].custom_column_key_values)
 
 To convert goldens to test cases, all you have to do is dynamically generate the `actual_output`, and optionally the `retrieval_context` (for RAG piplines) and/or `tools_called` (for agents) based on the given `input`.
 
-```python {8}
+```python {6}
 ...
 
-# Convert goldens to test cases
 for golden in dataset.goldens:
     test_case = LLMTestCase(
         input=golden.input,
-        # Replace your_llm_app() with your actual LLM application function
-        actual_output=your_llm_app(golden.input)
+        actual_output=your_llm_app(golden.input) # Replace your_llm_app()
     )
     dataset.test_cases.append(test_case)
 

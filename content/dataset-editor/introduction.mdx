@@ -26,27 +26,22 @@ Think of it like a Google Sheets or Notion CSV editor, but the difference is tha
   <Cards.Card
     arrow
     title="Import from CSV"
-    href="/dataset-editor/import-datasets#import-goldens-from-csv"
+    href="/dataset-editor/dataset-features/import-from-csv"
   />
   <Cards.Card
     arrow
     title="Upload via DeepEval"
-    href="/dataset-editor/import-datasets#upload-goldens-via-deepeval"
+    href="/dataset-editor/dataset-features/push-pull-goldens"
   />
   <Cards.Card
     arrow
     title="Custom Columns"
-    href="/dataset-editor/annotate-datasets#adding-custom-columns"
+    href="/dataset-editor/dataset-features/custom-columns"
   />
   <Cards.Card
     arrow
     title="Dataset Backups"
     href="/dataset-editor/annotate-datasets#enable-backups--revision-history-recommended"
-  />
-  <Cards.Card
-    arrow
-    title="Analyze Test Coverage"
-    href="/dataset-editor/analyze-test-coverage"
   />
 </Cards>
 
@@ -73,21 +68,19 @@ Once you've created your first dataset, click on **Create Golden** in your **Dat
 
 Once you have your dataset, its time to pull it and prepare the test cases for evaluation:
 
-```python showLineNumbers copy {7, 14, 16}
+```python showLineNumbers copy {6, 14, 17}
 from deepeval.dataset import EvaluationDataset
 from deepeval.test_case import LLMTestCase
 from deepeval import evaluate
 
 dataset = EvaluationDataset()
-# Replace with your actual dataset alias
-dataset.pull(alias="My Evals Dataset")
+dataset.pull(alias="your-dataset-alias")
 
 # Convert goldens to test cases
 for golden in dataset.goldens:
     test_case = LLMTestCase(
         input=golden.input,
-        # Replace your_llm_app() with your actual LLM application function
-        actual_output=your_llm_app(golden.input)
+        actual_output=your_llm_app(golden.input) # Replace your_llm_app()
     )
     dataset.test_cases.append(test_case)
 

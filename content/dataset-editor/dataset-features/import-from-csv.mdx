@@ -1,0 +1,41 @@
+---
+title: Import From CSV
+---
+
+import { Callout } from "nextra/components";
+
+# Import From CSV
+
+You can import goldens from CSV files by mapping each header column each respective golden fields. Alternatively, you can also [upload goldens via code](/dataset-editor/dataset-features/push-pull-goldens) instead.
+
+## Video Summary
+
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/dataset-editor:import-datasets.mp4"
+  width="100%"
+  title="Import goldens from CSV"
+/>
+
+## Map Headers To Fields
+
+The first row of your CSV file must be the headers, which you'll use to determine which each golden field belongs to.
+
+As a quick recap, the golden fields include:
+
+- **Input:** a string (text) representing the input to prompt your LLM application with during evaluation.
+- **Expected Output:** a string (text) representing the ideal output based on for the given input.
+- **Context:** a list of strings (text) representing the ground truth as supporting context.
+- **Comments:** a string (text) representing whatever comments your data annotators have for this particular golden (e.g. "Watch out for this expected output! It needs more work.").
+- **Additional Metadata:** a free-form JSON which you can use to include as any additional data which you can later make use of in code during evaluation time.
+
+These fields are also part of a golden but you should probably not populate it since they are meant to be computed dynamically at evaluation time:
+
+- **Actual Output:** a string (text) representing the generated output of your LLM application for the given input.
+- **Retrieval Context:** a list of strings (text) representing the retrieved text chunks of your LLM application for the given input. This is only for RAG pipelines.
+
+<Callout>
+  The full explanation of what a golden is and its fields are [available
+  here.](/concepts/datasets#goldens)
+</Callout>
+
+Once you're done with your mapping, click **Next** to review your upload details. The platform will let you know whether there are duplicates, errors in type mismatches, and show you the final number of goldens that will be uploaded. Once you're happy with everything, click **Save**.

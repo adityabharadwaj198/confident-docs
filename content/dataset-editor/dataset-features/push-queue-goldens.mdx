@@ -1,0 +1,76 @@
+---
+title: Push and Queue Goldens
+---
+
+import { Callout } from "nextra/components";
+
+# Push and Queue Goldens
+
+DeepEval offers the `.push()` and `.queue()` method to upload goldens to Confident AI as an alternative to [importing goldens from CSV](/dataset-editor/dataset-features/import-from-csv).
+
+## Push
+
+You can push goldens to Confident AI through DeepEval that are **finalized** by default. 
+
+<Callout type="info">
+You will need to already have a dataset on Confident AI for this to work.
+</Callout>
+
+```python {4}
+from deepeval.dataset import EvaluationDataset, Golden
+
+dataset = EvaluationDataset(goldens=[Golden(input="Input of my first golden!")])
+dataset.push(alias="your-dataset-alias")
+```
+
+There are **TWO** mandatory and **ONE** optional parameters when using the `queue` method:
+
+- `alias`: A string specifying the alias of the dataset.
+- [Optional] `overwrite`: A boolean specifying whether to overwrite existing goldens in your dataset. DeepEval will prompt you to enter a [y/N] value if no value is provided. Defaulted to `None`.
+
+<Callout>
+By default, the `push` method marks goldens as **finalized**. Goldens that are finalized will be pulled by default via the [`.pull()` method](/dataset-editor/using-datasets#pull-a-dataset). To upload goldens as **unfinalized**, use the [queue method](#queue) instead.
+</Callout>
+
+You can also choose to overwrite or append to an existing dataset if an existing dataset with the same alias already exist.
+
+```python
+...
+
+# Overwrite existing goldens
+dataset.push(alias="QA Dataset", overwrite=True)
+```
+
+<Callout type="info">
+  `deepeval` will prompt you in the terminal if no value for `overwrite` is
+  provided.
+</Callout>
+
+You can also **load a dataset from CSV or JSON locally** before uploading it to Confident AI through `deepeval`. For more information on `deepeval`'s `EvaluationDataset`, visit the [official DeepEval documentation.](https://deepeval.com/docs/evaluation-datasets#load-an-existing-dataset)
+
+## Queue
+
+If your goldens are not ready for evaluation, need human annotation, as is the case when you want to have a second pair of eyes going through uploaded goldens before using them for evaluation, you can queue them to dataset instead. 
+
+<Callout>
+Queued goldens are automatically marked as **unfinalized**.
+</Callout>
+
+```python {4}
+from deepeval.dataset import EvaluationDataset, Golden
+
+dataset = EvaluationDataset()
+dataset.queue(alias="your-dataset-alias", goldens=[Golden(input="Input of my first golden!")])
+```
+
+There are **TWO** mandatory and **ONE** optional parameters when using the `queue` method:
+
+- `alias`: A string specifying the alias of the dataset.
+- `goldens`: A list of `Golden`s and must not be empty.
+- [Optional] `print_response`: A boolean specifying whether to print a success message after queueing. Defaulted to `True`.
+
+The `queue` method also creates a new dataset with the `alias` you provided if no such dataset exist.
+
+<Callout>
+The term "queue" is used to signify that unfinalized goldens need editing before they are ready for evaluation. 
+</Callout>
