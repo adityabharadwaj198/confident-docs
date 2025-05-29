@@ -15,8 +15,8 @@ You can set the `input` and `output` of a trace using the `update_current_trace`
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
     ```python showLineNumbers {13}
-    from deepeval.tracing import observe, update_current_trace
     import openai
+    from deepeval.tracing import observe, update_current_trace
      
     @observe()
     def llm_app(query: str):
@@ -36,8 +36,8 @@ You can set the `input` and `output` of a trace using the `update_current_trace`
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers {13}
-    import { observe, updateCurrentTrace } from '@deepeval-ts/tracing';
     import OpenAI from 'openai';
+    import { observe, updateCurrentTrace } from '@deepeval-ts/tracing';
     
     const openai = new OpenAI();
     
@@ -81,8 +81,8 @@ For example, the `"retriever"` span `type` expects a string as the `input` and l
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
     ```python showLineNumbers {13}
-    from deepeval.tracing import observe, update_current_span
     import openai
+    from deepeval.tracing import observe, update_current_span
      
     @observe()
     def llm_app(query: str):
@@ -102,8 +102,8 @@ For example, the `"retriever"` span `type` expects a string as the `input` and l
   </Tabs.Tab>
   <Tabs.Tab>
     ```typescript showLineNumbers {13}
-    import { observe, updateCurrentSpan } from '@deepeval-ts/tracing';
     import OpenAI from 'openai';
+    import { observe, updateCurrentSpan } from '@deepeval-ts/tracing';
     
     const openai = new OpenAI();
     

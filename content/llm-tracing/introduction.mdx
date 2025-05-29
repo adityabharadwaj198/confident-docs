@@ -66,6 +66,65 @@ Two important terminologies to be aware of:
 
 Each observed function **CREATES A SPAN**, and **MANY SPANS MAKE UP A TRACE**. When you have tracing setup, you can run evaluations on both the trace and span level.
 
+### Installation
+
+Install DeepEval and setup your tracing enviornment:
+
+<Tabs items={['Python', 'JS/TypeScript']}>
+  <Tabs.Tab>
+```bash
+pip install deepeval
+```
+
+Don't forget to login using your API key on Confident AI in the CLI:
+
+```bash
+deepeval login --confident-api-key YOUR_API_KEY
+```
+
+> [!NOTE]
+>
+> You can also login by using the `login_with_confident_api_key` method without going through the CLI if you're in a notebook environment:
+>
+> ```python
+> import deepeval
+>
+> deepeval.login_with_confident_api_key("YOUR_API_KEY")
+> ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+
+Using `npm`:
+```bash
+npm install deepeval-ts
+```
+
+Using `yarn`:
+```bash
+yarn add deepeval-ts
+```
+
+Don't forget to login with your API key:
+
+```bash
+export CONFIDENT_API_KEY=YOUR_API_KEY
+```
+
+> [!NOTE]
+> 
+> You can also do it directly in code:
+> ```typescript
+> import { traceManager } from '@deepeval-ts/tracing';
+>
+> traceManager.configure({
+>	  confidentApiKey: "YOUR_API_KEY"
+> })
+> ```
+
+  </Tabs.Tab>
+</Tabs>
+
 ### Setup tracing
 
 <Tabs items={['Python', 'JS/TypeScript']}>
