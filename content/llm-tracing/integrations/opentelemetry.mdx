@@ -31,7 +31,7 @@ Login using your API key on Confident AI in the CLI:
 deepeval login --confident-api-key YOUR_API_KEY
 ```
 
-```python showLineNumbers {17, 21}
+```python showLineNumbers {14, 19}
 import deepeval
 from deepeval.tracing.otel.exporter import ConfidentSpanExporter
 
@@ -44,8 +44,6 @@ if not isinstance(trace.get_tracer_provider(), TracerProvider):
     trace.set_tracer_provider(tracer_provider)
 else:
     tracer_provider = trace.get_tracer_provider()
-
-deepeval.login_with_confident_api_key("<confident-api-key>")
 
 exporter = ConfidentSpanExporter()
 span_processor = BatchSpanProcessor(exporter)
