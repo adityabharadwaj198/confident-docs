@@ -31,7 +31,7 @@ Login using your API key on Confident AI in the CLI:
 deepeval login --confident-api-key YOUR_API_KEY
 ```
 
-```python showLineNumbers
+```python showLineNumbers {17, 21}
 import deepeval
 from deepeval.tracing.otel.exporter import ConfidentSpanExporter
 
@@ -79,7 +79,7 @@ Confident AI supports the following LLM operations:
 - `text_completion`
 - `generate_content`
 
-```python showLineNumbers
+```python showLineNumbers {5}
 # set the tracer
 with tracer.start_as_current_span("chat gpt-4o") as parent_span:
     
@@ -123,7 +123,7 @@ Confident AI supports the following tool operations:
 - `execute_tool`
 - `invoke_agent`
 
-```python showLineNumbers
+```python showLineNumbers {5}
 # set the tracer
 with tracer.start_as_current_span("execute_tool example_tool") as tool_span:
     
@@ -151,7 +151,8 @@ Confident AI supports the following agent operations:
 - `create_agent`
 - `invoke_agent`
 
-```python showLineNumbers
+```python showLineNumbers {5}
+# set the tracer
 with tracer.start_as_current_span("create_agent example_agent") as agent_span:
     
     # operation name can be create_agent or invoke_agent
@@ -183,7 +184,8 @@ Confident AI supports the following retriever operations:
 - `embeddings`
 - `retrieve`
 
-```python showLineNumbers
+```python showLineNumbers {5}
+# set the tracer
 with tracer.start_as_current_span("embeddings openai_ada") as retriever_span:
     
     # operation name can be embeddings or retrieve
@@ -211,7 +213,7 @@ The following table shows the properties that are mapped to [Retriever spans](ht
 
 The Opentelemetry tracer supports nested spans. Nested spans appear as a child of the parent span in the **Observatory**.
 
-```python showLineNumbers
+```python showLineNumbers {1, 8}
 with tracer.start_as_current_span("chat gpt-4o") as parent_span:
     parent_span.set_attribute("gen_ai.operation.name", "generate_content")
     parent_span.set_attribute("gen_ai.request.model", "gpt-4o")
@@ -228,7 +230,7 @@ with tracer.start_as_current_span("chat gpt-4o") as parent_span:
 ```
 
 <Callout type="info">
-  All the OpenTelemetry span's attributes and events are available in the Confident AI `metadata` property as a fallback.
+  All the OpenTelemetry span's attributes and events are available in the **Confident AI** span's `metadata` property as a fallback.
 </Callout>
 
 
