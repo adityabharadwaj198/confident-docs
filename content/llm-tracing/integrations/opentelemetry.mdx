@@ -56,6 +56,9 @@ with tracer.start_as_current_span("chat gpt-4o") as parent_span:
     
     parent_span.add_event("gen_ai.system.message", {"content": "you are a helpful assistant"})
     parent_span.add_event("gen_ai.user.message", {"content": "What is the capital of France?"})
+
+# wait for queue to post traces to the Observatory
+time.sleep(6)
 ```
 This will create a trace in the Observatory.
 
