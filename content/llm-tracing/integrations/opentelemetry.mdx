@@ -31,32 +31,33 @@ Login using your API key on Confident AI in the CLI:
 deepeval login --confident-api-key YOUR_API_KEY
 ```
 
-```python showLineNumbers {14, 19}
-import deepeval
+```python showLineNumbers {15, 20}
+import time
+
 from deepeval.tracing.otel.exporter import ConfidentSpanExporter
 
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-
+ 
 if not isinstance(trace.get_tracer_provider(), TracerProvider):
     tracer_provider = TracerProvider()
     trace.set_tracer_provider(tracer_provider)
 else:
     tracer_provider = trace.get_tracer_provider()
-
+ 
 exporter = ConfidentSpanExporter()
 span_processor = BatchSpanProcessor(exporter)
 tracer_provider.add_span_processor(span_processor)
 tracer = trace.get_tracer("test_tracer")
-
+ 
 with tracer.start_as_current_span("chat gpt-4o") as parent_span:
     parent_span.set_attribute("gen_ai.operation.name", "chat")
     parent_span.set_attribute("gen_ai.request.model", "gpt-4o")
     
     parent_span.add_event("gen_ai.system.message", {"content": "you are a helpful assistant"})
     parent_span.add_event("gen_ai.user.message", {"content": "What is the capital of France?"})
-
+ 
 # wait for queue to post traces to the Observatory
 time.sleep(6)
 ```
