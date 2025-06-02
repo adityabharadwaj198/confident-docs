@@ -3,20 +3,21 @@ title: Opentelemetry
 ---
 import { Callout } from "nextra/components";
 
-# Opentelemetry
+# OpenTelemetry
 [OpenTelemetry](https://opentelemetry.io/docs/what-is-opentelemetry/) is an open-source observability framework that allows teams to collect, analyze, and visualize telemetry data.
 
-Here are few key concepts:
+Here are few OpenTelemetry concepts:
+
 - **Span** is a single unit of work in OpenTelemetry.
 - **Trace** is a collection of spans in the form of a tree that are related to a single request.
 - **Span Processor** acts as a middleman that can process, modify, or decide how to deal with spans—such as whether to batch them together for efficiency, drop certain spans, or add extra information to them. 
 - **Span Exporter** delivers spans to a storage system.
 
-**Confident AI** integrates with OpenTelemetry that allows teams to export traces to the **[Observatory](https://documentation.confident-ai.com/llm-tracing/introduction)** via a `ConfidentSpanExporter`.
+Confident AI integrates with OpenTelemetry that allows teams to export traces to the [Observatory](https://documentation.confident-ai.com/llm-tracing/introduction) via the `ConfidentSpanExporter`.
 
-## Quick Start
+## Quickstart
 
-First, you need to install the following libraries:
+Install the following libraries:
 
 ```bash
 pip install deepeval opentelemetry-api opentelemetry-sdk
@@ -75,7 +76,9 @@ This will create a trace in the Observatory.
 We have attempted to map the OpenTelemetry span's attributes and events to the Confident AI attributes. Below are the mappings for the LLM, Tool, Agent, and Retriever spans.
 
 ### LLM attributes mapping
+
 Confident AI supports the following LLM operations:
+
 - `chat`
 - `text_completion`
 - `generate_content`
@@ -106,9 +109,9 @@ with tracer.start_as_current_span("chat gpt-4o") as parent_span:
   Attributes and event names starting with `gen_ai.`* are as per the [OpenTelemetry Semantic Conventions for Generative AI Systems](https://opentelemetry.io/docs/specs/semconv/gen-ai/). Other names are specific to **Confident AI**.
 </Callout>
 
-The following table shows the properties that are mapped to [LLM spans](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#llm-attributes) in Confident AI attributes.
+The following table shows the properties that are mapped to [LLM span attributes](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#llm-attributes).
 
-| Confident AI Attribute | Property | Type |
+| LLM attribute | Property | Type |
 |----------|---------|--------|
 | `model` | `gen_ai.request.model` | Attribute | 
 | `input_tokens` | `gen_ai.usage.input_tokens` | Attribute |
@@ -120,7 +123,9 @@ The following table shows the properties that are mapped to [LLM spans](https://
 
 
 ### Tool attributes mapping
+
 Confident AI supports the following tool operations:
+
 - `execute_tool`
 - `invoke_agent`
 
@@ -139,9 +144,9 @@ with tracer.start_as_current_span("execute_tool example_tool") as tool_span:
     tool_span.add_event("confident.tool.output", {"temp": "example_tool_output"})
 ```
 
-The following table shows the properties that are mapped to [Tool spans](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#tool-attributes) in Confident AI attributes.
+The following table shows the properties that are mapped to [tool span attributes](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#tool-attributes).
 
-| Confident AI Attribute | Property | Type |
+| Tool attribute | Property | Type |
 |----------|---------|--------|
 | `description` | `gen_ai.tool.description` | Attribute |
 | `input_parameters` | `confident.tool.input` | Event |
@@ -170,9 +175,9 @@ with tracer.start_as_current_span("create_agent example_agent") as agent_span:
 ```
 
 
-The following table shows the properties that are mapped to [Agent spans](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#agent-attributes) in Confident AI attributes.
+The following table shows the properties that are mapped to [agent span attributes](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#agent-attributes).
 
-| Confident AI Attribute | Property | Type |
+| Agent attribute | Property | Type |
 |----------|---------|--------|
 | `available_tools` | `confident.agent.available_tools` | Attribute |
 | `agent_handoffs` | `confident.agent.agent_handoffs` | Attribute |
@@ -181,7 +186,9 @@ The following table shows the properties that are mapped to [Agent spans](https:
 
 
 ### Retriever attributes mapping
+
 Confident AI supports the following retriever operations:
+
 - `embeddings`
 - `retrieve`
 
@@ -200,9 +207,9 @@ with tracer.start_as_current_span("embeddings openai_ada") as retriever_span:
     retriever_span.add_event("confident.retriever.output", {"output": "example_output"})
 ```
 
-The following table shows the properties that are mapped to [Retriever spans](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#retriever-attributes) in Confident AI attributes.
+The following table shows the properties that are mapped to [retriever span attributes](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes#retriever-attributes).
 
-| Confident AI Attribute | Property | Type |
+| Retriever attribute | Property | Type |
 |----------|---------|--------|
 | `embedder` | `gen_ai.request.model` | Attribute |
 | `top_k` | `confident.retriever.top_k` | Attribute |
@@ -231,7 +238,5 @@ with tracer.start_as_current_span("chat gpt-4o") as parent_span:
 ```
 
 <Callout type="info">
-  All the OpenTelemetry span's attributes and events are available in the **Confident AI** span's `metadata` property as a fallback.
+  All the OpenTelemetry spans' attributes and events are available in a [span's `metadata` property](/llm-tracing/tracing-features/metadata) as a fallback.
 </Callout>
-
-
