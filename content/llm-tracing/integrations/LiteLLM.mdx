@@ -49,13 +49,6 @@ print(response)
 
 ## Tracing LiteLLM proxy
 
-### Prerequisites
-
-- LiteLLM proxy
-- LiteLLM SDK
-
-### Steps
-
 1. Add **deepeval** to the `success_callback` and `failure_callback` in the `config.yaml` file.
 
 ```yaml showLineNumbers {6-7}
@@ -101,6 +94,10 @@ curl -X POST 'http://0.0.0.0:4000/chat/completions' \
     ]
 }'
 ```
+
+<Callout>
+There are two ways to start the LiteLLM proxy server from CLI i.e., either using **pip package** or **docker container**. We have used the **pip package** in the example above. Refer to the [LiteLLM documentation](https://docs.litellm.ai/docs/#quick-start-proxy---cli) for more information.
+</Callout>
 
 
 
