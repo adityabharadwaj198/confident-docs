@@ -23,7 +23,7 @@ pip install litellm
 
 2. Use `litellm.success_callback` and `litellm.failure_callback` to trace your LLM calls:
 
-```python showLineNumbers
+```python showLineNumbers {8-9}
 import os
 import time
 import litellm
@@ -49,9 +49,16 @@ print(response)
 
 ## Tracing LiteLLM proxy
 
+### Prerequisites
+
+- LiteLLM proxy
+- LiteLLM SDK
+
+### Steps
+
 1. Add **deepeval** to the `success_callback` and `failure_callback` in the `config.yaml` file.
 
-```yaml showLineNumbers
+```yaml showLineNumbers {6-7}
 model_list:
   - model_name: gpt-4o
     litellm_params:
