@@ -1,0 +1,123 @@
+---
+title: LiteLLM
+---
+
+import { Callout } from "nextra/components";
+
+# LiteLLM
+[LiteLLM](https://www.litellm.ai/) is a tool that makes it easy for developers to connect to and use many different large language models (LLMs)—like those from OpenAI, Anthropic, Hugging Face, and more—through a single, simple interface. 
+
+Confident AI integrates with LiteLLM to trace your LLM calls for both **Proxy** and **SDK** in the **Observatory**.
+
+<Callout type="info">
+LiteLLM **[Proxy](https://docs.litellm.ai/docs/simple_proxy)** is a server (or gateway) that acts as a central point for accessing many different language models through a single API endpoint whereas the **[SDK](https://docs.litellm.ai/docs/#basic-usage)** is a client library that allows you to use LiteLLM in your own application.
+</Callout>
+
+## Tracing LiteLLM SDK
+
+1. Install the LiteLLM SDK:
+
+```bash
+pip install litellm
+```
+
+2. Use `litellm.success_callback` and `litellm.failure_callback` to trace your LLM calls:
+
+```python showLineNumbers
+import os
+import time
+import litellm
+
+os.environ['OPENAI_API_KEY']='<your-openai-api-key>'
+os.environ['CONFIDENT_API_KEY']='<your-confident-api-key>'
+
+litellm.success_callback = ["deepeval"]
+litellm.failure_callback = ["deepeval"]
+
+try:
+    response = litellm.completion(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": "What's the weather like in San Francisco?"}
+        ],
+    )
+except Exception as e:
+    print(e)
+
+print(response)
+```
+
+## Tracing LiteLLM proxy
+
+1. Add **deepeval** to the `success_callback` and `failure_callback` in the `config.yaml` file.
+
+```yaml showLineNumbers
+model_list:
+  - model_name: gpt-4o
+    litellm_params:
+      model: gpt-4o
+litellm_settings:
+  success_callback: ["deepeval"]
+  failure_callback: ["deepeval"]
+```
+
+2. Set your environment variables in `.env` file.
+
+```bash showLineNumbers
+OPENAI_API_KEY=<your-openai-api-key>
+CONFIDENT_API_KEY=<your-confident-api-key>
+```
+
+3. Start your proxy server:
+
+```bash
+litellm --config config.yaml --debug
+```
+
+4. Make a request to the proxy server:
+
+```bash
+curl -X POST 'http://0.0.0.0:4000/chat/completions' \
+-H 'Content-Type: application/json' \
+-H 'Authorization: Bearer sk-1234' \
+-d '{
+    "model": "gpt-3.5-turbo",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a helpful math tutor. Guide the user through the solution step by step."
+      },
+      {
+        "role": "user",
+        "content": "how can I solve 8x + 7 = -23"
+      }
+    ]
+}'
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
