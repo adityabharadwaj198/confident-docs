@@ -215,7 +215,7 @@ def llm_app(query: str) -> str:
         ]
     ).choices[0].message["content"]
 
-    update_current_span(test_case=LLMTestCase(input=quer, actual_output=res))
+    update_current_span(test_case=LLMTestCase(input=query, actual_output=res))
     return res
 
 
