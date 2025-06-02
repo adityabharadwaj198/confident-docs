@@ -61,19 +61,17 @@ with tracer.start_as_current_span("chat gpt-4o") as parent_span:
 # wait for queue to post traces to the Observatory
 time.sleep(6)
 ```
-This will create a trace in the Observatory.
+**Congratulations 🎉!** This will create a trace in the Observatory.
+
+`ConfidentSpanExporter` accepts any span that adheres to the [OpenTelemetry specification](https://opentelemetry.io/docs/concepts/signals/traces/). We encourage the use of [Semantic conventions for generative AI systems](https://opentelemetry.io/docs/specs/semconv/gen-ai/) to ensure that the spans are compatible with the Confident AI's Observatory.
 
 <Callout type="info">
-**Attributes** are key-value pairs (like labels) that describe details about the operation the span represents whereas **events** are specific moments or occurrences during the span’s lifetime. Each event has a name and a timestamp, and can also include its own attributes.
-</Callout>
-
-<Callout>
-`ConfidentSpanExporter` accepts any span that adheres to the [OpenTelemetry specification](https://opentelemetry.io/docs/concepts/signals/traces/). We encourage the use of [Semantic conventions for generative AI systems](https://opentelemetry.io/docs/specs/semconv/gen-ai/) to ensure that the spans are compatible with the Confident AI **Observatory**.
+Attributes is a concept shared by both OpenTelemetry and Confident AI tracing, and are key-value pairs (like labels) that describe details about the operation the span represents. **Events** on the other hand, is OpenTelemetry specific and are specific moments or occurrences during the span’s lifetime. Each event has a name and a timestamp, and can also include its own attributes.
 </Callout>
 
 ## Mapping
 
-We have attempted to map the OpenTelemetry span's attributes and events to the Confident AI attributes. Below are the mappings for the LLM, Tool, Agent, and Retriever spans.
+Confident AI's OpenTelemetry integration allows you to map attributes and events to Confident AI's [span type attributes](/llm-tracing/tracing-features/attributes). Below are the mappings for the `"llm"`, `"tool"`, `"agent"`, and `"retriever"` span types.
 
 ### LLM attributes mapping
 
