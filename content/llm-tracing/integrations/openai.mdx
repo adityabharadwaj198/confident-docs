@@ -1,0 +1,70 @@
+---
+title: OpenAI
+---
+
+import { Callout } from "nextra/components";
+
+# OpenAI
+This tutorial will show you how to trace your **OpenAI API** calls on Confident AI **Observatory**.
+
+## Quickstart
+
+Install the following packages:
+
+```bash
+pip install -U deepeval openai
+```
+
+Login using your API key on Confident AI in the CLI:
+
+```bash
+deepeval login --confident-api-key YOUR_API_KEY
+```
+
+Trace your OpenAI API calls:
+
+```python showLineNumbers {5, 7, 22}
+import time
+from openai import OpenAI
+from deepeval.tracing import observe
+
+client = OpenAI(api_key="<your-openai-api-key>")
+
+@observe(type="llm", client=client)
+def generate_response(input: str) -> str:
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # or your preferred model
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": input},
+        ],
+        temperature=0.7,
+    )
+    
+    return response
+
+
+try:
+    response = generate_response("What is the weather in Tokyo?")
+    print(response)
+except Exception as e:
+    raise e
+
+time.sleep(6)
+```
+
+The above code will automatically capture the following information and send it to Observatory (no need to set the values of `LlmAttributes`):
+
+- `model`: Name of the OpenAI model
+- `input`: Input messages
+- `output`: Output content (i.e., `response.choices[0].message.content`)
+- `input_token_count`: Input token count
+- `output_token_count`: Output token count
+
+<Callout>
+Read more about the LLM spans and its attributes [here](https://documentation.confident-ai.com/llm-tracing/tracing-features/attributes).
+</Callout>
+
+<Callout type="info">
+We use [Monkey Patching](https://www.browserstack.com/guide/monkey-patching) under the hood which dynamically wraps `chat.completions.create` and `beta.chat.completions.parse` methods of **OpenAI client** at runtime, preserving the original method signature.
+</Callout>
