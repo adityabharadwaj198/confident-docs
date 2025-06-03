@@ -65,7 +65,7 @@ export default async function RootLayout({ children }) {
           banner={banner}
           navbar={navbar}
           pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/confident-ai/confident-docs/tree/main/docs"
+          docsRepositoryBase="https://github.com/confident-ai/confident-docs/tree/main"
           footer={footer}
         >
           {children}
