@@ -23,8 +23,8 @@ const CustomFooter = () => {
                 className={styles.statusBadge}
                 src="https://status.confident-ai.com/badge?theme=dark" 
                 width="182" 
-                height="30"
-                style={{backgroundColor: 'black', borderRadius: '10px'}}
+                height="31"
+                style={{backgroundColor: 'black', borderRadius: '10px', overflow: 'hidden'}}
                 title="Confident AI Status"
               />
             </div>
