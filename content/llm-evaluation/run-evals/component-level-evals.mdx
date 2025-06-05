@@ -126,6 +126,10 @@ def llm_app(query: str) -> str:
 
 Tracing will also allow you to visualize and debug the latencies, model cost, etc. of each individual component in your testing report. You can read more about all of Confident AI's tracing features and capabilities in the [tracing section.](/llm-tracing/introduction)
 
+<Callout type="warning">
+Traces that are logged in component-level tracing are automatically classified into the [`"testing"` enviornment](/llm-tracing/tracing-features/environment) of your project, and are available to view separately under the **Observatory** of the platform.
+</Callout>
+
 ## Run an Evaluation
 
 At evaluation time, DeepEval will pass in the `input`s of each individual golden in your dataset to invoke your LLM app. Be patient when waiting for evaluation results, as evaluation duration is often limited by the execution time of your LLM app.
