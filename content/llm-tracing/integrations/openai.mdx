@@ -23,14 +23,16 @@ deepeval login --confident-api-key YOUR_API_KEY
 
 Trace your OpenAI API calls:
 
-```python showLineNumbers {5, 7, 22}
+```python showLineNumbers {5, 9, 24}
 import time
 from openai import OpenAI
-from deepeval.tracing import observe
+from deepeval.tracing import observe, trace_manager
 
 client = OpenAI(api_key="<your-openai-api-key>")
 
-@observe(type="llm", client=client)
+trace_manager.configure(openai_client=client)
+
+@observe(type="llm")
 def generate_response(input: str) -> str:
     response = client.chat.completions.create(
         model="gpt-4o-mini",  # or your preferred model
@@ -50,7 +52,7 @@ try:
 except Exception as e:
     raise e
 
-time.sleep(6)
+time.sleep(7)
 ```
 
 The above code will automatically capture the following information and send it to Observatory (no need to set the values of `LlmAttributes`):
