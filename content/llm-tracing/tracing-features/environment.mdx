@@ -24,7 +24,7 @@ Alternatively, you can set the environment directly in code:
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python showLineNumbers {4}
+    ```python filename="main.py" showLineNumbers {4}
     import openai
     from deepeval.tracing import observe, trace_manager
     
@@ -44,7 +44,7 @@ Alternatively, you can set the environment directly in code:
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript showLineNumbers {4}
+    ```typescript filename="index.ts" showLineNumbers {4}
     import OpenAI from 'openai';
     import { observe, traceManager } from '@deepeval-ts/tracing';
     

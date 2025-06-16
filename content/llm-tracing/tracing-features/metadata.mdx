@@ -16,7 +16,7 @@ Each metadata argument is a dictionary whose keys are strings and whose values a
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python showLineNumbers {7,15}
+    ```python filename="main.py" showLineNumbers {7,15}
     from deepeval.tracing import observe, update_current_span, update_current_trace
     
     @observe()
@@ -42,7 +42,7 @@ Each metadata argument is a dictionary whose keys are strings and whose values a
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript showLineNumbers {6,14}
+    ```typescript filename="index.ts" showLineNumbers {6,14}
     import { observe, updateCurrentSpan, updateCurrentTrace } from '@deepeval-ts/tracing';
     
     const llmApp = (query: string) => {
@@ -63,9 +63,7 @@ Each metadata argument is a dictionary whose keys are strings and whose values a
       });
     };
     
-    const observedLlmApp = observe({
-      fn: llmApp
-    });
+    const observedLlmApp = observe({fn: llmApp});
     
     observedLlmApp("Test Metadata");
     ```

@@ -18,7 +18,7 @@ Confident AI tracing is designed to be completely non-intrusive to your applicat
 - Runs asynchronously in the background with zero impact on latency
 - Fails silently if there are any issues, ensuring your app keeps running
 - Works with any function signature - you can set input/output at runtime
-- Allows you to [run online evaluations](/llm-tracing/tracing-features/online-evaluation) for spans and traces.
+- Allows you to [run online evaluations](/llm-tracing/online-evaluations) for spans and traces.
 
 ## Feature Highlights
 
@@ -27,12 +27,12 @@ Confident AI tracing is designed to be completely non-intrusive to your applicat
   <Cards.Card
     arrow
     title="Online Evaluations"
-    href="/llm-tracing/tracing-features/online-evaluation"
+    href="/llm-tracing/online-evaluations"
   />
   <Cards.Card
     arrow
     title="Conversation Monitoring"
-    href="/llm-tracing/tracing-features/online-evaluation"
+    href="/llm-tracing/online-evaluations"
   />
   <Cards.Card
     arrow
@@ -132,7 +132,7 @@ export CONFIDENT_API_KEY=YOUR_API_KEY
 
 The `@observe` decorator is the primary way to instrument your LLM application for tracing.
 
-```python showLineNumbers {4, 15}
+```python filename="main.py" showLineNumbers {4, 15}
 from openai import OpenAI
 from deepeval.tracing import observe
 
@@ -153,11 +153,11 @@ llm_app("Write me a poem.")
 If your `llm_app` has more than one function, simply decorate those functions with `@observe` too.
 
   </Tabs.Tab>
-  <Tabs.Tab>
+<Tabs.Tab>
 
 The `observe` wrapper is the primary way to instrument your LLM application for tracing.
 
-```typescript showLineNumbers {14, 20}
+```typescript filename="index.ts" showLineNumbers {14, 20}
 import OpenAI from 'openai';
 import { observe } from '@deepeval-ts/tracing';
  
@@ -194,19 +194,18 @@ In a later section, you'll learn how to create [spans that are LLM specific](/ll
 
 ### Enable Online Evals 
 
-You can enable online evaluation to run both end-to-end (metrics on the trace) and component-level (metrics on the span) evaluations on Confident AI. 
+You can enable online evaluation to run both [end-to-end](/llm-evaluation/run-evals/end-to-end-evals) (metrics on the trace) and [component-level](/llm-evaluation/run-evals/component-level-evals) (metrics on the span) evaluations on Confident AI. 
 
-First, enable online metrics on Confident AI by creating a metric collection. Now in your code, add these lines to automatically run online evals in production:
-
+First, enable online evals on Confident AI by [creating a metric collection](/llm-evaluation/metrics/create-on-the-cloud#create-a-metric-collection), and adding at least one referenceless metric to it. Now in your code, add these lines to automatically run online evals in production:
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
 
-```python showLineNumbers {4, 13}
+```python filename="main.py" showLineNumbers {4, 13}
 from openai import OpenAI
 from deepeval.tracing import observe, update_current_span
 
-@observe(metrics=["Answer Relevancy])
+@observe(metricCollection=["My Metrics"])
 def llm_app(query: str) -> str:
     res = openai.ChatCompletion.create(
         model="gpt-4o",
@@ -228,7 +227,7 @@ llm_app("Write me a poem.")
 
 The `observe` wrapper is the primary way to instrument your LLM application for tracing.
 
-```typescript showLineNumbers {14, 20}
+```typescript filename="index.ts" showLineNumbers {14, 20}
 import OpenAI from 'openai';
 import { observe, updateCurrentSpan } from '@deepeval-ts/tracing';
  
@@ -248,7 +247,7 @@ const llmApp = (query: string) => {
 };
  
 const observedLlmApp = observe({
-  metrics = ["Answer Relevancy"],
+  metricCollection=["My Metrics"],
   fn: llmApp
 });
 
@@ -260,11 +259,10 @@ observedLlmApp("Write me a poem.")
   </Tabs.Tab>
 </Tabs>
 
-Congratulations 🎉! Now whenever you run your LLM app, all traces will be logged and evaluated on Confident AI.
-
+Congratulations 🎉! Now whenever you run your LLM app, all traces will be logged **AND** evaluated on Confident AI.
 
 <Callout type="info">
-More information on online evaluations can be found [here.](/llm-tracing/tracing-features/online-evaluation)
+More information on online evaluations can be found [here.](/llm-tracing/online-evaluations)
 </Callout>
 
 ## Why Tracing On Confident AI?

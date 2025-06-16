@@ -2,7 +2,7 @@
 title: Run an Evaluation
 ---
 
-import { Callout } from "nextra/components";
+import { Callout, Tabs } from "nextra/components";
 
 # Run Your First LLM Eval
 
@@ -38,9 +38,7 @@ flowchart LR
 
 ## Create a Dataset
 
-Navigate to your project, go to the **Datasets** tab on the left navigation drawer. Click on **Create a dataset**, and provide your dataset with an alias.
-
-Once you've created a dataset, you'll be directed to the **Dataset Editor** page for your newly created dataset. Depending on whether you already have [goldens](/concepts/datasets#goldens), you should either:
+Navigate to your project, go to the **Datasets** tab on the left navigation drawer. Click on **Create a dataset**, and provide your dataset with an alias. Depending on whether you already have [goldens](/concepts/datasets#goldens), you should either:
 
 1. Upload a CSV file of your goldens to your dataset, OR
 2. Create a golden, with the input as the text you typically prompt your LLM application with for testing
@@ -64,7 +62,7 @@ The evaluation process works as follows:
 
 Here's the example code:
 
-```python showLineNumbers copy {6, 13, 15}
+```python filename="main.py" showLineNumbers copy {6, 13, 15}
 from deepeval.dataset import EvaluationDataset
 from deepeval.test_case import LLMTestCase
 
@@ -111,10 +109,41 @@ In this example, we're going to use the answer relevancy metric (for the sake of
 
 </details>
 
-```python
+<Tabs items={['Evals In CI/CD', 'Evals In Python Script']}>
+  <Tabs.Tab>
+```python filename="main.py" showLineNumbers {10, 16}
+import pytest
+from deepeval.test_case import LLMTestCase
+from deepeval.dataset import EvaluationDataset, Golden
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import assert_test
+ 
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+ 
+@pytest.mark.parametrize("golden", dataset.goldens) # Loop through goldens
+def test_llm_app(golden: Golden):
+    test_case = LLMTestCase(
+      input=golden.input, 
+      actual_output=your_llm_app(golden.input) # Replace with your LLM app
+    )
+    assert_test(test_case=test_case, metrics=[AnswerRelevancyMetric()])
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```python filename="main.py" showLineNumbers {18}
+from deepeval.dataset import EvaluationDataset
+from deepeval.test_case import LLMTestCase
 from deepeval.metrics import AnswerRelevancyMetric
 from deepeval import evaluate
-...
+
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+for goldens in dataset.goldens:
+    input = golden.input
+    test_case = LLMTestCase(input=input, actual_output=your_llm_app(input))
+    dataset.test_cases.append(test_case)
 
 # Define metric(s)
 metric = AnswerRelevancyMetric()
@@ -122,6 +151,8 @@ metric = AnswerRelevancyMetric()
 # Run an evaluation
 evaluate(test_cases=dataset.test_cases, metrics=[metric])
 ```
+  </Tabs.Tab>
+</Tabs>
 
 **Congratulations 🎉!** Your test run should now be available on Confident AI as a [testing report](/llm-evaluation/evaluation-features/testing-reports) ✅. Click around the testing report on Confident AI, and take tyour time to get familarized with it.
 
@@ -138,7 +169,7 @@ evaluate(test_cases=dataset.test_cases, metrics=[metric])
   employ that when you're ready to mold this quickstart guide to your use case.
 </Callout>
 
-## Run Another Eval for Regression Testing
+## Run Regression Testing
 
 When you have multiple evaluation results, Confident AI allows you to regression test between different iterations of your LLM app.
 
@@ -146,7 +177,29 @@ When you have multiple evaluation results, Confident AI allows you to regression
 
 Now run the exact same code:
 
-```python
+<Tabs items={['Evals In CI/CD', 'Evals In Python Script']}>
+  <Tabs.Tab>
+```python filename="main.py" showLineNumbers {14}
+import pytest
+from deepeval.test_case import LLMTestCase
+from deepeval.dataset import EvaluationDataset, Golden
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import assert_test
+ 
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+ 
+@pytest.mark.parametrize("golden", dataset.goldens) # Loop through goldens
+def test_llm_app(golden: Golden):
+    test_case = LLMTestCase(
+      input=golden.input, 
+      actual_output=your_llm_app(golden.input) # Hopefully you've changed to your LLM app!
+    )
+    assert_test(test_case=test_case, metrics=[AnswerRelevancyMetric()])
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```python filename="main.py" showLineNumbers {16}
 from deepeval.dataset import EvaluationDataset
 from deepeval.test_case import LLMTestCase
 from deepeval.metrics import AnswerRelevancyMetric
@@ -156,16 +209,16 @@ dataset = EvaluationDataset()
 dataset.pull(alias="your-dataset-alias")
  
 for goldens in dataset.goldens:
-    input = golden.input
     test_case = LLMTestCase(
-        input=input,
-        actual_output=your_llm_app(input) # Hopefully you've made changes to your LLM app!
+        input=golden.input,
+        actual_output=your_llm_app(golden.input) # Hopefully you've made changes to your LLM app!
     )
     dataset.test_cases.append(test_case) # Add the test case back to your dataset
 
 evaluate(test_cases=dataset.test_cases, metrics=[AnswerRelevancyMetric()])
 ```
-
+  </Tabs.Tab>
+</Tabs>
 **Congratulations 🎉!** Your second test run should now be available on Confident AI, but this time, you should see a comparison view to **Compare Test Results**. Select the previous test run, and start inspecting how this iteration of your LLM application differs from the previous one.
 
 <VideoDisplayer

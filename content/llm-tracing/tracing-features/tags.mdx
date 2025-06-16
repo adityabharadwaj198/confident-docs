@@ -19,7 +19,7 @@ Tags are applied at the trace level, making them visible for all spans within th
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python showLineNumbers {6}
+    ```python filename="main.py" showLineNumbers {6}
     from deepeval.tracing import observe, update_current_trace
     import openai
     
@@ -38,7 +38,7 @@ Tags are applied at the trace level, making them visible for all spans within th
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript showLineNumbers {5}
+    ```typescript filename="index.ts" showLineNumbers {5}
     import { observe, updateCurrentTrace } from '@deepeval-ts/tracing';
     import OpenAI from 'openai';
     

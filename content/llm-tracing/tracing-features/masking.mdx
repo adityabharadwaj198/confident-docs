@@ -16,7 +16,7 @@ To implement masking, you need to define a masking function and configure the tr
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python showLineNumbers {10}
+    ```python filename="main.py" showLineNumbers {10}
     import re
     from deepeval.tracing import observe, trace_manager
     
@@ -36,7 +36,7 @@ To implement masking, you need to define a masking function and configure the tr
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript showLineNumbers {10}
+    ```typescript filename="index.ts" showLineNumbers {10}
     import { observe, traceManager } from '@deepeval-ts/tracing';
     
     const maskingFunction = (data: any): any => {
@@ -77,7 +77,7 @@ The masking function is automatically applied to:
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python
+    ```python filename="main.py"
     import re
     from typing import Any
     
@@ -97,7 +97,7 @@ The masking function is automatically applied to:
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript
+    ```typescript filename="index.ts"
     function maskCreditCard(data: any): any {
       if (typeof data === 'string') {
         return data.replace(/\b(?:\d{4}[- ]?){3}\d{4}\b/g, '[REDACTED CARD]');
@@ -122,7 +122,7 @@ The masking function is automatically applied to:
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python
+    ```python filename="main.py"
     import re
     from typing import Any
     
@@ -141,7 +141,7 @@ The masking function is automatically applied to:
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript
+    ```typescript filename="index.ts"
     function maskEmail(data: any): any {
       if (typeof data === 'string') {
         return data.replace(/\b([\w.%+-])[^\s@]*(@[\w.-]+\.\w+)/g, '$1*****$2');
@@ -166,7 +166,7 @@ The masking function is automatically applied to:
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python
+    ```python filename="main.py"
     import re
     from typing import Any
     
@@ -190,7 +190,7 @@ The masking function is automatically applied to:
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript
+    ```typescript filename="index.ts"
     function maskBankAccount(data: any): any {
       if (typeof data === 'string') {
         return data.replace(/\b\d{6,}(?!\d)/g, match => {
@@ -217,7 +217,7 @@ The masking function is automatically applied to:
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python
+    ```python filename="main.py"
     import re
     from typing import Any
     
@@ -235,7 +235,7 @@ The masking function is automatically applied to:
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript
+    ```typescript filename="index.ts"
     function maskPassportNumber(data: any): any {
       if (typeof data === 'string') {
         return data.replace(/\b([A-Z])([A-Z0-9]{6,8})([A-Z0-9])\b/g, '$1*******$3');

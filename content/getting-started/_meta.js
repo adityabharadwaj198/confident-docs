@@ -1,6 +1,5 @@
 export default {
-    "create-account": '',
-    "installation": '',
+    "setup": '',
     "run-an-evaluation": '',
     "setup-tracing": '',
     "beyond-the-basics": '',

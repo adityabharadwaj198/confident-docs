@@ -1,10 +1,10 @@
 ---
-title: Setup Tracing
+title: Setup Tracing with Evals
 ---
 
 import { Callout } from "nextra/components";
 
-# Setup Tracing for LLM Evals and Observability
+# Tracing for Online Evals and LLM Observability
 
 The last section showed end-to-end evaluation, and in this section we'll show how to also evaluate individual components within your LLM app through tracing.
 
@@ -30,7 +30,7 @@ Assuming this is `your_llm_app`, you will trace it using the `@observe` decorato
 ```python showLineNumbers {4, 13, 18}
 from openai import OpenAI
 from deepeval.tracing import observe
- 
+
 @observe()
 def your_llm_app(query: str) -> str:
     return openai.ChatCompletion.create(
@@ -39,13 +39,9 @@ def your_llm_app(query: str) -> str:
             {"role": "user", "content": query}
         ]
     ).choices[0].message["content"]
- 
-@observe()
-def redundant_llm_wrapper(query: str) -> str:
-    return your_llm_app(query)
 
 # Call app to send trace to Confident AI
-redundant_llm_wrapper("Write me a poem.")
+your_llm_app("Write me a poem.")
 ```
 
 That's it! Sanity check yourself by running this file and checking Confident AI's **Observatory** > **Traces** to see your first trace.
@@ -61,8 +57,6 @@ That's it! Sanity check yourself by running this file and checking Confident AI'
 />
 
 </details>
-
-The `redundant_llm_wrapper` is simply there to show you this works perfectly fine even if `your_llm_app` is a nested component.
 
 <Callout type="info">
 The `@observe` decorate tells Confident AI that `your_llm_app` is a component by itself. A component is actually known as a **span**, and **many spans make up a trace**.
@@ -91,10 +85,6 @@ def your_llm_app(query: str) -> str:
 
     update_current_span(test_case=LLMTestCase(input=query, actual_output=res))
     return res
-
-@observe()
-def redundant_llm_wrapper(query: str) -> str:
-    return your_llm_app(query)
 ```
 
 <Callout>
@@ -110,7 +100,7 @@ from deepeval.dataset import EvaluationDataset
 dataset = EvaluationDataset()
 dataset.pull(alias="your-dataset-alias")
 
-evaluate(goldens=goldens.dataset, observed_callback=redundant_llm_wrapper)
+evaluate(goldens=goldens.dataset, observed_callback=your_llm_app)
 ```
 
 **Congratulations 🎉!** Your component-level test run is now available on Confident AI, and you should be able to see the trace associated with it.

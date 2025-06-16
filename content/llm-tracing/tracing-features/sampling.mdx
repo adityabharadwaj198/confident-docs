@@ -23,7 +23,7 @@ Alternatively, you can set the sampling rate directly in code:
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python showLineNumbers {5}
+    ```python filename="main.py" showLineNumbers {5}
     import os
     from deepeval.tracing import observe, trace_manager
     import openai
@@ -44,7 +44,7 @@ Alternatively, you can set the sampling rate directly in code:
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript showLineNumbers {4}
+    ```typescript filename="index.ts" showLineNumbers {4}
     import { observe, traceManager } from '@deepeval-ts/tracing';
     import OpenAI from 'openai';
     
@@ -61,9 +61,7 @@ Alternatively, you can set the sampling rate directly in code:
       }).choices[0].message.content;
     };
     
-    const observedLlmApp = observe({
-      fn: llmApp
-    });
+    const observedLlmApp = observe({fn: llmApp});
     
     for (let i = 0; i < 10; i++) {
       observedLlmApp("Write me a poem."); // Roughly half of these traces will be sent

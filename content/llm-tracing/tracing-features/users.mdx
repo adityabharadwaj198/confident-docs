@@ -14,7 +14,7 @@ You can use the `update_current_trace` function to set the `user_id` within trac
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python showLineNumbers {13}
+    ```python filename="main.py" showLineNumbers {13}
     from deepeval.tracing import observe, update_current_trace
     import openai
     
@@ -34,7 +34,7 @@ You can use the `update_current_trace` function to set the `user_id` within trac
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript showLineNumbers {13}
+    ```typescript filename="index.ts" showLineNumbers {13}
     import { observe, updateCurrentTrace } from '@deepeval-ts/tracing';
     import OpenAI from 'openai';
     

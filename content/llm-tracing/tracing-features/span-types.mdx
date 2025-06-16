@@ -53,7 +53,7 @@ There is **ONE** mandatory and **TWO** optional parameters when decorating a fun
 
 - `type`: The type of span. Anything other than `"llm"`, `"retriever"`, `"tool"`, and `"agent"` is a custom span type. Defaulted to the `name`.
 - [Optional] `name`: A string specifying how this custom span is displayed on Confident AI. Defaulted to the name of the decorated function.
-- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/tracing-features/online-evaluation)
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/online-evaluations)
 
 The `input` and `output`s of a custom span is defaulted to the function input arguments and the output, however you can also [set it dynamically yourself.](/llm-tracing/tracing-features/input-output#set-span-io-at-runtime)
 
@@ -63,7 +63,7 @@ An LLM span represents a call to a language model. It tracks the input, output, 
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python showLineNumbers copy
+    ```python filename="main.py" showLineNumbers copy
     from deepeval.tracing import observe
     
     @observe(type="llm", model="gpt-4")
@@ -72,7 +72,7 @@ An LLM span represents a call to a language model. It tracks the input, output, 
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript showLineNumbers copy
+    ```typescript filename="index.ts" showLineNumbers copy
     import { observe } from '@deepeval-ts/tracing';
     
     const generateResponse = (prompt: string): string => {
@@ -96,7 +96,7 @@ There are **TWO** mandatory and **FOUR** optional parameters when decorating a f
 - [Optional] `cost_per_input_token`: A float specifying the cost per input token. Defaulted to None.
 - [Optional] `cost_per_output_token`: A float specifying the cost per output token. Defaulted to None.
 - [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
-- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/tracing-features/online-evaluation)
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/online-evaluations)
 
 <Callout type="info">
   If `cost_per_input_token` is not set, setting the LLM attributes for
@@ -110,7 +110,7 @@ A Retriever span represents a component that fetches relevant information from a
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python showLineNumbers copy
+    ```python filename="main.py" showLineNumbers copy
     from deepeval.tracing import observe
     
     @observe(type="retriever", embedder="text-embedding-ada-002")
@@ -119,7 +119,7 @@ A Retriever span represents a component that fetches relevant information from a
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript showLineNumbers copy
+    ```typescript filename="index.ts" showLineNumbers copy
     import { observe } from '@deepeval-ts/tracing';
     
     const retrieveDocuments = (query: string): string[] => {
@@ -141,7 +141,7 @@ There are **TWO** mandatory and **TWO** optional parameters when decorating a fu
 - `type`: The type of span. Must be `"retriever"` for retriever spans.
 - `embedder`: A string representing the name of the embedding model used.
 - [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
-- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/tracing-features/online-evaluation)
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/online-evaluations)
 
 ## Tool Span
 
@@ -149,7 +149,7 @@ A Tool span represents a function that an agent can call to perform a specific t
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python showLineNumbers copy
+    ```python filename="main.py" showLineNumbers copy
     from deepeval.tracing import observe
     
     @observe(type="tool")
@@ -158,7 +158,7 @@ A Tool span represents a function that an agent can call to perform a specific t
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript showLineNumbers copy
+    ```typescript filename="index.ts" showLineNumbers copy
     import { observe } from '@deepeval-ts/tracing';
     
     const webSearch = (query: string): string => {
@@ -179,7 +179,7 @@ There are **ONE** mandatory and **THREE** optional parameters when decorating a 
 - `type`: The type of span. Must be `"tool"` for tool spans.
 - [Optional] `description`: A string that describes what the tool does. Defaulted to an empty string.
 - [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
-- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/tracing-features/online-evaluation)
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/online-evaluations)
 
 ## Agent Span
 
@@ -187,7 +187,7 @@ An Agent span represents an autonomous entity that can make decisions and intera
 
 <Tabs items={['Python', 'JS/TypeScript']}>
   <Tabs.Tab>
-    ```python showLineNumbers copy
+    ```python filename="main.py" showLineNumbers copy
     from deepeval.tracing import observe
     
     @observe(
@@ -200,7 +200,7 @@ An Agent span represents an autonomous entity that can make decisions and intera
     ```
   </Tabs.Tab>
   <Tabs.Tab>
-    ```typescript showLineNumbers copy
+    ```typescript filename="index.ts" showLineNumbers copy
     import { observe } from '@deepeval-ts/tracing';
     
     const supervisorAgent = (query: string): string => {
@@ -224,12 +224,11 @@ There are **ONE** mandatory and **FOUR** optional parameters when decorating a f
 - [Optional] `available_tools`: A list of strings specifying the tools this agent can use. Defaulted to an empty list.
 - [Optional] `handoff_agents`: A list of strings specifying other agents this agent can delegate to. Defaulted to an empty list.
 - [Optional] `name`: A string specifying the display name on Confident AI. Defaulted to the name of the decorated function.
-- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/tracing-features/online-evaluation)
+- [Optional] `metrics` A list of strings specifying the names of the online metrics you wish to run upon tracing to Confident AI. Learn more about using online metrics in the [next section here.](/llm-tracing/online-evaluations)
 
 Agents can be nested within other agents, which is useful for implementing hierarchical agent architectures. For instance, a "supervisor" agent might coordinate communication between specialized agents.
 
 ## Full Example
-
 
 Consider this LLM app/agentic workflow:
 
@@ -242,7 +241,7 @@ graph TD
     A --> E
 ```
 
-```python showLineNumbers copy {11, 18, 36, 46, 58}
+```python filename="main.py" showLineNumbers copy {11, 18, 36, 46, 58}
 from typing import List
 from deepeval.tracing import (
     observe,
