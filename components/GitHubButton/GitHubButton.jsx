@@ -7,7 +7,7 @@ const GitHubButton = () => {
       <div className={styles.githubIconContainer}>
         <Github size={20} fill="black" />
       </div>
-      <span>7.0k+</span>
+      <span>8.0k+</span>
       <Star size={16} fill="#ffdd00" />
     </div>
   );

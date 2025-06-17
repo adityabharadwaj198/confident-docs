@@ -2,8 +2,9 @@
 
 /* Add subtle dot pattern to the background */
 body {
-  background-image: radial-gradient(rgba(0, 0, 0, 0.121) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.131) 1px, transparent 1px);
   background-size: 20px 20px;
+  background-color: white;
 }
 
 /* Dark mode background */
@@ -80,19 +81,29 @@ h4, h5, h6 {
   color: #5800d3 !important;
 }
 
+details {
+  border: 1px solid rgb(11, 11, 105)!important;
+}
+
 /* Card background customization */
 .nextra-card {
-  background-color: rgb(255, 255, 255) !important;
+  background-color: white !important;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(23, 0, 42);
   border-radius: 12px;
   transition: all 0.2s ease;
+  color: rgba(0, 10, 38, 0.893)!important;
+  box-shadow: 0 4px 0px #6a00ff;
+
+  svg {
+    color: rgba(0, 10, 38, 0.893)!important;
+  }
 }
   
 .nextra-card:hover {
   background-color: rgb(255, 255, 255) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(4px);
+  box-shadow: none;
 }
 
 /* Dark mode card customization */
@@ -182,3 +193,4 @@ details > summary + div {
   padding: 0.5rem 1rem 1rem 1rem;
   font-size: 15px;
 }
+

@@ -50,7 +50,7 @@ You can also run evals on an individual [component-level](/llm-evaluation/run-ev
     title="A|B Regression Testing"
     href="/llm-evaluation/evaluation-features/ab-regression-testing"
   />
-  <Cards.Card arrow title="Insights" href="/llm-evaluation/insights" />
+  <Cards.Card arrow title="Parameter Insights" href="/llm-evaluation/evaluation-features/parameter-insights" />
 </Cards>
 
 ## Quickstart
@@ -61,7 +61,7 @@ This walkthrough will show how to run LLM evaluations on Confident AI. Not all f
 
 Import metrics import DeepEval. In this example we're using `GEval` to create a custom answer relevancy metric:
 
-```python
+```python filename="main.py"
 from deepeval.test_case import LLMTestCaseParams
 from deepeval.metrics import GEval
 
@@ -104,7 +104,7 @@ metric = GEval(
 
 Decorate your LLM app (replace with your own):
 
-```python showLineNumbers {4}
+```python filename="main.py" showLineNumbers {4}
 from openai import OpenAI
 from deepeval.tracing import observe
 
@@ -120,7 +120,7 @@ def your_llm_app(query: str) -> str:
 
 Pull the dataset you've created (full guide [here](/dataset-editor/introduction)):
 
-```python showLineNumbers {5}
+```python filename="main.py" showLineNumbers {5}
 from deepeval.dataset import EvaluationDataset
 
 # Pull your dataset from Confident AI
@@ -132,7 +132,7 @@ dataset.pull(alias="your-dataset-alias")
 
 Putting everything together, run your first LLM evaluation:
 
-```python showLineNumbers {19, 24} copy
+```python filename="main.py" showLineNumbers {19, 24} copy
 from openai import OpenAI
 from deepeval.tracing import observe
 from deepeval.dataset import EvaluationDataset

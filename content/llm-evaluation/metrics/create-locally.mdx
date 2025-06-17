@@ -2,7 +2,7 @@
 title: Create Locally
 ---
 
-import { Callout } from "nextra/components";
+import { Callout, Tabs } from "nextra/components";
 
 # Create Metrics Locally
 
@@ -10,7 +10,10 @@ Confident AI provides a comprehensive set of metrics with **over 40+ metrics pow
 
 ## Code Summary
 
-```python showLineNumbers copy
+<Tabs items={['Single-Turn Metrics', 'Multi-Turn Metrics']}>
+  <Tabs.Tab>
+```python filename="main.py" showLineNumbers copy
+from deepeval.test_case import LLMTestCaseParams
 from deepeval.metrics import GEval, AnswerRelevancyMetric
 
 relevancy_metric = AnswerRelevancyMetric()
@@ -20,6 +23,19 @@ custom_metric = GEval(
     evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT]
 )
 ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```python filename="main.py" showLineNumbers copy
+from deepeval.metrics import ConversationalGEval, ConversationalRelevancyMetric
+
+relevancy_metric = ConversationalRelevancyMetric()
+custom_metric = ConversationalGEval(
+    name="Custom Relevancy",
+    criteria="How relevant is the assistant output to user queries?"
+)
+```
+  </Tabs.Tab>
+</Tabs>
 
 ## Quick Recap of Metrics
 
@@ -34,11 +50,11 @@ The metrics you choose should be based on:
 >
 > Double if not triple guess yourself if you're using more than 5 metrics per test run. While each metric may seem valuable, having too many metrics can dilute your focus and make it harder to draw meaningful insights. Using fewer, carefully chosen metrics often leads to clearer, more actionable results. For guidance on selecting the most impactful metrics for your use case, see our [metrics selection guide](/concepts/metrics#choosing-the-right-metrics).
 
-## Metrics via DeepEval
+## Single-Turn Metrics
 
-Using metrics on `deepeval` is as simple as importing them from the `.metrics` module:
+Using single-turn metrics (or just "metrics") on `deepeval` is as simple as importing them from the `.metrics` module:
 
-```python showLineNumbers copy
+```python filename="main.py" showLineNumbers copy
 from deepeval.metrics import (
     # Custom metrics
     GEval,
@@ -71,11 +87,11 @@ contextual_recall = ContextualRecallMetric(strict_mode=True)
 task_completion = TaskCompletionMetric(include_reason=False)
 ```
 
-Once your metrics have finished running, testing reports will be automatically available on Confident AI. Also if you're unsure where the dataset is coming form, [click here.](/dataset-editor/using-datasets)
+Single-turn metrics run on [`LLMTestCase`s](/concepts/test-cases#llmtestcase) to evaluate interactions in your LLM app.
 
 <details>
 
-<summary>Use any custom LLM judge</summary>
+<summary>How to use any custom LLM judge for metrics</summary>
 
 
 The `deepeval` metrics are LLM-as-a-judge metrics and although defaulted to OpenAI's `gpt-4o`, you can customize them by providing a string to specify the model you wish to use:
@@ -100,7 +116,7 @@ Lastly, you can wrap your own LLM API in `deepeval`'s `DeepEvalBaseLLM` class to
 
 </details>
 
-## Example Implementation
+### Answer relevancy example
 
 We'll be showing 3 quick examples of how the same answer relevancy metric can be implemented in 3 different ways.
 
@@ -110,21 +126,21 @@ We'll be showing 3 quick examples of how the same answer relevancy metric can be
   learn how to use each of them.
 </Callout>
 
-### Default
+#### Default
 
 The default [`AnswerRelevancyMetric`](https://deepeval.com/docs/metrics-answer-relevancy) is simple and requires no additional configuration:
 
-```python showLineNumbers
+```python filename="main.py" showLineNumbers
 from deepeval.metrics import AnswerRelevancyMetric()
 
 metric = AnswerRelevancyMetric()
 ```
 
-### G-Eval
+#### G-Eval
 
 A [`GEval`](https://deepeval.com/docs/metrics-llm-evals) implementation of the same answer relevancy metric, with more tailor criteria that specifies that the `actual_output` has to be shorter than 3 sentences:
 
-```python showLineNumbers {6-7}
+```python filename="main.py" showLineNumbers {6-7}
 from deepeval.test_case import LLMTestCaseParams
 from deepeval.metrics import GEval
 
@@ -138,11 +154,11 @@ The `actual_output` should also be less than 3 sentences long.""",
 
 What you'll find however, is `GEval` is better for subjective custom criteria, so when incorperating the hard requirement of < 3 sentences in the `actual_output` it will sometimes give a flaky score.
 
-### DAG
+#### DAG
 
 A [`DAGMetric`](https://deepeval.com/docs/metrics-dag) implementation is perfect for combining objective and subjective criteria. It is an LLM powered decision tree that can combine other metrics such as `AnswerRelevancyMetric` or `GEval`:
 
-```python showLineNumbers {11, 18, 22, 27}
+```python filename="main.py" showLineNumbers {11, 18, 22, 27}
 from deepeval.test_case import LLMTestCaseParams
 from deepeval.metrics.dag import (
     DeepAcyclicGraph,
@@ -176,6 +192,27 @@ dag_relevancy = DAGMetric(name="Custom Relevancy", dag=dag)
 ```
 
 Here, you actually see the `DAGMetric` first makes a binary classification on whethere there are indeed less than 3 sentences in the `actual_output` (objective criteria), before passing it to the `GEval` metric for a subjective evaluation of relevancy once this requirement has been met.
+
+## Multi-Turn Metrics
+
+Using multi-turn metrics (or "conversational metrics") on `deepeval` is as simple as importing them from the `.metrics` module:
+
+```python filename="main.py" showLineNumbers copy
+from deepeval.metrics import (
+    ConversationalGEval,
+    ConversationCompletenessMetric,
+    ConversationRelevancyMetric,
+    RoleAdherenceMetric,
+    KnowledgeRetentionMetric,
+)
+
+# You can customize settings on metrics
+relevancy = ConversationRelevancyMetric(threshold=0.5)
+completeness = ConversationCompletenessMetric(strict_mode=True)
+role_adherence = RoleAdherenceMetric(include_reason=False)
+```
+
+Although this might look similar to regular single-turn metrics, conversational metrics must require [`ConversationalTestCase`s](/concepts/test-cases#conversationaltestcase) to run evaluations on.
 
 ## Big Disclaimer
 

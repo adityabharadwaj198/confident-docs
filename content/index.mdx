@@ -3,16 +3,27 @@ title: Welcome
 ---
 
 import { Cards, Callout } from "nextra/components";
+import { MessageSquareText, PenLine, Settings, FlaskConical, Telescope, User, Lightbulb, House, ShieldAlert, BookOpen, Folders, Zap, GitBranch } from 'lucide-react'
 
 # Confident AI - The DeepEval Platform
 
-Confident AI is the cloud platform for DeepEval, the most widely adopted _open-source_ framework to evaluate LLM applications such as RAG pipielines, agentics, chatbots, or even just an LLM itself.
+**Confident AI is the cloud platform for DeepEval**, the most widely adopted _open-source_ framework to evaluate LLM applications such as RAG pipielines, agentics, chatbots, or even just an LLM itself.
+
+<details>
+
+<summary>How is Confident AI different from DeepEval?</summary>
+
+While DeepEval is like Pytest for LLM apps, Confident AI is the dashboard UI for DeepEval. 
+
+<Callout type="info">Confident AI created and maintains DeepEval.</Callout>
+
+</details>
 
 <details>
 
 <summary>How does Confident AI work?</summary>
 
-Confident AI enables organizations to iterate on LLM applications by allowing you to pick the best model and improve on different versions of your prompts. This helps you achieve the best performance for any particular LLM use case you may have.
+Confident AI enables organizations to iterate on LLM applications by allowing you to pick the best model and improve on different versions of your prompts through extensive [parameter insights](/llm-evaluation/evaluation-features/parameter-insights).
 
 In a nutshell, we do this by running LLM evaluations for both:
 
@@ -23,33 +34,51 @@ There are a dozen more features which will be shown in depth later in this docum
 
 </details>
 
-<Callout>Confident AI created and owns DeepEval.</Callout>
+You can get started with **LLM evaluation and observability** in this [5 minutes quickstart guide.](/getting-started/setup)
 
-When you choose Confident AI, you can rest assured that:
-
-1. The platform [supports all LLM use cases](/llm-use-cases), no matter how complicated they are, or your evaluation needs.
-2. Our expertise in building DeepEval can help you simplify the process of evaluation to get the most out of your eval results.
-
-Even if you're not using Confident AI, you can [join our discord community](https://discord.com/invite/3SEyvpgu2f) to talk LLM evaluation anytime.
-
+<Callout type="info">
+Confident AI supports evals and tracing for any [LLM use case](/llm-use-cases), including multi-turn ones!
+</Callout>
 
 ## Features Overview
 
 <Cards>
-  <Cards.Card arrow title="LLM Evaluation" href="/llm-evaluation/introduction" />
+  <Cards.Card 
+    icon={<FlaskConical />} 
+    arrow 
+    title="LLM Evaluation" 
+    href="/llm-evaluation/introduction" 
+  />
   <Cards.Card
     arrow
+    icon={<GitBranch/>}
     title="LLM Tracing"
     href="/llm-tracing/introduction"
   />
-  <Cards.Card arrow title="Prompt Studio" href="/prompt-management/introduction" />
-  <Cards.Card arrow title="Dataset Editor" href="/dataset-editor/introduction" />
+  <Cards.Card 
+    arrow 
+    icon={<PenLine/>}
+    title="Dataset Editor" 
+    href="/dataset-editor/introduction" 
+  />
+  <Cards.Card 
+    arrow 
+    title="Prompt Studio" 
+    href="/prompt-management/introduction" 
+    icon={<MessageSquareText/>}
+  />
   <Cards.Card
     arrow
     title="Human-in-the-Loop"
-    href="/human-in-the-loop/overview"
+    href="/human-in-the-loop/introduction"
+    icon={<User/>}
   />
-  <Cards.Card arrow title="Red Teaming" href="/llm-red-teaming" />
+  <Cards.Card 
+    arrow 
+    title="Red Teaming" 
+    href="/llm-red-teaming" 
+    icon={<ShieldAlert/>}
+  />
 </Cards>
 
 ## How to Navigate the Docs
@@ -94,8 +123,6 @@ Confident AI has tailored metrics and platform capabilities for different types 
 ### What about complex agentic systems?
 
 Complex agentic systems are definitely supported on Confident AI through [LLM tracing.](/llm-tracing/introduction) One thing to note though is that it is extremely important to decide carefully on what to (not) evaluate in a complex LLM agentic workflow, since trying to evaluate everything means you're actually evaluating nothing.
-
-The first step to evaluating agentic use cases is to setup tracing before deciding on which and where LLM evaluation metrics should be used. You can also join our discord community or contact support@confident-ai.com to share what you're building and get recommendations on how to best run evals if in doubt.
 
 ### Is Confident AI enterprise ready?
 

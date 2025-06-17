@@ -16,11 +16,7 @@ const config = {
         content="The Official Documentation for Confident AI "
       />
       <link rel="icon" href="/favicon.ico" sizes="any" />
-      <link
-        rel="icon"
-        type="image/svg+xml"
-        href="/icons/light-confident-logo.svg"
-      />
+      <link rel="icon" type="image/svg+xml" href="/icons/logo-with-name.svg" />
       <link rel="apple-touch-icon" href="/favicon.ico" />
     </>
   ),

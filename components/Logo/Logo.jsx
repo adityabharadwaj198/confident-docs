@@ -6,7 +6,7 @@ const Logo = ({ width = 180, height = 150 }) => {
   return (
     <div className={styles.logoContainer}>
       <Image 
-        src="/icons/light-confident-logo.svg" 
+        src="/icons/logo-with-name.svg" 
         alt="Confident Docs Logo" 
         width={width} 
         height={height}

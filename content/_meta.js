@@ -1,25 +1,7 @@
-import { CircleHelp, Rocket, MessageSquareText, PenLine, Settings, FlaskConical, Telescope, User, Lightbulb, House, ShieldAlert, BookOpen, Folders, Zap, GitBranch } from 'lucide-react'
+import { CircleHelp, MessageSquareText, PenLine, Settings, FlaskConical, User, Lightbulb, House, ShieldAlert, BookOpen, Folders, GitBranch } from 'lucide-react'
 import NavIconTabItem from '@/components/NavIconTabItem'
 
 export default {
-  "why-confident-ai": <NavIconTabItem icon={CircleHelp} label="Why Confident AI" fontWeight="500" />,
-  "llm-use-cases": <NavIconTabItem icon={Lightbulb} label="LLM Use Cases" fontWeight="500" />,
-  "data-handling": <NavIconTabItem icon={Folders} label="Data Handling" fontWeight="500" />,
-  "on-prem-hosting": <NavIconTabItem icon={House} label="On-Prem Hosting" fontWeight="500" />,
-  "llm-red-teaming": {
-    title: <NavIconTabItem icon={ShieldAlert} label="LLM Red Teaming" fontWeight="500" />,
-    "display": "hidden"
-  },
-  concepts: {
-    title: <NavIconTabItem icon={BookOpen} label="Concepts" fontWeight="500" />,
-    theme: {
-      collapsed: true
-    }
-  },
-  "---": {
-    type: "separator",
-    title: <NavIconTabItem icon={Zap} label="Quickstart" />
-  },
   index: "",
   "how-it-works": "",
   "getting-started": {
@@ -58,6 +40,24 @@ export default {
     title: <NavIconTabItem icon={Settings} label="Project Settings" />
   },
   "project-settings":  <NavIconTabItem icon={Settings} label="Project Settings" />,
+  "---": {
+    type: "separator",
+    title: "Appendix Resources"
+  },
+  "why-confident-ai": <NavIconTabItem icon={CircleHelp} label="Why Confident AI" fontWeight="500" />,
+  "llm-use-cases": <NavIconTabItem icon={Lightbulb} label="LLM Use Cases" fontWeight="500" />,
+  "data-handling": <NavIconTabItem icon={Folders} label="Data Handling" fontWeight="500" />,
+  "on-prem-hosting": <NavIconTabItem icon={House} label="On-Prem Hosting" fontWeight="500" />,
+  "llm-red-teaming": {
+    title: <NavIconTabItem icon={ShieldAlert} label="LLM Red Teaming" fontWeight="500" />,
+    "display": "hidden"
+  },
+  concepts: {
+    title: <NavIconTabItem icon={BookOpen} label="Concepts" fontWeight="500" />,
+    theme: {
+      collapsed: true
+    }
+  },
   "navigation": {
     type: "menu",
     title: "More resources",

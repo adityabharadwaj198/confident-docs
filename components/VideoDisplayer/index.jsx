@@ -363,12 +363,11 @@ const VideoDisplayer = ({ src, type = 'video/mp4', title = "How to use Confident
             {viewStats.views} views • {viewStats.daysAgo} days ago
           </div>
         </div>
-        
         <div className={styles.interactionRow}>
           <div className={styles.channelSection}>
             <div className={styles.channelInfo}>
               <div className={styles.channelAvatar}>
-                <img src="/icons/confident-docs-logo.svg" alt="Confident AI Logo" />
+                <img src="/icons/light-logo.svg" alt="Confident AI Logo" />
               </div>
               <div className={styles.channelNameSection}>
                 <div className={styles.channelName}>

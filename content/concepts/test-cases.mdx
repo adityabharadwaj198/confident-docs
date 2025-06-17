@@ -2,6 +2,8 @@
 title: Test Cases
 ---
 
+import { Callout } from "nextra/components";
+
 # Test Cases
 
 A test case represents a single interaction or conversation with your LLM application. There are two main types of test cases:
@@ -42,19 +44,19 @@ evaluate(test_cases=[test_case], metrics=[metric])
 Similarily, here's how you would define a `ConversationalTestCase` to evaluate a multi-turn LLM application:
 
 ```python filename="main.py" showLineNumbers copy
-from deepeval.test_case import LLMTestCase, ConversationalTestCase
+from deepeval.test_case import Turn, ConversationalTestCase
 from deepeval.metrics import ConversationRelevancy
 from deepeval import evaluate
 
 test_case = ConversationalTestCase(
     turns=[
-        LLMTestCase(
-            input="Hi! Who are you?",
-            actual_output="Ho ho! I'm a jolly wizard who loves casting spells and telling magical jokes! What can I do for you today, my friend?"
+        Turn(
+            role="assistant",
+            content="Why did the chicken cross the road?",
         ),
-        LLMTestCase(
-            input="Can you tell me a joke about magic?",
-            actual_output="*waves wand excitedly* Why don't wizards like to argue? Because they don't want to get into a spell-ing contest! *chuckles and sparkles shoot from wand* Get it? Spell-ing? Oh, I do love a good magical pun!"
+        Turn(
+            role="user",
+            content="Are you trying to be funny?",
         ),
     ]
 )
@@ -122,29 +124,51 @@ A `ConversationalTestCase` represents a multi-turn conversation with an LLM.
 
 It requires:
 
-- `turns` (`list[LLMTestCase]`): A list of `LLMTestCase`s representing each interaction in the conversation
+- `turns` (`list[Turn]`): A list of `Turn`s representing each interaction in the conversation.
 
 And optionally:
 
 - [Optional]`chatbot_role` (`str`): The role/persona of the LLM chatbot, only required for the `RoleAdherenceMetric`
 
 ```python showLineNumbers copy
-from deepeval.test_case import LLMTestCase, ConversationalTestCase
+from deepeval.test_case import Turn, ConversationalTestCase
 
 test_case = ConversationalTestCase(
     chatbot_role="You are a happy jolly wizard that likes to cast spells and tell jokes",
     turns=[
-        LLMTestCase(
-            input="Hi! Who are you?",
-            actual_output="Ho ho! I'm a jolly wizard who loves casting spells and telling magical jokes! What can I do for you today, my friend?"
+        Turn(
+            role="assistant",
+            content="Ho ho! I'm a jolly wizard who loves casting spells and telling magical jokes! What can I do for you today, my friend?"
         ),
-        LLMTestCase(
-            input="Can you tell me a joke about magic?",
-            actual_output="*waves wand excitedly* Why don't wizards like to argue? Because they don't want to get into a spell-ing contest! *chuckles and sparkles shoot from wand* Get it? Spell-ing? Oh, I do love a good magical pun!"
+        Turn(
+            role="user",
+            content="Can you tell me a joke about magic?"
+        ),
+        Turn(
+            role="assistant",
+            content="*waves wand excitedly* Why don't wizards like to argue? Because they don't want to get into a spell-ing contest! *chuckles and sparkles shoot from wand* Get it? Spell-ing? Oh, I do love a good magical pun!"
         ),
     ]
 )
 ```
+
+A `Turn` is made up of the following parameters:
+
+```python
+class Turn:
+    role: Literal["user", "assistant"]
+    content: str
+    user_id: Optional[str] = None
+    retrieval_context: Optional[List[str]] = None
+    tools_called: Optional[List[ToolCall]] = None
+    additional_metadata: Optional[Dict] = None
+```
+
+The `role` parameter specifies whether a particular turn is by the "user" (end user) or "assistant" (LLM). This is similar to OpenAI's API.
+
+<Callout type="info">
+You should only provide the `retrieval_context` and `tools_called` parameter if the role is "assistant".
+</Callout>
 
 ## Further Reading
 

@@ -8,7 +8,7 @@ const CustomFooter = () => {
       <div className={styles.customFooter}>
         <div className={styles.footerRow}>
           <div className={`${styles.footerColumn} ${styles.companyInfo}`}>
-            <img className={styles.logo} src="/icons/confident-docs-logo.svg" alt="Confident AI Logo" />
+            <img className={styles.logo} src="/icons/logo.svg" alt="Confident AI Logo" />
             <div className={styles.companyName}>
               Confident AI - The DeepEval Platform
             </div>
