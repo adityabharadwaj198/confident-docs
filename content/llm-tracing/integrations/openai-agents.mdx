@@ -36,9 +36,6 @@ result = Runner.run_sync(agent, "Write a haiku about recursion in programming.")
 print(result.final_output)
 ```
 
-<Callout type="info">
-`DeepEvalTracingProcessor` handles both asynchronous workflows and streamed responses.  
-</Callout>
 
 <VideoDisplayer
   src="https://confident-docs.s3.us-east-1.amazonaws.com/llm-tracing:integrations:openai-agents.mp4"
@@ -58,6 +55,38 @@ Confident AI's `DeepEvalTracingProcessor` automatically traces the following spa
 - `HandoffSpanData`: OpenAI span for agent handoffs 
 - `GuardrailSpanData`: OpenAI span for guardrails triggered 
 
+## Streaming Responses
+
+<Callout type="info">
+`DeepEvalTracingProcessor` handles both asynchronous workflows and streamed responses.  
+</Callout>
+
+The code example below shows how to as trace asynchronous calls to an agent that streams responses.
+
+```python showLineNumbers {6,13}
+from deepeval.openai_agents import DeepEvalTracingProcessor
+from openai.types.responses import ResponseTextDeltaEvent
+from agents import Agent, Runner, add_trace_processor
+import asyncio
+
+add_trace_processor(DeepEvalTracingProcessor())
+
+async def streaming_agent():
+    agent = Agent(
+        name="Joker",
+        instructions="You are a helpful assistant.",
+    )
+    result = Runner.run_streamed(agent, input="Please tell me 5 jokes.")
+    async for event in result.stream_events():
+        if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
+            print(event.data.delta, end="", flush=True)
+
+async def main():
+    tasks = [streaming_agent() for _ in range(5)]
+    await asyncio.gather(*tasks)
+
+asyncio.run(main())
+```
 
 ## Logging Threads
 
