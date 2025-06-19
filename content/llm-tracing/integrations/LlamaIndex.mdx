@@ -1,0 +1,91 @@
+---
+title: LlamaIndex
+---
+
+import { Callout } from "nextra/components";
+
+# LlamaIndex
+[LlamaIndex](https://www.llamaindex.ai/) is a framework that makes it easy to build production agents that can find information, synthesize insights, generate reports, and take actions over the most complex enterprise data.
+
+## Quickstart
+In this section, we will create a sample LlamaIndex agent and instrument it with **DeepEval**'s `LlamaIndexEventHandler`.
+
+### Setup
+Install the following packages:
+```bash
+pip install -U deepeval llama-index
+```
+
+Login using your API key on Confident AI in the CLI:
+```bash
+deepeval login --confident-api-key YOUR_API_KEY
+```
+
+### Create a sample agent
+First, lets get some sample data for our RAG agent:
+```bash
+mkdir data
+wget https://raw.githubusercontent.com/run-llama/llama_index/main/docs/docs/examples/data/paul_graham/paul_graham_essay.txt -O data/paul_graham_essay.txt
+```
+
+Now, lets create a sample agent. The agent will be able to perform calculations and search through documents to answer questions.
+
+```python showLineNumbers {16, 41, 10, 11}
+import os
+import asyncio
+import time
+
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+from llama_index.core.agent.workflow import FunctionAgent
+from llama_index.llms.openai import OpenAI
+import llama_index.core.instrumentation as instrument
+
+from deepeval.integrations import LLamaIndexEventHandler
+from deepeval.tracing.tracing import observe
+
+os.environ["OPENAI_API_KEY"] = "<openai_api_key>"
+
+dispatcher = instrument.get_dispatcher()
+dispatcher.add_event_handler(LLamaIndexEventHandler())
+
+# Create a RAG tool using LlamaIndex
+documents = SimpleDirectoryReader("./data").load_data()
+index = VectorStoreIndex.from_documents(documents)
+query_engine = index.as_query_engine()
+
+def multiply(a: float, b: float) -> float:
+    """Useful for multiplying two numbers."""
+    return a * b
+
+async def search_documents(query: str) -> str:
+    """Useful for answering natural language questions about an personal essay written by Paul Graham."""
+    response = await query_engine.aquery(query)
+    return str(response)
+
+# Create an enhanced workflow with both tools
+agent = FunctionAgent(
+    tools=[multiply, search_documents],
+    llm=OpenAI(model="gpt-4o-mini"),
+    system_prompt="""You are a helpful assistant that can perform calculations
+    and search through documents to answer questions.""",
+)
+
+# Now we can ask questions about the documents or do calculations
+@observe()
+async def main():
+    response = await agent.run(
+        "What did the author do in college? Also, what's 7 * 8?"
+    )
+    print(response)
+
+# Run the agent
+if __name__ == "__main__":
+    asyncio.run(main())
+    time.sleep(12) # wait for queue to be processed
+```
+
+<Callout type="info">
+The `@observe()` decorator is used to instrument the `main` function, which is the entry point of the agent.
+</Callout>
+
+`LlamaIndexEventHandler` will automatically capture the events and send them to Confident AI **Observatory**.
