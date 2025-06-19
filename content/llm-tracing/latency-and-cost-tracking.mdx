@@ -86,7 +86,7 @@ Confident AI uses different tokenizers depending on the model provider.
 |  Provider | Tokenizer | Example Models | Token Counting Method |
 |-------------|-----------|----------------|----------------------|
 | OpenAI | [tiktoken](https://github.com/openai/tiktoken) | GPT-4, GPT-3.5, O1, O3 | Client-side tokenization using model-specific encodings |
-| Anthropic | [@anthropic-ai/tokenizer](https://github.com/anthropics/anthropic-tokenizer) | Claude 3 Opus, Claude 3 Sonnet, Claude 3 Haiku | Claude-specific tokenization algorithm |
+| Anthropic | [@anthropic-ai/tokenizer](https://www.npmjs.com/package/@anthropic-ai/tokenizer) | Claude 3 Opus, Claude 3 Sonnet, Claude 3 Haiku | Claude-specific tokenization algorithm |
 | Google | Gemini API | Gemini 1.5 Pro, Gemini 2.0 Flash | Server-side token counting via API call |
 
 See the [OpenAI documentation](https://platform.openai.com/docs/guides/text-generation/token-counting), [Anthropic documentation](https://docs.anthropic.com/claude/references/token-counting), or [Google documentation](https://ai.google.dev/pricing) for the most up-to-date pricing and token counting information.
