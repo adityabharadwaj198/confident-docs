@@ -12,7 +12,7 @@ Confident AI lets you track the latency and cost of your LLM calls, which can he
 - **Automatic cost tracking**: Confident AI infers the token count and per-token costs based on the `model`
 
 <Callout type="info">
-The `@observe` decorator automatically tracks [span](/llm-tracing/tracing-features/attributes#span-attributes) latency. Therefore, this guide will mainly focus on how to set up **cost tracking**.
+The `@observe` decorator automatically tracks [span](/llm-tracing/tracing-features/span-types) latency. Therefore, this guide will mainly focus on how to set up **cost tracking**.
 </Callout>
 
 
@@ -98,7 +98,7 @@ If token-usage and cost data are provided in code, Confident AI computes the cos
 
 ### Automatic Cost Tracking
 
-To set up automatic cost tracking, provide the `model` in the `@observe` decorator of your [LLM span](/llm-tracing/tracing-features/attributes#llm-attributes), and provide the `input` and `output` in your `LlmAttributes`.
+To set up automatic cost tracking, provide the `model` in the `@observe` decorator of your [LLM span](/llm-tracing/tracing-features/span-types#llm-span), and provide the `input` and `output` in your `LlmAttributes`.
 
 ```python showLineNumbers {5} filename="main.py"
 from deepeval.tracing import update_current_span, LlmAttributes
@@ -131,7 +131,7 @@ See the [OpenAI documentation](https://platform.openai.com/docs/guides/text-gene
 
 ### Manual Cost Tracking
 
-To manually set up cost tracking, provide the `cost_per_input_token` and `cost_per_output_token` in the `@observe` decorator of your LLM span, and pass the input and output token counts via `LlmAttributes`.
+To manually set up cost tracking, provide the `cost_per_input_token` and `cost_per_output_token` in the `@observe` decorator of your [LLM span](/llm-tracing/tracing-features/span-types#llm-span), and pass the input and output token counts via `LlmAttributes`.
 
 <Callout >
 Manual cost tracking is the **recommended approach** if you want to ensure accurate cost tracking, and if your model provider does not support automatic cost tracking. 
