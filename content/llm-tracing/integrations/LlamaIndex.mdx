@@ -8,7 +8,12 @@ import { Callout } from "nextra/components";
 [LlamaIndex](https://www.llamaindex.ai/) is a framework that makes it easy to build production agents that can find information, synthesize insights, generate reports, and take actions over the most complex enterprise data.
 
 ## Quickstart
-In this section, we will create a sample LlamaIndex agent and instrument it with **DeepEval**'s `LlamaIndexEventHandler`.
+Confident AI provides a `LlamaIndexEventHandler` that can be used to trace LlamaIndex events.
+
+<Callout type="info">
+[Event](https://docs.llamaindex.ai/en/stable/module_guides/observability/instrumentation/) in LlamaIndex represents a single moment in time that a certain occurrence took place within the execution of the application’s code.
+</Callout>
+
 
 ### Setup
 Install the following packages:
@@ -16,93 +21,64 @@ Install the following packages:
 pip install -U deepeval llama-index
 ```
 
-Login using your API key on Confident AI in the CLI:
-```bash
-deepeval login --confident-api-key YOUR_API_KEY
-```
-
 ### Create a sample agent
-First, lets get some sample data for our RAG agent:
-```bash
-mkdir data
-wget https://raw.githubusercontent.com/run-llama/llama_index/main/docs/docs/examples/data/paul_graham/paul_graham_essay.txt -O data/paul_graham_essay.txt
-```
+The agent will be able to perform calculations using the `multiply` tool.
 
-Now, lets create a sample agent. The agent will be able to perform calculations and search through documents to answer questions.
-
-```python showLineNumbers {16, 41, 10, 11}
+```python showLineNumbers filename="main.py" {15, 18, 30}
 import os
 import asyncio
 import time
 
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 from llama_index.core.agent.workflow import FunctionAgent
 from llama_index.llms.openai import OpenAI
 import llama_index.core.instrumentation as instrument
 
+import deepeval
 from deepeval.integrations import LLamaIndexEventHandler
-from deepeval.tracing.tracing import observe
+from deepeval.tracing import observe
 
-os.environ["OPENAI_API_KEY"] = "<openai_api_key>"
+os.environ["OPENAI_API_KEY"] = "<your-openai-api-key>"
+
+deepeval.login_with_confident_api_key("<your-confident-api-key>")
 
 dispatcher = instrument.get_dispatcher()
 dispatcher.add_event_handler(LLamaIndexEventHandler())
-
-# Create a RAG tool using LlamaIndex
-documents = SimpleDirectoryReader("./data").load_data()
-index = VectorStoreIndex.from_documents(documents)
-query_engine = index.as_query_engine()
 
 def multiply(a: float, b: float) -> float:
     """Useful for multiplying two numbers."""
     return a * b
 
-async def search_documents(query: str) -> str:
-    """Useful for answering natural language questions about an personal essay written by Paul Graham."""
-    response = await query_engine.aquery(query)
-    return str(response)
-
-# Create an enhanced workflow with both tools
 agent = FunctionAgent(
-    tools=[multiply, search_documents],
+    tools=[multiply],
     llm=OpenAI(model="gpt-4o-mini"),
-    system_prompt="""You are a helpful assistant that can perform calculations
-    and search through documents to answer questions.""",
+    system_prompt="You are a helpful assistant that can perform calculations.",
 )
 
-# Now we can ask questions about the documents or do calculations
 @observe()
-async def main():
+async def main():   
     response = await agent.run(
-        "What did the author do in college? Also, what's 7 * 8?"
+        "What's 7 * 8?"
     )
     print(response)
 
-# Run the agent
 if __name__ == "__main__":
     asyncio.run(main())
-    time.sleep(12) # wait for queue to be processed
+    time.sleep(12)
 ```
 
-The output will be something like this:
-`In college, the author initially planned ... As for the multiplication, \( 7 \times 8 = 56 \).` 
+The response will be something like this: `7 * 8 = 56`
 
-As your agent is running it will export LlamaIndex **events** to the `dispatcher`. Now, the `dispatcher` will send the events to the `LlamaIndexEventHandler`.
+### Viewing the traces
+You can directly view the traces in the **Observatory** by clicking on the link in the output. The output after running the `main.py` file will be something like this:
 
-The role of the event handler is to: 
-1. Capture the LlamaIndex specific events.
-2. Convert the events to the appropiate **spans**.
-3. Create **traces** which is a collection of spans.
-4. Send the traces to the **trace manager**.
-
-The trace manager will then safely send the traces to Confident AI **Observatory** for you to view.
+```bash {4}
+🎉🥳 Congratulations! You've successfully logged in! 🙌 
+7 * 8 equals 56.
+[Confident AI Trace Log]  Successfully posted trace (0 traces remaining in queue, 1 in flight): 
+https://app.confident-ai.com/project/<your-project-id>/observatory/traces/<your-trace-id> 
+To disable dev logging, set CONFIDENT_TRACE_VERBOSE=NO as an environment variable.
+```
 
 <Callout>
-`@observe()` is used to **span** the `main` function, which is the entry point of the agent. For more information on spans, read [LLM Tracing on Confident AI](../llm-tracing/index.mdx).
+As the agent is running, it will export **events** to the `dispatcher`. The `dispatcher` will send the events to the `LlamaIndexEventHandler` which will convert the events to the appropiate **spans**, create a **trace** and send it to the [Observatory](https://documentation.confident-ai.com/llm-tracing/introduction).
 </Callout>
-
-
-
-
-
-
