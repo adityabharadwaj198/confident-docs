@@ -3,57 +3,57 @@ title: Latency and Cost Tracking
 ---
 
 import { Callout } from "nextra/components";
+import { Tabs } from "nextra/components";
 
 # Latency and Cost Tracking
 
-Confident AI lets you track the latency and cost of your LLM calls, which can help you identify inefficiencies in your LLM systems, such as high-cost models or heavy user usage.
+Confident AI lets you track the latency and cost of your LLM calls, which can help you identify inefficiencies in your LLM systems, such as high-cost models or heavy user usage. There are 2 types of cost tracking:
+- **Manual cost tracking**: define the token count and per-token costs manually in code
+- **Automatic cost tracking**: Confident AI infers the token count and per-token costs based on the `model`
 
 <Callout type="info">
-The `@observe` decorator automatically tracks a span's latency. Therefore, this guide will mainly focus on how to set up **cost tracking**.
+The `@observe` decorator automatically tracks [span](/llm-tracing/tracing-features/attributes#span-attributes) latency. Therefore, this guide will mainly focus on how to set up **cost tracking**.
 </Callout>
 
-## Quickstart
 
-To set up cost tracking, provide the `cost_per_input_token` and `cost_per_output_token` in the `@observe` decorator of your LLM span, and pass the input and output token counts via `LlmAttributes`.
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/llm-tracing:cost-tracking.mp4"
+  width="100%"
+  title="LLM Cost and Latency Tracking"
+/>
 
-```python
+## Code Summary
+
+<Tabs items={['Manual Cost Tracking', 'Automatic Cost Tracking']}>
+  <Tabs.Tab>
+```python showLineNumbers {6,7,13,14} filename="main.py"
 from deepeval.tracing import update_current_span, LlmAttributes
  
-@observe(type="llm", model="gpt-4o", cost_per_input_token=0.001, cost_per_output_token=0.001)
+@observe(
+    type="llm", 
+    model="gpt-4o", 
+    cost_per_input_token=0.001, 
+    cost_per_output_token=0.001
+)
 def generate_response(prompt: str) -> str:
     output = "Generated response"
     update_current_span(
         attributes=LlmAttributes(
-            input=prompt,
-            output=output,
             input_token_count=10,
             output_token_count=20,
         )
     )
     return output
 ```
-
-
-The total cost of this call will be computed as:
-
-```
-(input_token_count × cost_per_input_token) + (output_token_count × cost_per_output_token)
-```
-
-> **Note:** Cost tracking is only available for spans of type `llm`.
-
-## Automatic Cost Tracking
-
-If the input and output token counts and per-token costs are not provided, Confident AI will automatically attempt to calculate them based on the `model` provided, although manual calculation is still recommended for accuracy.
-
-<Callout>
-Note that automatic cost tracking is only available for **OpenAI**, **Anthropic**, and **Gemini** models.
-</Callout>
-
-```python
+  </Tabs.Tab>
+  <Tabs.Tab>
+```python showLineNumbers {5} filename="main.py"
 from deepeval.tracing import update_current_span, LlmAttributes
  
-@observe(type="llm", model="gpt-4o")
+@observe(
+    type="llm", 
+    model="gpt-4o"
+)
 def generate_response(prompt: str) -> str:
     output = "Generated response"
     update_current_span(
@@ -64,8 +64,16 @@ def generate_response(prompt: str) -> str:
     )
     return output
 ```
+  </Tabs.Tab>
+</Tabs>
 
-For example, the code above will automatically calculate the cost of the LLM call based on the `model` provided. The calculation logic depends on whether the token counts are provided or not, as follows:
+## Setup Cost Tracking
+
+You can either manually configure cost tracking or let Confident AI calculate your costs automatically from the [inputs and outputs](/llm-tracing/tracing-features/input-output) of your LLM span based on the provided `model`.
+
+<Callout>
+Automatic cost tracking is only available for **OpenAI**, **Anthropic**, and **Gemini** models.
+</Callout>
 
 ```mermaid
 graph TD
@@ -79,9 +87,39 @@ graph TD
     class A,C,D,E,F,G process;
 ```
 
-### Model tokenizers
+If token-usage and cost data are provided in code, Confident AI computes the cost directly from those values. If not, it attempts to **infer the cost** from the model, input, and output by following these steps:
 
-Confident AI uses different tokenizers depending on the model provider.
+   1. Verify that the model, input, and output are all available and valid.  
+   2. Select the appropriate tokenizer for the model provider.  
+   3. Count the input and output tokens.  
+   4. Retrieve the per-token pricing from the provider.  
+   5. Compute the total cost.  
+
+
+### Automatic Cost Tracking
+
+To set up automatic cost tracking, provide the `model` in the `@observe` decorator of your [LLM span](/llm-tracing/tracing-features/attributes#llm-attributes), and provide the `input` and `output` in your `LlmAttributes`.
+
+```python showLineNumbers {5} filename="main.py"
+from deepeval.tracing import update_current_span, LlmAttributes
+ 
+@observe(
+    type="llm", 
+    model="gpt-4o"
+)
+def generate_response(prompt: str) -> str:
+    output = "Generated response"
+    update_current_span(
+        attributes=LlmAttributes(
+            input=prompt,
+            output=output,
+        )
+    )
+    return output
+```
+
+
+The table below summarizes each available model provider and its corresponding tokenization method.
 
 |  Provider | Tokenizer | Example Models | Token Counting Method |
 |-------------|-----------|----------------|----------------------|
@@ -91,13 +129,41 @@ Confident AI uses different tokenizers depending on the model provider.
 
 See the [OpenAI documentation](https://platform.openai.com/docs/guides/text-generation/token-counting), [Anthropic documentation](https://docs.anthropic.com/claude/references/token-counting), or [Google documentation](https://ai.google.dev/pricing) for the most up-to-date pricing and token counting information.
 
+### Manual Cost Tracking
 
-## Analyzing Cost and Latency
+To manually set up cost tracking, provide the `cost_per_input_token` and `cost_per_output_token` in the `@observe` decorator of your LLM span, and pass the input and output token counts via `LlmAttributes`.
 
-Confident AI lets you perform comprehensive analyses of your LLM calls—breaking down costs by model, categorizing span latencies by span type, and more.
+<Callout >
+Manual cost tracking is the **recommended approach** if you want to ensure accurate cost tracking, and if your model provider does not support automatic cost tracking. 
+</Callout>
 
-<VideoDisplayer
-  src="https://confident-docs.s3.us-east-1.amazonaws.com/llm-tracing:cost-tracking.mp4"
-  width="100%"
-  title="LLM Cost and Latency Tracking"
-/>
+
+```python showLineNumbers {6,7,13,14} filename="main.py"
+from deepeval.tracing import update_current_span, LlmAttributes
+ 
+@observe(
+    type="llm", 
+    model="gpt-4o", 
+    cost_per_input_token=0.001, 
+    cost_per_output_token=0.001
+)
+def generate_response(prompt: str) -> str:
+    output = "Generated response"
+    update_current_span(
+        attributes=LlmAttributes(
+            input_token_count=10,
+            output_token_count=20,
+        )
+    )
+    return output
+
+generate_response("Calculate the cost of this call")
+```
+
+
+The total cost of this call will be computed as:
+
+```
+(input_token_count × cost_per_input_token) + (output_token_count × cost_per_output_token)
+```
+
