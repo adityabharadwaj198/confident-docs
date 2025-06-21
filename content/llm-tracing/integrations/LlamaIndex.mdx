@@ -5,44 +5,60 @@ title: LlamaIndex
 import { Callout } from "nextra/components";
 
 # LlamaIndex
+
 [LlamaIndex](https://www.llamaindex.ai/) is a framework that makes it easy to build production agents that can find information, synthesize insights, generate reports, and take actions over the most complex enterprise data.
 
 ## Quickstart
-Confident AI provides a `LlamaIndexEventHandler` that can be used to trace LlamaIndex events.
+
+Confident AI provides a `LlamaIndexEventHandler` that can be used to trace LlamaIndex **events.**
+
+Install the following packages:
+
+```bash
+pip install -U deepeval llama-index
+```
+
+Login with your API key and configure DeepEval as an event handler for LlamaIndex:
+
+```python filename="main.py" showLineNumbers {6, 9}
+import llama_index.core.instrumentation as instrument
+from deepeval.integrations import LLamaIndexEventHandler
+import deepeval
+
+# Login
+deepeval.login_with_confident_api_key("<your-confident-api-key>")
+
+# Let DeepEval collect traces
+instrument.get_dispatcher().add_event_handler(LLamaIndexEventHandler())
+```
+
+Now whenever you use LlamaIndex, DeepEval will collect LlamaIndex event as traces and publish them to Confident AI.
 
 <Callout type="info">
 [Event](https://docs.llamaindex.ai/en/stable/module_guides/observability/instrumentation/) in LlamaIndex represents a single moment in time that a certain occurrence took place within the execution of the application’s code.
 </Callout>
 
+## Example Agent
 
-### Setup
-Install the following packages:
-```bash
-pip install -U deepeval llama-index
-```
+The example agent will be able to perform calculations using the `multiply` tool.
 
-### Create a sample agent
-The agent will be able to perform calculations using the `multiply` tool.
-
-```python showLineNumbers filename="main.py" {15, 18, 30}
+```python showLineNumbers filename="main.py" {12, 13, 22}
 import os
 import asyncio
 import time
-
 from llama_index.core.agent.workflow import FunctionAgent
 from llama_index.llms.openai import OpenAI
 import llama_index.core.instrumentation as instrument
 
-import deepeval
 from deepeval.integrations import LLamaIndexEventHandler
-from deepeval.tracing import observe
+import deepeval
+
+# Don't forget to setup tracing
+deepeval.login_with_confident_api_key("<your-confident-api-key>")
+instrument.get_dispatcher().add_event_handler(LLamaIndexEventHandler())
+
 
 os.environ["OPENAI_API_KEY"] = "<your-openai-api-key>"
-
-deepeval.login_with_confident_api_key("<your-confident-api-key>")
-
-dispatcher = instrument.get_dispatcher()
-dispatcher.add_event_handler(LLamaIndexEventHandler())
 
 def multiply(a: float, b: float) -> float:
     """Useful for multiplying two numbers."""
@@ -53,6 +69,13 @@ agent = FunctionAgent(
     llm=OpenAI(model="gpt-4o-mini"),
     system_prompt="You are a helpful assistant that can perform calculations.",
 )
+```
+
+Finally, try calling your agent to see your traces on Confident AI:
+
+```python filename="main.py" {4}
+from deepeval.tracing import observe
+...
 
 @observe()
 async def main():   
@@ -66,18 +89,11 @@ if __name__ == "__main__":
     time.sleep(12)
 ```
 
-The response will be something like this: `7 * 8 = 56`
-
-### Viewing the traces
-You can directly view the traces in the **Observatory** by clicking on the link in the output. The output after running the `main.py` file will be something like this:
-
-```bash {4}
-🎉🥳 Congratulations! You've successfully logged in! 🙌 
-7 * 8 equals 56.
-[Confident AI Trace Log]  Successfully posted trace (0 traces remaining in queue, 1 in flight): 
-https://app.confident-ai.com/project/<your-project-id>/observatory/traces/<your-trace-id> 
-To disable dev logging, set CONFIDENT_TRACE_VERBOSE=NO as an environment variable.
+```bash
+python main.py
 ```
+
+You can directly view the traces in the **Observatory** by clicking on the link in the output show in the console:
 
 <Callout>
 As the agent is running, it will export **events** to the `dispatcher`. The `dispatcher` will send the events to the `LlamaIndexEventHandler` which will convert the events to the appropiate **spans**, create a **trace** and send it to the [Observatory](https://documentation.confident-ai.com/llm-tracing/introduction).
