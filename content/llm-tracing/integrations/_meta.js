@@ -1,8 +1,8 @@
 export default {
   openai: "",
   "openai-agents": "",
-  "litellm": "",
+  litellm: "",
   opentelemetry: "",
   typescript: "",
-  "llamaindex": "",
+  llamaindex: "",
 };
