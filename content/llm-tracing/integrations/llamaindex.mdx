@@ -74,11 +74,7 @@ agent = FunctionAgent(
 
 Finally, try calling your agent to see your traces on Confident AI:
 
-```python filename="main.py" {4}
-from deepeval.tracing import observe
-...
-
-@observe()
+```python filename="main.py"
 async def main():   
     response = await agent.run(
         "What's 7 * 8?"
