@@ -1,0 +1,194 @@
+---
+title: Component-Level
+---
+
+import { Callout, Tabs } from "nextra/components";
+
+# Run Component-Level Evals
+
+You can run evaluations on a component-level by creating test cases at evaluation time.  This requires you to setup tracing, which also brings additional benefits such as component-level debugging and visualization of latencies, model costs, etc. in testing reports on the UI.
+
+<Callout>
+Setting up tracing also automatically grants you access to all of Confident AI's [observability features for production monitoring.](/docs/llm-tracing/introduction)
+</Callout>
+
+Running component-level evals enables you to:
+
+- Generate organization-wide sharable testing reports
+- A|B experimentation for regression testing
+- Hyperparameter experimentation
+- Data-driven decision making
+
+If you would rather treat your LLM app as a black-box, you can run [end-to-end evaluations](/docs/llm-evaluation/run-evals/end-to-end-evals) instead.
+
+## Code Summary
+
+<Tabs items={['Evals In CI/CD', 'Evals In Python Script']}>
+  <Tabs.Tab>
+
+```python filename="test_llm_app.py" showLineNumbers {9, 18, 22, 26}
+from openai import OpenAI
+import pytest
+from deepeval.dataset import EvaluationDataset
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval.tracing import observe, update_current_span
+from deepeval import assert_test
+
+
+@observe(metrics=[AnswerRelevancyMetric()])
+def llm_app(query: str) -> str:
+    res = openai.ChatCompletion.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "user", "content": query}
+        ]
+    ).choices[0].message["content"]
+
+    update_current_span(test_case=LLMTestCase(input=query, actual_output=res))
+    return res
+
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+@pytest.mark.parametrize("golden", dataset.goldens)
+def test_llm_app(golden: Golden)
+    assert_test(golden=golden, observed_callback=llm_app)
+```
+
+Execute file using DeepEval's `pytest` wrapper:
+
+```bash
+deepeval test run test_llm_app.py
+```
+    </Tabs.Tab>
+    <Tabs.Tab>
+```python showLineNumbers {9, 18, 22, 24}
+from openai import OpenAI
+import pytest
+from deepeval.dataset import EvaluationDataset
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval.tracing import observe, update_current_span
+from deepeval import evaluate
+
+
+@observe(metrics=[AnswerRelevancyMetric()])
+def llm_app(query: str) -> str:
+    res = openai.ChatCompletion.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "user", "content": query}
+        ]
+    ).choices[0].message["content"]
+
+    update_current_span(test_case=LLMTestCase(input=query, actual_output=res))
+    return res
+
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+evaluate(goldens=[dataset.goldens], observed_callback=llm_app)
+```
+    </Tabs.Tab>
+</Tabs>
+
+## Define Metrics
+
+You can define your metrics by importing them from DeepEval.
+
+```python
+from deepeval.metrics import AnswerRelevancyMetric
+
+metric = AnswerRelevancyMetric()
+```
+
+## Setup Tracing and Create Test Cases
+
+Setup tracing for your LLM application with the `@observe` decorator - which will allow you to create test cases at runtime for each individual component.
+
+```python {5, 15}
+from deepeval.tracing import observe, update_current_span
+...
+
+# Decorate your LLM app and provide metrics
+@observe(metrics=[metric])
+def llm_app(query: str) -> str:
+    res = openai.ChatCompletion.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "user", "content": query}
+        ]
+    ).choices[0].message["content"]
+
+    # This creates test cases for your component at evaluation time
+    update_current_span(test_case=LLMTestCase(input=query, actual_output=res))
+    return res
+```
+
+Tracing will also allow you to visualize and debug the latencies, model cost, etc. of each individual component in your testing report. You can read more about all of Confident AI's tracing features and capabilities in the [tracing section.](/docs/llm-tracing/introduction)
+
+<Callout type="warning">
+Traces that are logged in component-level tracing are automatically classified into the [`"testing"` enviornment](/docs/llm-tracing/tracing-features/environment) of your project, and are available to view separately under the **Observatory** of the platform.
+</Callout>
+
+## Run an Evaluation
+
+At evaluation time, DeepEval will pass in the `input`s of each individual golden in your dataset to invoke your LLM app. Be patient when waiting for evaluation results, as evaluation duration is often limited by the execution time of your LLM app.
+
+<Tabs items={['In CI/CD', 'In Python Script']}>
+  <Tabs.Tab>
+
+Unit-test your LLM app in CI/CD using DeepEval's `pytest` integration via the `assert_test` function:
+
+```python filename="test_llm_app.py" {12}
+import pytest
+from deepeval.dataset import EvaluationDataset, Golden
+from deepeval import assert_test
+...
+
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+# This loops through your goldens
+@pytest.mark.parametrize("golden", dataset.goldens)
+def test_llm_app(golden: Golden)
+    assert_test(golden=golden, observed_callback=llm_app)
+```
+
+Execute `deepeval test run` in the CLI to test it out:
+
+```bash
+deepeval test run test_llm_app.py
+```
+
+**Congratulations 🎉!** Your test run should now be available on Confident AI as a [testing report](/docs/llm-evaluation/evaluation-features/testing-reports) ✅. Click around the testing report on Confident AI, and take tyour time to get familarized with it.
+
+<Callout type="warning">
+**NOTE:** Don't forget to add this command in your `.yaml` files to automate it in CI/CD pipelines such as GitHub actions!
+</Callout>
+
+    </Tabs.Tab>
+    <Tabs.Tab>
+
+Run an evaluation using your dataset of `Golden`s using the `evaluate` function:
+
+```python {8}
+from deepeval.dataset import EvaluationDataset
+from deepeval import evaluate
+...
+
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+evaluate(goldens=[dataset.goldens], observed_callback=llm_app)
+```
+
+**Congratulations 🎉!** Your test run should now be available on Confident AI as a [testing report](/docs/llm-evaluation/evaluation-features/testing-reports) ✅. Click around the testing report on Confident AI, and take tyour time to get familarized with it.
+
+    </Tabs.Tab>
+</Tabs>
+
+## Setup Notifications (recommended)
+
+You can also setup your project to receive notifications through either email, slack, discord, or teams each time an evaluation is completed, both locally or on the cloud, by configuring your project integrations in **Project Settings** > **Integrations**.
+
+To learn how, visit the [project integrations page.](/project-settings/integrations)

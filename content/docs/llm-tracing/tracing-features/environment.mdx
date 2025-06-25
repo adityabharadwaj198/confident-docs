@@ -1,0 +1,73 @@
+---
+title: Environment
+---
+
+import { Callout, Tabs } from "nextra/components";
+
+# Environment
+
+The environment feature allows you to specify which environment your traces are coming from. This is useful for separating traces from different environments in `"development"`, `"staging"`, `"production"`, or `"testing"`.
+
+<Callout type="warning">
+Traces from [component-level evals](/docs/llm-evaluation/run-evals/component-level-evals) are automatically classified in the `"testing"` enviornment.
+</Callout>
+
+## Configure Environment
+
+You can configure the environment with the `CONFIDENT_TRACE_ENVIRONMENT` environment variable. 
+
+```bash
+export CONFIDENT_TRACE_ENVIRONMENT="staging"
+```
+
+Alternatively, you can set the environment directly in code:
+
+<Tabs items={['Python', 'JS/TypeScript']}>
+  <Tabs.Tab>
+    ```python filename="main.py" showLineNumbers {4}
+    import openai
+    from deepeval.tracing import observe, trace_manager
+    
+    trace_manager.configure(environment="production")
+    
+    @observe()
+    def llm_app(query: str):
+        return openai.ChatCompletion.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "user", "content": query}
+            ]
+        ).choices[0].message["content"]
+    
+    
+    llm_app("Write me a poem.")
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```typescript filename="index.ts" showLineNumbers {4}
+    import OpenAI from 'openai';
+    import { observe, traceManager } from '@deepeval-ts/tracing';
+    
+    traceManager.configure({ environment: "production" });
+    
+    const openai = new OpenAI();
+    
+    const llmApp = (query: string): string => {
+      return openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { role: "user", content: query }
+        ]
+      }).then(response => response.choices[0].message.content);
+    };
+    
+    const observedLlmApp = observe({
+      fn: llmApp
+    });
+    
+    observedLlmApp("Write me a poem.");
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+The `environment` can be either `"production"`, `"staging"`, or `"development"`, and helps you identify where your traces are coming from.

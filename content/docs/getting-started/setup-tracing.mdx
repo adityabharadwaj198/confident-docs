@@ -1,0 +1,120 @@
+---
+title: Setup Tracing with Evals
+---
+
+import { Callout } from "nextra/components";
+
+# Tracing for Online Evals and LLM Observability
+
+The last section showed end-to-end evaluation, and in this section we'll show how to also evaluate individual components within your LLM app through tracing.
+
+<details>
+
+<summary>What is and why tracing on Confident AI?</summary>
+
+Tracing is the process of tracking how different components of your LLM app interacts with one another. For example, retrievers (embedding models) interacting with generators (LLMs), or LLMs interacting with different tool calls.
+
+When you do tracing on Confident AI, you immediately get access to:
+
+- **40+ DeepEval metrics** that can be applied to anywhere in your LLM app
+- **LLM observability and production monitoring**, with all the important tracing features you'd need such as metadata logging, PII masking, conversation tracking, setting tags, etc.
+
+Confident AI is also feature complete for tracing, [click here](/docs/llm-tracing/introduction) for more detail.
+
+</details>
+
+## Decorate Your LLM App
+
+Assuming this is `your_llm_app`, you will trace it using the `@observe` decorator:
+
+```python showLineNumbers {4, 13, 18}
+from openai import OpenAI
+from deepeval.tracing import observe
+
+@observe()
+def your_llm_app(query: str) -> str:
+    return openai.ChatCompletion.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "user", "content": query}
+        ]
+    ).choices[0].message["content"]
+
+# Call app to send trace to Confident AI
+your_llm_app("Write me a poem.")
+```
+
+That's it! Sanity check yourself by running this file and checking Confident AI's **Observatory** > **Traces** to see your first trace.
+
+<details>
+
+<summary>See what an example trace looks like on Confident AI</summary>
+
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/observability:llm-tracing.mp4"
+  width="100%"
+  title="Tracing (different from the code example!)"
+/>
+
+</details>
+
+<Callout type="info">
+The `@observe` decorate tells Confident AI that `your_llm_app` is a component by itself. A component is actually known as a **span**, and **many spans make up a trace**.
+
+Technically, you can also think of end-to-end evaluations as running evals on a trace.
+</Callout>
+
+## Define Metrics and Create Test Case
+
+The last step is to define your metrics and create test cases at runtime. These metrics and test cases work exactly the same way as it does in end-to-end evaluation:
+
+```python showLineNumbers {6, 15}
+from openai import OpenAI
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval.test_case import LLMTestCase
+from deepeval.tracing import observe, update_current_span
+ 
+@observe(metrics=[AnswerRelevancyMetric()])
+def your_llm_app(query: str) -> str:
+    res = openai.ChatCompletion.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "user", "content": query}
+        ]
+    ).choices[0].message["content"]
+
+    update_current_span(test_case=LLMTestCase(input=query, actual_output=res))
+    return res
+```
+
+<Callout>
+This also allows you to create test cases at runtime without rewriting your codebase. 
+</Callout>
+
+Finally run an evaluation:
+
+```python
+from deepeval.dataset import EvaluationDataset
+...
+
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+evaluate(goldens=goldens.dataset, observed_callback=your_llm_app)
+```
+
+**Congratulations 🎉!** Your component-level test run is now available on Confident AI, and you should be able to see the trace associated with it.
+
+## Tracing for Production Monitoring
+
+When you have tracing setup, all invocations of your LLM app outside of an evaluation session is automatically traced on Confident AI's dashboard for debugging. 
+
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/observability:llm-tracing.mp4"
+  width="100%"
+  title="LLM Tracing Quick Glance | Confident AI"
+/>
+
+Confident AI supports a ton of tracing features for the best observability experience. You can [configure trace enviornments](/docs/llm-tracing/tracing-features/environment) to `"staging"` or `"production"` for example, or even [mask PII](/docs/llm-tracing/tracing-features/masking) for Confident AI to not store sensitive information.
+
+The full docs for tracing can be [found here.](/docs/llm-tracing/introduction)

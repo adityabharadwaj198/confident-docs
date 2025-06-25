@@ -1,0 +1,175 @@
+---
+title: Test Cases
+---
+
+import { Callout } from "nextra/components";
+
+# Test Cases
+
+A test case represents a single interaction or conversation with your LLM application. There are two main types of test cases:
+
+- **Single-turn Test Cases (`LLMTestCase`)**: Represent a single back-and-forth interaction with an LLM
+- **Multi-turn Test Cases (`ConversationalTestCase`)**: Represent an ongoing conversation with multiple interactions
+
+For single-turn test cases, a common example is a RAG QA system answering questions using an internal knowledge base. For multi-turn test cases, a typical example would be an AI copilot having an extended conversation with a user.
+
+## Why Test Cases?
+
+When you format an interaction with your LLM application into a test case, Confident AI will be able to evaluate the performance of it using [LLM evaluation metrics](/docs/concepts/metrics). Different metrics require different parameters in a test case (e.g., a RAG metric like faithfulness would require `retrieval_context`), so it's important to visit each metric's documentation pages to figure out what is required from your test case.
+
+## Test Case Implementation
+
+The encouraged method to run evaluations is locally using DeepEval, which will automatically be integrated with Confident AI. In DeepEval:
+
+- Single-turn test cases are implemented as `LLMTestCase`s
+- Multi-turn test cases are implemented as `ConversationalTestCase`s, which contain multiple `LLMTestCase`s representing each turn in the conversation
+
+Here's how you would define an `LLMTestCase` to evaluate a single-turn LLM application:
+
+```python filename="main.py" showLineNumbers copy
+from deepeval.test_case import LLMTestCase
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import evaluate
+
+test_case = LLMTestCase(
+    input="Can you write me a poem?",
+    # Replace with your LLM app's output
+    actual_output="Sure! Here is a poem about..."
+)
+metric = AnswerRelevancyMetric()
+
+evaluate(test_cases=[test_case], metrics=[metric])
+```
+
+Similarily, here's how you would define a `ConversationalTestCase` to evaluate a multi-turn LLM application:
+
+```python filename="main.py" showLineNumbers copy
+from deepeval.test_case import Turn, ConversationalTestCase
+from deepeval.metrics import ConversationRelevancy
+from deepeval import evaluate
+
+test_case = ConversationalTestCase(
+    turns=[
+        Turn(
+            role="assistant",
+            content="Why did the chicken cross the road?",
+        ),
+        Turn(
+            role="user",
+            content="Are you trying to be funny?",
+        ),
+    ]
+)
+metric = ConversationRelevancy()
+
+evaluate(test_cases=[test_case], metrics=[metric])
+```
+
+### `LLMTestCase`
+
+An `LLMTestCase` is used to evaluate a single interaction with an LLM application.
+
+<ImageDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/concepts:llm-test-case.svg"
+  alt="LLM Test Case Architecture"
+  title="LLM Test Case Architecture"
+/>
+
+It requires at minimum:
+
+- `input` (`str`): The input to the LLM app
+- `actual_output` (`str`): The LLM app's output based on the input
+
+> [!IMPORTANT]
+>
+> Not every metric requires both the `input` and `actual_output` for evaluation, but it is a mandatory argument for all test cases since we're encouraging the evaluation of LLM applications.
+
+Optional parameters include:
+
+- [Optional] `expected_output` (`str`): The ideal output based on the input
+- [Optional]`retrieval_context` (`list[str]`): Text chunks retrieved from a RAG pipeline
+- [Optional]`tools_called` (`list[ToolCall]`): Tools used by the LLM app
+- [Optional]`expected_tools`(`list[ToolCall]`): Tools expected to be used
+- [Optional]`token_cost` (`float`): Token cost of the entire LLM interaction
+- [Optional]`completion_time` (`float`): Time taken for the entire LLM interaction to complete
+- [Optional]`context` (`list[str]`): Additional information provided to the LLM app
+
+You'll notice that `tools_called` and `expected_tools` is of type `ToolCall`. Here is the structure of a `ToolCall`:
+
+```python showLineNumbers copy
+from deepeval.test_case import ToolCall
+
+class ToolCall(BaseModel):
+    name: str
+    description: Optional[str] = None
+    input_parameters: Optional[Dict[str, Any]] = None
+    output: Optional[Any] = None
+```
+
+> [!TIP]
+>
+> For more information on a `ToolCall`, more information can be found on [DeepEval's documentation.](https://deepeval.com/docs/evaluation-test-cases#tools-called)
+
+It's important to note that the `actual_output`, `retrieval_context`, and `tools_called` are **expected to be dynamic values that changes for each LLM interaction**. You can of course pre-compute `actual_output`s for a given set of inputs, but that will defeat the purpose of running evals everytime you make an improvement to your LLM app.
+
+### `ConversationalTestCase`
+
+A `ConversationalTestCase` represents a multi-turn conversation with an LLM.
+
+<ImageDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/concepts:conversational-test-case.svg"
+  alt="Conversational Test Case Architecture"
+  title="Conversational Test Case Architecture"
+/>
+
+It requires:
+
+- `turns` (`list[Turn]`): A list of `Turn`s representing each interaction in the conversation.
+
+And optionally:
+
+- [Optional]`chatbot_role` (`str`): The role/persona of the LLM chatbot, only required for the `RoleAdherenceMetric`
+
+```python showLineNumbers copy
+from deepeval.test_case import Turn, ConversationalTestCase
+
+test_case = ConversationalTestCase(
+    chatbot_role="You are a happy jolly wizard that likes to cast spells and tell jokes",
+    turns=[
+        Turn(
+            role="assistant",
+            content="Ho ho! I'm a jolly wizard who loves casting spells and telling magical jokes! What can I do for you today, my friend?"
+        ),
+        Turn(
+            role="user",
+            content="Can you tell me a joke about magic?"
+        ),
+        Turn(
+            role="assistant",
+            content="*waves wand excitedly* Why don't wizards like to argue? Because they don't want to get into a spell-ing contest! *chuckles and sparkles shoot from wand* Get it? Spell-ing? Oh, I do love a good magical pun!"
+        ),
+    ]
+)
+```
+
+A `Turn` is made up of the following parameters:
+
+```python
+class Turn:
+    role: Literal["user", "assistant"]
+    content: str
+    user_id: Optional[str] = None
+    retrieval_context: Optional[List[str]] = None
+    tools_called: Optional[List[ToolCall]] = None
+    additional_metadata: Optional[Dict] = None
+```
+
+The `role` parameter specifies whether a particular turn is by the "user" (end user) or "assistant" (LLM). This is similar to OpenAI's API.
+
+<Callout type="info">
+You should only provide the `retrieval_context` and `tools_called` parameter if the role is "assistant".
+</Callout>
+
+## Further Reading
+
+A more detailed breakdown of each individual test case parameter can be found on [DeepEval's documentation](https://deepeval.com/docs/evaluation-test-cases).

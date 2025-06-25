@@ -1,0 +1,115 @@
+---
+title: Quickstart
+---
+
+import { Cards, Callout } from "nextra/components";
+
+# Evals API Quickstart
+
+Follow this 5 min guide to get started with Evals API.
+
+## Create An Account
+
+If you don't already have a Confident AI account, visit [app.confident-ai.com](https://app.confident-ai.com) and create one. You can create an account using your email address or through Google authentication for a faster process.
+
+<Callout>
+  If you wish to **sign in using SSO**, checkout our [enterprise
+  offering.](https://confident-ai.com/pricing)
+</Callout>
+
+After creating your account, you'll be guided through the onboarding process. You'll find your **Project** API key at the last step of the onboarding. 
+
+## Create A Metric Collection
+
+Create a metric collection by providing a custom name for it. Note that this name must not already be taken in your project for an existing metric collection.
+
+```bash showLineNumbers filename="POST request"
+curl -X POST "https://api.confident-ai.com/v1/metric-collections" \
+     -H "Content-Type: application/json" \
+     -H "CONFIDENT_API_KEY: your-project-api-key-goes-here" \
+     -d '{
+            "name": "Collection Name",
+            "metrics": [
+                {"name": "Answer Relevancy"},
+            ],
+            "multi-turn": false
+         }`
+```
+```json filename="response"
+{"status": 200}
+```
+
+In this example, the `"metrics"` argument specifies which metric belongs to this collection. The reason why we're able to provide the `"Answer Relevancy"` metric here is because it is one of the many default metrics offered by Confident AI. For a metric that is not already defined, you will have to provide additional fields to create a [custom metric like G-Eval.](/docs/concepts/metrics#custom-metrics)
+
+<details>
+
+<summary>Click to see the full list of default metric names</summary>
+
+</details>
+
+
+When you run an evaluation, you will provide a metric collection, instead of individual metrics.
+
+<Callout type="info">
+You can learn more about the metric collection data model here.
+</Callout>
+
+## Run Your First Evaluation
+
+You would ran evaluation by providing the name of the metric collection you just created and the list of test cases:
+
+<Callout type="warning">
+This example shows a single-turn evaluation.
+</Callout>
+
+```bash showLineNumbers filename="POST request"
+curl -X POST "https://api.confident-ai.com/v1/evaluate" \
+     -H "Content-Type: application/json" \
+     -H "CONFIDENT_API_KEY: your-project-api-key-goes-here" \
+     -d '{
+            "metricCollection": "Collection Name",
+            "testCases": [
+                {
+                    "input": "How tall is mount everest?",
+                    "actualOutput: "I don't know, pretty tall I guess?"
+                },
+            ],
+         }`
+```
+
+The `/v1/evaluate` API endpoint will create a [test run](/docs/concepts/test-runs) on Confident AI and return a structured response containing evaluation results for each test case. Here's what the response looks like:
+
+```json showLineNumbers filename="response"
+{
+    "status": 200,
+    "res": [
+        {
+            "testRunId": "clasdjfkafkjasfdafbkd",
+            "metrics": [
+                {
+                    "name": "Answer Relevancy",
+                    "score": 1,
+                    "reason": "Although dismissive, the actual output does address the question.",
+                    "error": null
+                }
+            ]
+        }
+    ]
+}
+```
+
+<Callout>
+For one-off evaluations, it is recommended that you use the `POST /v1/metric` endpoint instead, which avoids polluting your dashboard with necessary test runs.
+</Callout>
+
+## Using The Platform
+
+Everytime when you do something using the Evals API, changes will be reflected on the platform as well. This is especially helpful for those that need more visibility intow what a customers' evals look like.
+
+For example, here is the [testing report](/docs/llm-evaluation/evaluation-features/testing-reports) you'll get on the platform whenever you call the `/v1/evaluate` endpoint:
+
+<VideoDisplayer
+  src="https://confident-docs.s3.us-east-1.amazonaws.com/evaluation:testing-report.mp4"
+  width="100%"
+  title="Testing Reports on Confident AI"
+/>

@@ -1,8 +1,17 @@
+'use client'
+
 import { Footer } from 'nextra-theme-docs'
 import Image from 'next/image'
 import styles from './CustomFooter.module.scss'
+import { usePathname } from 'next/navigation'
 
 const CustomFooter = () => {
+  const pathname = usePathname()
+
+  if (pathname === '/') {
+    return null
+  }
+
   return (
     <Footer>
       <div className={styles.customFooter}>

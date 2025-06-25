@@ -1,0 +1,298 @@
+---
+title: End-to-End
+---
+
+import { Callout, Tabs } from "nextra/components";
+
+# Run End-to-End Evals
+
+You can run end-to-end evaluations on the overall inputs and outputs of your LLM system by treating your LLM app as a black-box.
+
+<Callout type="info">
+You don't need to [setup tracing](/docs/llm-tracing/introduction) for end-to-end evals, but you should still do it since it gives you maximum visibility into your LLM app.
+</Callout>
+
+Similar to component-level evals, end-to-end evaluations generate **testing reports** that enable:
+
+- Generate organization-wide sharable testing reports
+- A|B experimentation for regression testing
+- Hyperparameter experimentation
+- Data-driven decision making
+
+If you wish to run evaluations on individual components in your LLM app, you should run [component-level evaluations](/docs/llm-evaluation/run-evals/component-level-evals) instead.
+
+## Code Summary
+
+
+<Tabs items={['Evals In CI/CD', 'Evals In Python Script']}>
+  <Tabs.Tab>
+
+```python showLineNumbers copy {10, 16, 20}
+import pytest
+
+from deepeval.test_case import LLMTestCase
+from deepeval.dataset import EvaluationDataset
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import assert_test
+
+
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias") # Pull dataset from Confident AI
+
+@pytest.mark.parametrize("golden", dataset.goldens) # Loop through goldens
+def test_llm_app(golden: Golden):
+    test_case = LLMTestCase(
+      input=golden.input, 
+      actual_output=your_llm_app(golden.input) # Replace with your LLM app
+    )
+
+    # Replace with your metrics
+    assert_test(test_case=test_case, metrics=[AnswerRelevancyMetric()])
+```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+```python showLineNumbers copy {8, 15, 19}
+from deepeval.dataset import EvaluationDataset
+from deepeval.test_case import LLMTestCase
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import evaluate
+
+
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias") # Pull dataset from Confident AI
+
+# Process each golden in your dataset
+for goldens in dataset.goldens:
+    input = golden.input
+    # Replace your_llm_app() with your actual LLM application
+    test_case = LLMTestCase(input=input, actual_output=your_llm_app(input))
+    dataset.test_cases.append(test_case)
+
+# Run an evaluation
+evaluate(
+    test_cases=dataset.test_cases,
+    metrics=[AnswerRelevancyMetric()], # Replace with your metrics
+)
+```
+  </Tabs.Tab>
+</Tabs>
+
+In the previous section we saw how to define metrics in `deepeval`, and running evaluations is as simple as using those metrics on test cases from your [dataset goldens.](/docs/concepts/datasets#goldens)
+
+## Define Metrics
+
+Create a metric locally via DeepEval (more info [here](/docs/llm-evaluation/metrics/create-locally) if unsure):
+
+```python
+from deepeval.metrics import AnswerRelevancyMetric
+
+metric = AnswerRelevancyMetric()
+```
+
+## Pull a Dataset
+
+Once you have defined your metric(s), it's time to pull your dataset to create some test cases for evaluation:
+
+```python
+from deepeval.dataset import EvaluationDataset
+from deepeval.test_case import LLMTestCase
+...
+
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+# Convert goldens to test cases
+for golden in dataset.goldens:
+    input = golden.input
+    # Replace your_llm_app() with your actual LLM app
+    test_case = LLMTestCase(input=input, actual_output=your_llm_app(golden.input))
+    dataset.test_cases.append(test_case)
+
+print(dataset.test_cases) # Sanity check yourself
+```
+
+If you're unsure what this does, read about using datasets on Confident AI [here.](/docs/dataset-editor/using-datasets)
+
+## Run an Evaluation
+
+Similar to component-level evals, DeepEval will pass in the `input`s of each individual golden in your dataset to invoke your LLM app.
+
+<Tabs items={['In CI/CD', 'In Python Script']}>
+  <Tabs.Tab>
+
+Unit-test your LLM app in CI/CD using DeepEval’s pytest integration via the `assert_test` function:
+
+```python filename="test_llm_app.py"
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import assert_test
+...
+
+@pytest.mark.parametrize("golden", dataset.goldens) # Loop through goldens
+def test_llm_app(golden: Golden):
+    test_case = LLMTestCase(
+      input=golden.input, 
+      actual_output=your_llm_app(golden.input) # Replace with your LLM app
+    )
+ 
+    assert_test(test_case=test_case, metrics=[metric]) # Replace with your metrics
+```
+
+```bash
+deepeval test run test_llm_app.py
+```
+
+**Congratulations 🎉!** Your **test run** is now available on Confident AI automatically as a [testing report](/docs/llm-evaluation/evaluation-features/testing-reports).
+
+<Callout>
+
+By default, test runs on Confident AI are assigned randomly generated IDs, which can make it difficult to identify specific runs for [A|B regression testing](/docs/llm-evaluation/evaluation-features/ab-regression-testing) later. You can customize it be providing your test run a custom identifier:
+
+```bash
+deepeval test run -i "My First Test Run"
+```
+
+</Callout>
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+
+Run an evaluation using your dataset of `Golden`s using the `evaluate` function:
+
+```python
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import evaluate
+...
+
+evaluate(test_cases=dataset.test_cases, metrics=[metric])
+```
+
+**Congratulations 🎉!** Your **test run** is now available on Confident AI automatically as a [testing report](/docs/llm-evaluation/evaluation-features/testing-reports).
+
+<Callout>
+
+By default, test runs on Confident AI are assigned randomly generated IDs, which can make it difficult to identify specific runs for [A|B regression testing](/docs/llm-evaluation/evaluation-features/ab-regression-testing) later. You can customize it be providing your test run a custom identifier:
+
+```python
+...
+evaluate(identifier="My First Test Run")
+```
+
+</Callout>
+
+  </Tabs.Tab>
+</Tabs>
+
+## Run Evals on the Cloud
+
+If you're using another language other than Python (i.e. Typescript) or wish to enable non-technical team members to be able to run evals without having to touch a single line of code, you can configure Confident AI to run evaluations on the cloud instead.
+
+<Callout type="warning">
+  You should always try to get your metrics working as expected before moving
+  onto this section, since it is much harder to customize metrics on the cloud.
+</Callout>
+
+
+### Trigger evals in Typescript or HTTPS
+
+To trigger an evaluation on the cloud via HTTPS, simply use `deepeval-ts` or `curl` to send test cases to Confident AI for evaluation.
+
+<Tabs items={['TypeScript', 'curl']}>
+  <Tabs.Tab>
+```typescript
+import { evaluate, EvaluationDataset, LLMTestCase } from 'deepeval-ts';
+
+const dataset = new EvaluationDataset();
+await dataset.pull({ alias: "your-dataset-alias" });
+
+for (const golden of dataset.testCases) {
+  const testCase = new LLMTestCase({
+    input: golden.input,
+    actualOutput: await yourLlmApp(golden.input) 
+  });
+  dataset.addTestCase(testCase);
+}
+
+// Run evals on Confident AI
+await evaluate({
+  metricCollection: "your-collection-name", 
+  testCases: testCases
+});
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```curl
+curl -X POST "https://deepeval.confident-ai.com/evaluate" \
+     -H "Content-Type: application/json" \
+     -H "CONFIDENT_API_KEY: your-project-api-key-goes-here" \
+     -d '{
+           "metricCollection": "your-metric-collection-name",
+           "testCases": [
+             {
+               "input": "What is the capital of France?",
+               "actual_output": "Paris",
+               "expected_output": "Paris",
+               "context": ["Geography question"],
+               "retrieval_context": ["Country capitals"],
+               "tools_called": [],
+               "expected_tools": []
+             }
+           ]
+         }`
+```
+  </Tabs.Tab>
+</Tabs>
+
+<Callout type="info">
+  Not all parameters in `"testCases"` are required. You should figure out what
+  is the set of parameters required for your metric collection by reading what's
+  required for each metric on the **Metrics** > **Glossary** page.
+</Callout>
+
+If you're using Python and for some reason and you still decide to run evaluations on Confident AI, here's how you can do it:
+
+```python showLineNumbers copy {25}
+from deepeval.prompt import Prompt
+from deepeval.dataset import EvaluationDataset
+from deepeval.test_case import LLMTestCase
+from deepeval.metrics import AnswerRelevancyMetric
+from deepeval import confident_evaluate
+
+# Initialize and pull your dataset from Confident AI
+dataset = EvaluationDataset()
+dataset.pull(alias="your-dataset-alias")
+
+# Use your actual prompt alias from Confident AI
+prompt = Prompt(alias="your-prompt-alias")
+prompt.pull()
+
+
+# Process each golden in your dataset
+for goldens in dataset.goldens:
+    input = golden.input
+    # Replace your_llm_app() with your actual LLM application
+    test_case = LLMTestCase(input=input, actual_output=your_llm_app(input, prompt))
+    dataset.test_cases.append(test_case)
+
+
+# Run evals on Confident AI
+confident_evaluate(metric_collection="your-collection-name", test_cases=dataset.test_cases)
+```
+
+### Trigger evals without code
+
+1. [Setup an LLM connection](/project-settings/setup-llm-connection) endpoint
+2. Go to the **Evaluations** page
+3. Press the **Evaluate** button
+4. Select your metric collection and dataset
+5. Press **Evaluate** to run the evaluation!
+
+> [!IMPORTANT]
+>
+> You should only be doing this if you have non-technical team members that wish to trigger evaluations on the platform without going through code.
+
+## Setup Notifications (recommended)
+
+You can also setup your project to receive notifications through either email, slack, discord, or teams each time an evaluation is completed, both locally or on the cloud, by configuring your project integrations in **Project Settings** > **Integrations**.
+
+To learn how, visit the [project integrations page.](/project-settings/integrations)
