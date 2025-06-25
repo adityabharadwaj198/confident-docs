@@ -5,39 +5,39 @@ title: LangChain
 import { Callout } from "nextra/components";
 
 # LangChain
+
 [LangChain](https://www.langchain.com/) is a framework for building LLM applications.
 
 ## Quickstart
+
 Confident AI provides a `CallbackHandler` that can be used to trace LangChain's execution.
 
 Install the following packages:
 
 ```bash
-pip install langchain -U langchain-openai
+pip install -U deepeval langchain langchain-openai
 ```
 
 Login with your API key and configure DeepEval's `CallbackHandler` as a callback for LangChain:
 
-```python filename="main.py" showLineNumbers {8, 20}
+```python filename="main.py" showLineNumbers {9, 18}
 import os
+import time
 from langchain.chat_models import init_chat_model
 
-from deepeval.integrations.langchain.callback import CallbackHandler
 from deepeval import login_with_confident_api_key
+from deepeval.integrations.langchain.callback import CallbackHandler
 
 os.environ["OPENAI_API_KEY"] = "<your-openai-api-key>"
 login_with_confident_api_key("<your-confident-api-key>")
 
 def multiply(a: int, b: int) -> int:
     return a * b
-
 llm = init_chat_model("gpt-4o-mini", model_provider="openai")
 llm_with_tools = llm.bind_tools([multiply])
 
-query = "What is 3 * 12?"
-
 llm_with_tools.invoke(
-    query, 
+    "What is 3 * 12?", 
     config = {"callbacks": [CallbackHandler()]}
 )
 
@@ -45,6 +45,7 @@ time.sleep(5) # Wait for the trace to be published
 ```
 
 Run your script:
+
 ```bash
 python main.py
 ```
@@ -52,5 +53,5 @@ python main.py
 You can directly view the traces in the **Observatory** by clicking on the link in the output printed in the console.
 
 <Callout>
-The DeepEval's `CallbackHandler` is an implementation of LangChain's [`BaseCallbackHandler`](https://python.langchain.com/api_reference/core/callbacks/langchain_core.callbacks.base.BaseCallbackHandler.html).
+DeepEval's `CallbackHandler` is an implementation of LangChain's [`BaseCallbackHandler`](https://python.langchain.com/api_reference/core/callbacks/langchain_core.callbacks.base.BaseCallbackHandler.html).
 </Callout>

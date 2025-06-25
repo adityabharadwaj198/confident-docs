@@ -9,38 +9,36 @@ import { Callout } from "nextra/components";
 [LangGraph](https://www.langchain.com/langgraph) is a framework for building reactive, multi-agent systems.
 
 ## Quickstart
+
 Confident AI provides a `CallbackHandler` that can be used to trace LangGraph agent's execution.
 
 Install the following packages:
 
 ```bash
-pip install langgraph langchain -U langchain-openai
+pip install -U deepeval langgraph langchain langchain-openai
 ```
 
 Login with your API key and configure DeepEval's `CallbackHandler` as a callback for LangGraph:
 
-```python filename="main.py" showLineNumbers {9, 24}
+```python filename="main.py" showLineNumbers {9, 21}
 import os
 import time
 from langgraph.prebuilt import create_react_agent
-import deepeval
+
 from deepeval.integrations.langchain.callback import CallbackHandler
+import deepeval
 
 os.environ["OPENAI_API_KEY"] = "<your-openai-api-key>"
-
 deepeval.login_with_confident_api_key("<your-confident-api-key>")
 
 def get_weather(city: str) -> str:  
-    """Get weather for a given city."""
     return f"It's always sunny in {city}!"
-
 agent = create_react_agent(
     model="openai:gpt-4o-mini",  
     tools=[get_weather],  
     prompt="You are a helpful assistant"  
 )
 
-# Run the agent
 result = agent.invoke(
     input = {"messages": [{"role": "user", "content": "what is the weather in sf"}]}, 
     config = {"callbacks": [CallbackHandler()]}
@@ -50,6 +48,7 @@ time.sleep(5) # Wait for the trace to be published
 ```
 
 Run your agent by executing the script:
+
 ```bash
 python main.py
 ```
@@ -57,5 +56,5 @@ python main.py
 You can directly view the traces in the **Observatory** by clicking on the link in the output printed in the console.
 
 <Callout>
-The DeepEval's `CallbackHandler` is an implementation of LangChain's [`BaseCallbackHandler`](https://python.langchain.com/api_reference/core/callbacks/langchain_core.callbacks.base.BaseCallbackHandler.html).
+DeepEval's `CallbackHandler` is an implementation of LangChain's [`BaseCallbackHandler`](https://python.langchain.com/api_reference/core/callbacks/langchain_core.callbacks.base.BaseCallbackHandler.html).
 </Callout>
