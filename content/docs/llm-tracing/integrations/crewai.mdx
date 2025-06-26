@@ -1,0 +1,27 @@
+---
+title: CrewAI
+---
+
+# CrewAI
+
+[CrewAI](https://www.crewai.com/) is a lean, lightning-fast Python framework for creating autonomous AI agents tailored to any scenario.
+
+## Quickstart
+Confident AI provides a `instrumentator` that can trace CrewAI's execution with just a single line of code.
+
+Install the following package:
+```bash
+pip install -U deepeval
+```
+
+With your Confident API key, initialize DeepEval's `instrumentator` in your agent's `main.py` script:
+
+```python filename="main.py" showLineNumbers {3}
+from deepeval.integrations.crewai import instrumentator
+
+instrumentator(api_key="<your-confident-api-key>")
+```
+That's it! You can now see the traces on Confident AI's **Observability**.
+
+
+
