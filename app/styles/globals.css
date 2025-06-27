@@ -1,11 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap');
 
-#__next {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
 /* Add subtle dot pattern to the background */
 body {
   background-image: radial-gradient(rgba(0, 0, 0, 0.131) 1px, transparent 1px);
@@ -156,7 +150,8 @@ button[data-href="/docs/dataset-editor"],
 button[data-href="/docs/prompt-management"],
 button[data-href="/docs/human-in-the-loop"],
 button[data-href="/docs/project-settings"],
-button[data-href="/api/traces"] {
+button[data-href="/api/traces"],
+button[data-href="/api/metrics"] {
   display: none !important;
 }
 
@@ -167,7 +162,8 @@ button[data-href="/docs/dataset-editor"] + div > ul,
 button[data-href="/docs/prompt-management"] + div > ul,
 button[data-href="/docs/human-in-the-loop"] + div > ul,
 button[data-href="/docs/project-settings"] + div > ul,
-button[data-href="/api/traces"] + div > ul {
+button[data-href="/api/traces"] + div > ul,
+button[data-href="/api/metrics"] + div > ul {
   margin-left: 0 !important;
   padding-left: 0 !important;
 }
@@ -179,7 +175,8 @@ button[data-href="/docs/dataset-editor"] + div > ul::before,
 button[data-href="/docs/prompt-management"] + div > ul::before,
 button[data-href="/docs/human-in-the-loop"] + div > ul::before,
 button[data-href="/docs/project-settings"] + div > ul::before,
-button[data-href="/api/traces"] + div > ul::before {
+button[data-href="/api/traces"] + div > ul::before,
+button[data-href="/api/metrics"] + div > ul::before {
   display: none !important;
 }
 
@@ -190,7 +187,8 @@ li:has(button[data-href="/docs/dataset-editor"]) > div,
 li:has(button[data-href="/docs/prompt-management"]) > div,
 li:has(button[data-href="/docs/human-in-the-loop"]) > div,
 li:has(button[data-href="/docs/project-settings"]) > div,
-li:has(button[data-href="/api/traces"]) > div {
+li:has(button[data-href="/api/traces"]) > div,
+li:has(button[data-href="/api/metrics"]) > div {
   margin-left: 0 !important;
   padding-left: 0 !important;
 }

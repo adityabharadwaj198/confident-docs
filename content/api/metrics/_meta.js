@@ -3,5 +3,5 @@ export default {
         "display": "hidden"
     },
     "data-model": "",
-    ingestion: ""
+    "create-metrics": ""
 }

@@ -8,47 +8,54 @@ import { Callout } from "nextra/components";
 
 You can ingest traces via the Evals API by calling the `POST - /v1/tracing` endpoint.
 
-## Simple Ingestion
+## Create Trace(s)
 
 The request body should be **strictly** the [`Trace` data model](/api/traces/data-model):
 
-```bash showLineNumbers
+```bash filename="POST - /v1/traces" showLineNumbers
 curl -X POST "https://api.confident-ai.com/v1/traces" \
      -H "Content-Type: application/json" \
-     -H "CONFIDENT_API_KEY: your-project-api-key-goes-here" \
+     -H "CONFIDENT_API_KEY: <PROJECT-API-KEY>" \
      -d '{
-            "uuid": "your-generated-trace-uuid",
-            "input": "What is the capital of France?",
-            "output": "The capital of France is Paris.",
-            "startTime": "2024-01-15T10:30:00Z",
-            "endTime": "2024-01-15T10:30:05Z",
-            "environment": "production",
-            "baseSpans": [
-                {
-                    "uuid": "span-123",
-                    "name": "LLM Call",
-                    "input": "What is the capital of France?",
-                    "output": "The capital of France is Paris.",
-                    "startTime": "2024-01-15T10:30:00Z",
-                    "endTime": "2024-01-15T10:30:05Z",
-                    "traceUuid": "your-generated-trace-uuid"
-                }
-            ],
-            "llmSpans": [],
-            "retrieverSpans": [],
-            "toolSpans": [],
-            "agentSpans": []
+            "traces": [{
+                "uuid": "your-generated-trace-uuid",
+                "input": "What is the capital of France?",
+                "output": "The capital of France is Paris.",
+                "startTime": "2024-01-15T10:30:00Z",
+                "endTime": "2024-01-15T10:30:05Z",
+                "environment": "production",
+                "baseSpans": [
+                    {
+                        "uuid": "span-123",
+                        "name": "LLM Call",
+                        "input": "What is the capital of France?",
+                        "output": "The capital of France is Paris.",
+                        "startTime": "2024-01-15T10:30:00Z",
+                        "endTime": "2024-01-15T10:30:05Z",
+                        "traceUuid": "your-generated-trace-uuid"
+                    }
+                ],
+                "llmSpans": [],
+                "retrieverSpans": [],
+                "toolSpans": [],
+                "agentSpans": []
+            }]
          }`
 ```
 
-## Online Evals
+```json filename="response"
+{"success": true}
+```
 
-You can run online evaluations on bothe traces and spans by providing a test case argument and metric collection name:
 
-```python showLineNumbers {11, 15}
+### Online evals
+
+You can run online evaluations on both traces and spans by providing a test case argument **AND** [metric collection name](/api/metrics/data-model#metric-collection):
+
+```python filename="POST resquest" showLineNumbers {11, 15}
 curl -X POST "https://api.confident-ai.com/v1/traces" \
      -H "Content-Type: application/json" \
-     -H "CONFIDENT_API_KEY: your-project-api-key-goes-here" \
+     -H "CONFIDENT_API_KEY: <PROJECT-API-KEY>" \
      -d '{
             "uuid": "your-generated-trace-uuid",
             "input": "What is the capital of France?",
@@ -78,15 +85,18 @@ curl -X POST "https://api.confident-ai.com/v1/traces" \
             "agentSpans": []
          }`
 ```
+```json filename="response"
+{"success": true}
+```
 
-## Span Types
+### Span types
 
 You can ingest traces containing different span types for more tailored functionalities. Below shows an example for an [LLM span](/api/traces/data-model#llm-span):
 
-```bash showLineNumbers {12, 21}
+```bash filename="POST resquest" showLineNumbers {12, 21}
 curl -X POST "https://api.confident-ai.com/v1/traces" \
      -H "Content-Type: application/json" \
-     -H "CONFIDENT_API_KEY: your-project-api-key-goes-here" \
+     -H "CONFIDENT_API_KEY: <PROJECT-API-KEY>" \
      -d '{
             "uuid": "your-generated-trace-uuid",
             "input": "What is the capital of France?",
@@ -112,7 +122,27 @@ curl -X POST "https://api.confident-ai.com/v1/traces" \
             "agentSpans": []
          }`
 ```
+```json filename="response"
+{"success": true}
+```
 
-## Threads
+### Threads
 
-## Users
+### Users
+
+## Update Trace
+
+```bash filename="PUT resquest" showLineNumbers
+curl -X PUT "https://api.confident-ai.com/v1/traces" \
+     -H "Content-Type: application/json" \
+     -H "CONFIDENT_API_KEY: <PROJECT-API-KEY>" \
+     -d '{
+            "uuid": "your-generated-trace-uuid",
+            "output": "The capital of France is Rome.",
+            "endTime": "2024-01-16T10:30:05Z",
+            "threadId": "012394"
+         }`
+```
+```json filename="response"
+{"success": true}
+```

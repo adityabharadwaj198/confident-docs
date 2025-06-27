@@ -8,6 +8,7 @@ export default {
         type: "separator",
         title: <NavIconTabItem icon={Gauge} label="Metrics" />
     },
+    "metrics":  <NavIconTabItem icon={Gauge} label="Metrics" />,
     "---2": {
         type: "separator",
         title: <NavIconTabItem icon={FlaskConical} label="Evaluations" />
