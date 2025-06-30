@@ -200,7 +200,7 @@ First, enable online evals on Confident AI by [creating a metric collection](/do
 from openai import OpenAI
 from deepeval.tracing import observe, update_current_span
 
-@observe(metricCollection=["My Metrics"])
+@observe(metric_collection=["My Metrics"])
 def llm_app(query: str) -> str:
     res = openai.ChatCompletion.create(
         model="gpt-4o",
