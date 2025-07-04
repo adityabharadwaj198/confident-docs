@@ -204,7 +204,7 @@ from deepeval.tracing import observe, update_current_span
 
 client = OpenAI()
 
-@observe(metricCollection=["My Metrics"])
+@observe(metric_collection=["My Metrics"])
 def llm_app(query: str) -> str:
     res = client.chat.completions.create(
         model="gpt-4o",

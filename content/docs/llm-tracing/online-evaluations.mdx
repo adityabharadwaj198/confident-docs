@@ -42,7 +42,7 @@ from openai import OpenAI
 
 client = OpenAI()
 
-@observe(metricCollection="My Collection")
+@observe(metric_collection="My Collection")
 def llm_app(query: str) -> str:
     res = client.chat.completions.create(
         model="gpt-4o",
@@ -109,7 +109,7 @@ from openai import OpenAI
 
 client = OpenAI()
 
-@observe(metricCollection="My Collection")
+@observe(metric_collection="My Collection")
 def llm_app(query: str) -> str:
     res = client.chat.completions.create(
         model="gpt-4o",
@@ -200,9 +200,9 @@ If you don't set the `input` and/or `output`, Confident AI will have nothing in 
 ```python filename="main.py" showLineNumbers
 from deepeval.tracing import observe, update_current_span, update_current_trace
 
-@observe(metricCollection="Collection 1")
+@observe(metric_collection="Collection 1")
 def outer_function():
-    @observe(metricCollection="Collection 2")
+    @observe(metric_collection="Collection 2")
     def inner_function():
         update_current_span(test_case=...)
         update_current_trace(test_case=...)
@@ -226,7 +226,7 @@ from deepeval.tracing import observe, update_current_trace, evaluate_thread
 
 your_thread_id = "your-thread-id"
 
-@observe(metricCollection="Collection 1")
+@observe(metric_collection="Collection 1")
 def outer_function():
     update_current_trace(thread_id=your_thread_id, test_case=...)
 
